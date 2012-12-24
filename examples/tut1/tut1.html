@@ -1,0 +1,243 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050623;11561400">
+	<META NAME="CHANGED" CONTENT="20050711;22373500">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 1</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Hi there! 
+</P>
+<P>In this tutorial we will start by setting up a basic class we can
+use to create a opengl window and to also have basic interaction with
+the keyboard. I will not be using the mouse for now.</P>
+<P>You can start by firing up your favorite editor. The idea is that
+you actually also write your own code and not simply use my code. My
+code is simply an example. 
+</P>
+<P>But I believe the best way to learn to program is by reading code
+and writing code. Thus I will try to keep my example code fairly
+documented and self-explanatory. The idea is that you read the code
+and this tutorial file at the same time. They form a unit together
+trying to bring a message across.</P>
+<P>For those that are already familiar with this part of opengl you
+might simply want to scan through this tutorial. Enjoy!</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>NB</FONT></FONT></P>
+<P>I am not a pro at OpenGL. I may get things wrong. Do not blame me
+for any problems you experience due to these tutorials. I welcome all
+additional and corrections. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Here
+we go!</FONT></FONT></P>
+<P>Ok, so we've included opengl. And setup a makefile. And it
+compiles and links. Great. What now?</P>
+<P>Firstly we need to initialize SDL. Why SDL? because its easy and
+its portable. enough said. <BR>We simply call
+<B>SDL_Init(SDL_INIT_VIDEO)</B> to initialize SDL.<BR>It starts with
+I/O, threading, file and video subsystems initialized. Off course
+check for success. SDL also installs a parachute system to catch a
+program crash and exit gracefully.</P>
+<P>At the end of the program we call <B>SDL_Quit()</B> to shutdown
+SDL.</P>
+<P>In the very basic way we can just call
+<B>SDL_SetVideoMode(640,480,16,SDL_OPENGL)</B> and we will get a
+window to work with. We can change this to
+<B>SDL_SetVideoMode(640,480,16,SDL_OPENGL|SDL_FULLSCREEN)</B> to make
+the window full screen.</P>
+<P>But we want something more flexible and useful than this. 
+</P>
+<P>I've created a class in the demo called <B>SDLVideoclass</B>. It
+is a basic class with the functionality needed to control the video
+screen setup for OpenGL. The idea is to get the graphics up and
+running as smoothly as possible. SDL provide lots of functions to
+make this easier.<BR>You only need to specify the width and height
+you want to some extent. The default contructor makes ready for
+640x480 windowed mode. You can specify your own width and height by
+using the second contructor (as in the example) or using the <B>SetWidth</B>
+and <B>SetHeight</B> functions.<BR>Enable full screen by using the
+<B>Fullscreen</B> function. In windowed mode almost any resolution
+will be fine. But in full screen mode only a few resolutions exist.
+If you specify a resolution that does not exist SDL will try to
+emulate it using the closest available resolution. But your graphics
+will only appear in a window on the screen. Use the <B>FindMode</B>
+function to find the closest mode available. It makes sense to run
+FindMode after you've selected <B>Fullscreen</B>. When everything is
+ready call <B>InitVideo</B>. You will hopefully end up with more or
+less what you want. The Bits used per pixel is configured
+automatically from the graphics hardware. Probably your X
+setup.<BR>There is some more functions available in the class.
+Checkout the code if your interested. To change something in the
+video layout simply change the settings and call <B>InitVideo</B>
+again.</P>
+<P>The example uses a simple delay before quiting again.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>So
+How about some Graphics?</FONT></FONT></P>
+<P>First some basics on opengl would be a good idea. OpenGl is like
+state-machine in many ways. You set something and then it keeps that
+setting until you change it. Things like colors, capabilities and
+even vertices work in this way.</P>
+<P STYLE="font-weight: medium"><U>Clearing the screen</U></P>
+<P STYLE="font-weight: medium; text-decoration: none">The first thing
+we can do is clear the screen, as this is relatively simple. Its
+basically a 2 step process:<BR>Step 1 is to select a color. We use
+the <B>glClearColor(r,g,b,a)</B> Command. I've chosen a darkish blue
+color in the example.<BR>Step 2 is to clear the screen. We use the
+<B>glClear</B> command. I haven't told you this but there is more
+than just one buffer in openGL. (I will tell you about the other
+buffers and there uses later) The only buffer we use now is the Color
+buffer. So the command is <B>glClear(GL_COLOR_BUFFER_BIT)</B> . As
+easy as that.<BR>Now remember I said opengl is a state machine! This
+mean that you only have to specify the clear color once. Every call
+to glClear there after will use the same color until you call
+glClearColor with a different color.</P>
+<P><U>OpenGl stuff</U></P>
+<P>If you had this idea that we are going to start sticking models on
+the screen now I'm sorry to disappoint. We're not even close to
+anything on the screen. <BR>The process of putting things in 3D space
+(such as your model) on the 2D screen involves lots of complex
+mathematics. And we need to give some of these equations some basic
+input values before we will be able to see anything on the screen.</P>
+<P>I'm going to assume you have some imagination :) In our new (to be
+created) 3d world there is basically to things. Firstly we have some
+stuff there. Maybe a room? or a monster or a plane? This stuff is
+called the geometry. Most of OpenGL is concerned with getting this
+geometry stuff displayed on the screen as fast as possible. But the
+second important thing is the spot we look from. We can casually
+speak of the camera. What you eventually get on the screen is what
+the camera sees. 
+</P>
+<P>3D graphics is really all build on top of matrix algebra. I now
+you're thinking Neo, but sorry dude there is no rules to bend around
+here. (like gravity) <BR>I'm not going to teach you matrix algebra or
+mathematics. Educate yourself on that one. And I'm also not going to
+assume you know very much about matrices. Well to start with every
+matrix in OpenGL is a 4x4 grid of number. That means 16 numbers. If
+you don't know this already your for now going to have to trust me.
+You can multiply matrices with each other and do all sorts of funky
+things with them. Now a point in 3d space is mostly 3 numbers x,y and
+z. (Actually there is a fourth co-ordinate called w but we ignore
+that for now)<BR>We call a point in 3D space a vertex. Now the really
+wacky part is that we can multiple these vertices with matrices. By
+having the correct numbers in the matrices we can then scale, move or
+rotate these vertices.<BR>Things get even crazier when you realize
+that the order in which you do the multiplications affects the
+result.</P>
+<P><U>Now lets get back to our camera:</U></P>
+<P>Firstly we need to tell OpenGL where on the screen we want the
+things that the camera can see. We create a viewport. Think of it as
+a window on the screen that represents the LCD on the camera. The
+command we use is <B>glViewport(x,y,w,h)</B>. x,y is the left-bottom
+corner of the viewport. w and h specify the size in height and width.
+note that the y axis is inverted customary to usual 2D graphics. y=0
+is the bottom of your screen. while y=screen height is at the top of
+your screen. I've inserted a glViewport command into the InitVideo
+function of the SDLVideoclass that I've created. It tries to fill the
+whole screen that SDL created with the viewport.</P>
+<P>Next we would like to set how the lens of our camera works. The
+matrix that specify the working of the camera lens is the PROJECTION
+matrix. <BR>So we tell opengl we want to modify that matrix with
+<B>glMatrixMode(GL_PROJECTION)</B>. As this is not a normal camera we
+don't have the normal type of parameters such as focus and shutter
+speed.<BR>Firstly we set the distances on which the camera works. If
+things are too far away or too close then it will not be visible. And
+then the Field-Of-View angle. A normal angle is about 45 degrees.
+setting the angle to about 10 degrees gives a zoomed in view. While a
+angle in the range of 180 degrees gives a fish-eye type view. The
+last thing is the aspect ratio of the view. This depends on the
+screen your using and also on the resolution.<BR>Normally the aspect
+ratio can be computed as width/height of the viewport and is usually
+in the range of 1.33<BR>To give opengl all of this information we use
+the gluPerspective(fov,aspect,znear,nfar) command.<BR>(You might
+notice the command start with <B>glu</B> ,this is because this
+function is provided by the GLU library, an extension library to
+opengl. This spares us the problem of computing the matrix
+ourselves.)<BR>There is also the <B>glOrtho</B> and <B>gluOrtho2D</B>
+commands to setup a orthographic projection. This is the type of view
+a architect would you to draw a house. (Size of object is not
+affected by distance)</P>
+<P STYLE="font-weight: medium"><U>Geometry transformation</U></P>
+<P>The second most important matrix in the 3D maths world is the
+matrix that transforms the geometry. This matrix is called the
+MODELVIEW matrix. We will see lots more on this one. For now we load
+the identity matrix into the modelview matrix.<BR>First tel opengl to
+modify the Modelview matrix: <B>glMatrixMode(GL_MODELVIEW)</B><BR>Then
+load the Identity matrix using: <B>glLoadIdentity()</B><BR>The
+identity matrix is a very simple matrix that has no effect. Thus we
+chose a setup where the modelview matrix will not modify the geometry
+in any way.</P>
+<P><B>How about some graphics now?</B></P>
+<P>So now everything is ready, we can put the geometry on the screen.
+For the example I've put a simple triangle on the screen. Lets look
+at what is done.</P>
+<P STYLE="font-weight: medium"><U>ColorMode</U></P>
+<P>First is the <B>glShadeModel</B> command. This tells opengl how to
+work with colors. I chose the GL_SMOOTH mode. This gives the triangle
+nice interpolated colors.</P>
+<P STYLE="font-weight: medium"><U>Drawing the triangle</U></P>
+<P>We start with <B>glBegin(GL_TRIANGLES)</B><BR>This tells opengl we
+are about to draw some triangles. (only 1 as it turns out) Every
+triangle has 3 vertices specifying it. Each set of 3 vertices
+provided will be used by opengl to draw another triangle.</P>
+<P>We specify a vertex with the <B>glVertex</B> function. You will
+see there is 3 vertices specified in the example. Now what is that <B>3f</B>
+behind the function. Or is it part of the function? Well because
+opengl doesn't run on a overloading capable system like c++. It must
+use different function if the parameters needs to be different. The
+<B>3f</B> tells opengl that the vertex will be specified using 3
+floating point numbers. There are many other variants to use. Check
+out your reference to see this list.</P>
+<P STYLE="font-weight: medium">Before each vertex there is a <B>glColor</B>
+command. This way each point in the triangle has a different color
+and opengl will interpolate color values for every point in between.
+Because of the state machine nature of opengl we need to call <B>glColor</B>
+before <B>glVertex</B>. We can also just call <B>glColor </B>once
+before the 3 vertices, thus creating a triangle with a single color.</P>
+<P STYLE="font-weight: medium">The last command is <B>glEnd</B>. This
+tells opengl we are now finished drawing triangles. Its important to
+remember this. <B>glBegin</B> and <B>glEnd</B> creates a sort of code
+block in which geometry can be specified. Some opengl commands must
+be inside and glBegin/glEnd block while others must be outside. Don't
+worry all will become more and more clear as we proceed.</P>
+<P STYLE="font-weight: medium"><U>Getting the stuff visible on the
+screen.</U></P>
+<P STYLE="font-weight: medium">Opengl uses a double buffer system.
+One buffer is visible to the user on the screen while we draw on the
+back buffer in memory. Then when we are finished drawing a frame we
+need to swap the buffers so that the stuff we've drawn now becomes
+visible to the user. 
+</P>
+<P STYLE="font-weight: medium">SDL provides a very simple command to
+take care of this: <B>SDL_GL_SwapBuffers()<BR></B>It is very
+important to call this after every frame. Else nothing will become
+visible to the user.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Last
+Words</FONT></FONT></P>
+<P STYLE="font-weight: medium">So that wraps it up for the first
+tutorial. This is all might seem very silly at the moment but this is
+needed for just about every opengl application out there.</P>
+<P STYLE="font-weight: medium">In the next tutorial I will show you
+how to interact with the keyboard using SDL and then also some more
+things about drawing stuff on the screen.</P>
+<P STYLE="font-weight: medium">Actually I still need to write a
+proper tutorial part on drawing primitives! This will maybe be
+available in a newer release. 
+</P>
+<P STYLE="font-weight: medium">-Heinrich</P>
+<P STYLE="font-weight: medium"><BR><BR>
+</P>
+<P STYLE="font-weight: medium"><FONT SIZE=1 STYLE="font-size: 8pt">Copyright
+(c)  2005   Heinrich du Toit.<BR>      Permission is granted to copy,
+distribute and/or modify this<BR>document under the terms of the GNU
+Free Documentation License, Version 1.2<BR>or any later version
+published by the Free Software Foundation;<BR>with no Invariant
+Sections, no Front-Cover Texts, and no<BR>Back-Cover Texts. A copy of
+the license is included in the file named<BR>&quot;copyright&quot;
+which might be distributed along with this document or it can be
+obtained<BR>electronically at www.fsf.org or
+www.opensource.org/licenses</FONT></P>
+</BODY>
+</HTML>

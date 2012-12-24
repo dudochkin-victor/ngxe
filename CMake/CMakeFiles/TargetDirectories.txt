@@ -1,0 +1,4 @@
+/mnt/work/Ohyo/jazz/CMake/CMakeFiles/distclean.dir
+/mnt/work/Ohyo/jazz/CMake/src/CMakeFiles/jazzd.dir
+/mnt/work/Ohyo/jazz/CMake/src/service/CMakeFiles/jazzsvc.dir
+/mnt/work/Ohyo/jazz/CMake/CMakeFiles/uninstall.dir

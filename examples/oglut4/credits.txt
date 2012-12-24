@@ -1,0 +1,3 @@
+The supplied textures were taken from "Batcube" of the Fatal FX OpenGL (GLUT)
+sources series (http://www.fatalfx.com/opengl/). Many thanks to Roger Wetzel
+(roger.wetzel@fatalfx.com) for letting me include them in my tutorial.

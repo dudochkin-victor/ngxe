@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050711;19522900">
+	<META NAME="CHANGED" CONTENT="20050711;22312800">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1>Setting up OpenGL</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Linux</FONT></FONT></P>
+<P>Firstly get the correct drivers installed for your graphics card.
+Nvidia drivers is downloadable from <A HREF="http://www.nvidia.com/">www.nvidia.com</A>.
+<BR>Radeon drivers?</P>
+<P>Then you need to enable GLX in X. This might depend on your
+distro.<BR>But in general in <U>/usr/X11/XF86Config-4</U> you
+need:<BR>In section &ldquo;Module&rdquo;: <B>Load &ldquo;glx&rdquo;</B></P>
+<P STYLE="font-weight: medium">To check if Your Xwindows support
+opengl run <B>glxinfo</B> from a Xterm (or something similar)<BR>The
+most important line at first would be the OpenGL version.<BR>e.g:
+&ldquo;OpenGL version string: 1.4.1 NVIDIA 53.36&rdquo;</P>
+<P><B>Debian Linux</B></P>
+<P STYLE="font-weight: medium">Normally packages are installed using
+<U>aptitude</U> or <U>apt-get</U>. You can use what you like :)</P>
+<P STYLE="font-weight: medium">To install the Nvidia drivers you
+need:<BR><B>nvidia-glx<BR>nvidia-kernel-common<BR>nvidia-kernel-*</B></P>
+<P STYLE="font-weight: medium">If you want to compile the driver
+yourself you need: <B>nvidia-kernel-source</B><BR>Also install:
+<B>nvidia-glx-dev</B><BR>(Take a look at <B>nvidia-settings</B>)</P>
+<P STYLE="font-weight: medium"><B>nvidia-cg-toolkit</B> is very handy
+if you don't want to install CG by hand. (CG wont be needed until
+tutorial 10)</P>
+<P STYLE="font-weight: medium">For opengl development you also
+need:<BR><B>xlibmesa-gl-dev<BR>xlibmesa-glu-dev</B></P>
+<P>You will need to install the following packages for these
+tutorials:<BR><B>make<BR>g++</B></P>
+<P><BR><BR>
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Other
+implementations</FONT></FONT></P>
+<P>Yes this is very imcomplete. I'm working on this... very very
+slowly.</P>
+<P>If you feel like it (Maybe your tired of running your head into
+the wall?) then you may feel free to write a section for another
+platvorm or something and email it to me.</P>
+<P>-H</P>
+<P><BR><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt">Copyright (c)  2005   Heinrich
+du Toit.<BR>      Permission is granted to copy, distribute and/or
+modify this<BR>document under the terms of the GNU Free Documentation
+License, Version 1.2<BR>or any later version published by the Free
+Software Foundation;<BR>with no Invariant Sections, no Front-Cover
+Texts, and no<BR>Back-Cover Texts. A copy of the license is included
+in the file named<BR>&quot;copyright&quot; which might be distributed
+along with this document or it can be obtained<BR>electronically at
+www.fsf.org or www.opensource.org/licenses</FONT></P>
+</BODY>
+</HTML>

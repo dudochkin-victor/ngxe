@@ -1,0 +1,17 @@
+4
+%cube%
+%One of the five basic polyhedrons: six square-shaped faces, twelve edges, eight vertices%
+5
+5
+%paper%
+%A sheet of A4 white paper, can be used to write down things%
+0
+2
+%scissors%
+%A tool used to cut thin objects, such as paper sheets%
+4
+12
+%coin%
+%A small lump of metal, circular in shape, used as a currency almost everywhere%
+1
+1

@@ -1,0 +1,354 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050704;15210000">
+	<META NAME="CHANGED" CONTENT="20050711;23582600">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 10</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Quote for today:</P>
+<P><FONT SIZE=2 STYLE="font-size: 9pt">That's the thing about people
+who think they hate computers. What they <BR>really hate is lousy
+programmers.<BR>-- Larry Niven and Jerry Pournelle in &quot;Oath of
+Fealty&quot;</FONT></P>
+<P>Modern hardware have this nice thing they call <B>shaders</B>. And
+since this is already tutorial 10 I thought it might be a nice idea
+start a little bit on shaders.</P>
+<P>In tut 10 we have:<BR>Part 1 &ndash; Cg shaders intro<BR>Part 2 &ndash;
+Simple model format with Blender<BR>Part 3 &ndash; Saving a screen
+shot</P>
+<H1>Part 1 &ndash; vertex shader intro using Cg</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Cg</FONT></FONT></P>
+<P>Cg (C 4 graphics) is a compiler made by Nvidia. It's both cross
+API (OpenGL and DX) and runs on Windows and Linux. And it makes the
+creation of shaders 10 times easier. 
+</P>
+<P>So no we don't have to learn the opengl shader language or the DX
+shader language. Great hey.</P>
+<P>Once again these tutorials do not aim to replace any official
+documentation. I used that (and a bit of my mind) to write this. So
+let the Cg documentation form the basis for knowledge.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>vertex
+shader</FONT></FONT></P>
+<P>There is 2 kinds of shaders. Vertex shaders and fragment shaders
+(sometimes called pixel shaders). We are only going to look at Vertex
+shaders for now.</P>
+<P>Before the days of vertex shaders there was some dedicated
+hardware inside the graphics card to process incoming vertex
+information. It basically put the coordinates through some matrix
+transformations to in the end get a location on the screen and a
+z-coordinate for the Depth-buffer, among some other things.</P>
+<P>Well now we have some programmable hardware in there :) Which
+means we can write little program to do these transformations. The
+advantage is that we can make some really great effects and also move
+some processing from the cpu to the graphics card so that the cpu can
+be used for other things.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Documentation</FONT></FONT></P>
+<P>If you've installed Cg you will have in there somewhere a file
+called <B>Cg_Toolkit.pdf</B>. Most of the information you need is in
+this file. A second document that might come in handy is the <B>GL
+Shader Language Specification</B>. And maybe you might look at the
+<B>OpenGL 2.0 specs</B>?</P>
+<P>Quick road map to Cg_Toolkit PDF file:<BR>1. Read &ldquo;<U>Cg's
+Programming Model for GPU's</U>&rdquo; under &ldquo;<U>Introduction
+to Cg</U>&rdquo;!<BR>2. Take a look at &ldquo;<U>Program Inputs and
+Outputs</U>&rdquo; although this might just be confusing the first
+time.<BR>3. The section &ldquo;<U>Statements and Operators</U>&rdquo;
+are mostly like standard C but not completely. For starters scan
+through this.<BR>4. The &ldquo;<U>Standard Library Functions</U>&rdquo;
+is probably what you will look at mostly in the beginning.<BR>5. You
+can read the section on &ldquo;Using Cg-Runtime Library&rdquo; but
+you might first want to read my tutorials shorten version below.<BR>6.
+The &ldquo;<U>Brief tutorial</U>&rdquo; is a nice thing to read to
+get a general idea about things.<BR>7. The &ldquo;<U>BASIC Profile
+Sample Shaders section</U>&rdquo; is a good place to start looking
+for ideas and get perspective.<BR>8. In &ldquo;<U>Appendix B</U>&rdquo;
+we will be looking at &ldquo;<U>OpenGL NV_vertex_program 1.0</U>&rdquo;
+and &ldquo;<U>OpenGL NV_texture_shader</U>&rdquo; at first. ()<BR>9.
+&ldquo;<U>Appendix C - Nine Steps</U>&rdquo; will also be a good read
+someday.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Quick
+Intro to Cg Runtime</FONT></FONT></P>
+<P>Cg runtime is a library that enables you to load shaders from .cg
+files at run time. Compile them for the current hardware available.
+And also gives you a simple interface to specify some inputs to your
+shader programs.</P>
+<P>Go look in the example: <U>shader.cpp</U><SPAN STYLE="text-decoration: none">
+in the <B>CGShader</B> name space code.</SPAN></P>
+<P>Firstly you need a context to work with. Think of the context
+simply as a handle to the graphics cards shader architecture.<BR>Create
+a new context with <B>cgCreateContext()</B>.</P>
+<P>Next we need profiles. We need one profile for the vertex shader
+and one for the fragment shader. A profile is where Cg keeps
+information about the current available hardware and how to &ldquo;compile&rdquo;
+the shaders.<BR>Creat a new shader with c<B>gGLGetLatestProfile(shader)</B>
+where shader is <B>CG_GL_VERTEX</B> or <B>CG_GL_FRAGMENT</B>.<BR>Optimize
+the settings of a profile with <B>cgGLSetOptimalOptions(profile)</B></P>
+<P>By default the fixed pipeline is enabled. To use the programmable
+shader/fragment pipeline we simply need to enable the profile with
+<B>cgGLEnableProfile(profile)</B>. (I've created some shorter
+functions in the example)<BR>To switch back to the fixed pipeline we
+need to disable the profile with <B>cgGLDisableProfile(profile)</B>.</P>
+<P>Now look at <B>CGShaderclass</B> object in <U>shader.cpp</U>.</P>
+<P>Now every shader is a program stored in a <B>CGprogram</B> object.
+We can have many programs but at any moment in time only 1 vertex
+program and 1 shader program can be active.</P>
+<P>First we need to load the program from its source file
+with:<BR><B>cgCreateProgramFromFile(CGcontext,programtype,filename,profile,entry,args)</B><BR>programtype
+is either <B>CG_SOURCE</B> or <B>CG_OBJECT</B>. <BR>(<B>CG_OBJECT</B>
+is when you pre-compiled the shader with <B>cgc</B> to object
+code.)<BR>Entry is the main function in the code which is the main
+function of the shader, default to <B>main</B>.<BR>args is list of
+strings passed to the compiler as arguments.</P>
+<P>Before a program can be binded/Activated it need to be
+prepared/Loaded with:<BR><B>cgGLLoadProgram(program)</B></P>
+<P>To activate a specific shader program we simply call
+<B>cgGLBindProgram(program)</B>.<BR>(I've created a function called
+<B>Bind</B> for <B>CGShaderclass</B>)</P>
+<P>Some input parameters are known as uniform parameters. (Like the
+time parameter in the example)<BR>The values of these parameters are
+stored in special registers which the shader program can access while
+running. <BR>To work with these uniform parameters we must first get
+a handle to the parameter using
+<B>cgGetNamedParameter(program,&rdquo;name&rdquo;)</B><BR>(See the
+<B>Load</B> function of <B>WaveShaderclass</B>.)<BR>Now we can set
+values to these parameters using <B>cgGLSet*</B> commands.<BR>(See
+<B>UpdateState</B> of <B>WaveShaderclass</B>)<BR>In Cg_Toolkit.pdf
+checkout the section &ldquo;<B>OpenGL Cg Runtime</B>&rdquo; under
+&ldquo;<B>Using Cg-Runtime Library</B>&rdquo; for information on
+Parameters and all the available functions for setting parameters.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Example</FONT></FONT></P>
+<P STYLE="font-weight: medium">The example shader code is in <U>wave.cg</U>.
+And gets loaded and used by <U>shader.cpp</U>.<BR>This example is
+very very very simple! 
+</P>
+<P STYLE="font-weight: medium">I only made a vertex shader. (No
+fragment shader today, sorry)</P>
+<P STYLE="font-weight: medium">The code is pretty straight forward.
+It construct a wave moving out from the centre location.<BR>It would
+be easy to extend the program so that we can move the center
+location.</P>
+<P STYLE="font-weight: medium">The next logical thing to add to the
+shader is to enable normal computation and also reflection
+computation.<BR>A good example of these things is in Cg_Toolkit.pdf
+under &ldquo;<U>Basic Profile Sample Shaders</U>&rdquo; the one
+called &ldquo;<U>Sine Wave Demo</U>&rdquo;</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>All
+for now</FONT></FONT></P>
+<P>Thats all for shaders for today.<BR>One of the first things we
+will use shaders for is in model drawing. <BR>(Take a look at &ldquo;Matrix
+Palette Skinning&rdquo; if your interested)<BR><BR>Shaders makes many
+wonderful things possible, and one can understand why all the fuzz is
+around.</P>
+<P>But a shader alone doesn't make a graphics engine...</P>
+<H1>Part 2 &ndash; Blender</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>learning
+blender</FONT></FONT></P>
+<P>Well first question would possibly be: why not 3d studio? Well
+actually I have this plan in the back of my head to get these
+tutorials to work with both 3dsmax and blender. But currently I go
+for only blender. Blender is fully featured. And it's free! A
+complete 3D editing program for free. I think thats nice.</P>
+<P>Blender has a weird interface that might seem a bit scary at
+first. I've included one tutorial in starting to use blender with
+this tutorial.</P>
+<P>Don't worry you will be able to get through these tutorials with
+almost no knowledge of blender. :)<BR>But it might help. Blender is
+not that evil. And there is huge amounts of stuff on the net for
+blender.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Python
+Scripts</FONT></FONT></P>
+<P>The nice thing about blender is we can write small python scripts
+to run inside blender. You can do all sorts of funky things. But all
+we're going to do is use this little python script to output the 3D
+data from blender to another file we can the read with our C program.
+Because reading .blend files is crazy and not encourages.</P>
+<P>Ok so now you stare this new python beast in the eyes?<BR>Well
+python is a very great scripting language. There exist many good
+reasons to learn python, such as &ldquo;it rocks&rdquo; ;)<BR>I know
+just enough python to find my way around the references and get some
+basic programming done.<BR>Python is not difficult.</P>
+<P>But once again you will be able to get through these tutorials
+with very little to no python knowledge. So I'm not going to teach
+you python. There's enough tutorials out there.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>A
+simple format</FONT></FONT></P>
+<P>Ok think back about the quake model we loaded....</P>
+<P>That model had all the data nicely packed. Plus it also had these
+structures that told us how to draw the model using triangle-strips
+and triangle-fans. Now drawing a surface using a triangle-strip is a
+lot faster than using separate triangles. The longer the strip/fan
+the more the increase in speed. If you're still wondering why:
+Drawing with strips/fans needs less vertex information for the same
+amount of triangles, resulting in less data-transfer needed, less
+memory access, less strain on AGP. And most graphics cards are
+optimized to for drawing strips/fans. Thus things are FASTER :D</P>
+<P>But blender doesn't give things this way. Blender just give what
+we might call &ldquo;raw&rdquo; 3D data. Unorganized and in a form
+that might mostly seem chaotic maybe even.</P>
+<P>So our strategy looks like follows:<BR>1. Use a simple python
+script to export raw 3D data into simple file format<BR>2. Load
+simple file format with out c++ program.<BR>3. Calculate more
+optimized data structures (like striping)<BR>4. Write out to proper
+packed model file format<BR>5. Use proper packed model file format in
+application</P>
+<P>OK today we will start with an introduction on steps 1 &amp; 2.</P>
+<P>Step 3 is a HUGE step and will take much of out time in the
+future. Triangle stripping is a difficult subject. While we also want
+to look into things like model simplification. 
+</P>
+<P>For some time we will be working with just the idea that these
+things in blender will become models. Like aliens, or weapons or
+spaceships ect.<BR>But keep in your mind that we can also create
+terrain or maps in blender. Which will require different file formats
+and completely different rendering techniques.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+simple file format</FONT></FONT></P>
+<P>Goto the example in <U>simple.cpp</U>. And look near the top of
+the program. There you will find a number of structures defines with
+names starting with S. These are the structures for the simple file
+format.</P>
+<P>The first thing in the file is the header.(<B>SHeader</B>) The
+header tells us that this is the simple file format. And also gives a
+version number. We will change the version number as we go along in
+these tuts.<BR>The header might also contain pointers to some global
+data. <BR><B>Note</B>: When I talk about a pointer in the file it is
+simply a integer number which is the offset in the file where the
+data can be found.<BR>Currently the header only tells us the number
+of objects in the file.</P>
+<P>Following the header we have a directory listing for the objects.
+For each object there is a type flag and a pointer. (<B>SObjIndex</B>)</P>
+<P>When we go to the position in the file where the object is saved
+we find the object data. Depending on the type of object we will find
+different data.<BR>At the beginning of the objects data there is
+another index. The index tells us what types of data there is and
+where the data is saved in the file. (<B>SIndex</B>)</P>
+<P>The Types of data:<BR><B>Global object data</B> &ndash; like where
+the object is and so forth. (<B>SObjInfo</B>)<BR><B>Vertex data</B> &ndash;
+Just a long list of vertices and there data (a header of <B>SStart</B>
+and then lots of <B>SVertex</B>) <BR><B>Faces</B> &ndash; The faces
+between the vertices and there data (a header of <B>SStart</B> and
+then lots of <B>SFace</B>)</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+script</FONT></FONT></P>
+<P>The script is in <U>simpleexport.py</U>.<BR>To run the script from
+Blender you can save it in the blender scripts directory. Or:<BR>1.
+Open blender.<BR>2. Chane a window to &ldquo;Text Editor&rdquo;<BR>3.
+Open the file &ldquo;simpleexport.py&rdquo;<BR>4. Run the Script
+(Ctrl+P)<BR>5. The script will ask you for a filename to which to
+save the data.<BR>6. If all went well there will be a new file in the
+simple object format.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>How
+does the script work?</FONT></FONT></P>
+<P>This is not a tutorial in python or Blender. So I will only give
+you the vague information.<BR>To write Blender python scripts I
+strongly advise you to download the Blender Python documentation.</P>
+<P>The script starts at <B>savefile</B>. Which start by writing the
+header and then one by one save the objects. For every object it
+saves an entry in the index data and then calls <B>saveobject</B>.</P>
+<P>The function <B>saveobject</B> saves the data for a specific
+object. For every group of data an entry in the index is made and
+then a specific function is called to save the data.</P>
+<P><B>saveobjectinfo</B> saves the global data for the object. Like
+where the object is and so forth.</P>
+<P><B>savefaces</B> saves the data for all the faces in the object.</P>
+<P><B>savevertices</B> saves the data for all the vertices in the
+object.</P>
+<P><B>saveheader</B> is a simple function used by savefile to save
+the header.</P>
+<P>Special care must be taken in the formatting of the data so that
+out c++ program can easily read the data again. The <B>struct.pack</B>
+function has some funny quirks to work around. But this is a mile
+better than saving in some kind of a text format. <BR>Although the
+advantage of a text format is that you can read the data with your
+eyes it makes loading the format much harder and you quickly lose the
+ability to read the data once there is more than 100 vertices and 50
+faces. (What do you mean you can't visualize 90 points in 3D space
+from coordinates on paper?!?)</P>
+<P>Much more will be added to this script later on.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Loading
+the simple format in C++</FONT></FONT></P>
+<P>Look in <U>simple.cpp</U>. There is an object <B>SObjectclass</B>.
+</P>
+<P>Inside the object there is data structures for some global
+information and also for Vertices and Faces.</P>
+<P>Then there is the <B>SimpleObjectclass</B>. Which contains a
+number of objects. A whole file is loaded into this class and it
+spawns one <B>SObjectclass</B> for every object there is.</P>
+<P>There is a number of Load functions. I've inserted some comments
+into the code to make things more clear.<BR>What basically happens is
+simply a move of the data from the file to the memory.</P>
+<P>Then there is a simple draw routine. The draw routine is painfully
+slow but it works and is good enough to show that we did indeed get
+the same data as was in blender originally.</P>
+<P>The example simply loads the file and display all the objects
+inside the file then quit after a short delay.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Further
+development</FONT></FONT></P>
+<P>Next we will build on top of the work done here to also export
+material and texturing information. And some more information on the
+lights in blender. Objects without texturing is no good for nothing
+accept wireframe drawing.</P>
+<P>If you are unfamiliar with blender it might be a good idea to play
+a bit with this nifty program. Or if you are a 3d Studio Max user
+then you might want to find out how to export from 3d studio... ?</P>
+<H1>Part 3 &ndash; Taking a screen shot</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>As
+easy as that!</FONT></FONT></P>
+<P>Take a look at the example in <U>shot.cpp</U><SPAN STYLE="text-decoration: none">
+and mainly at the <B>saveimage</B> function.</SPAN></P>
+<P STYLE="text-decoration: none">Saving a screen shot is easy. All we
+need to do is get the image data from the frame buffer and save it in
+a file. SDL makes this easier by giving as a <B>SDL_SaveBMP</B>
+function.</P>
+<P STYLE="text-decoration: none">So we start by creating a
+<B>SDL_Surface</B> the same size as the screen using
+<B>SDL_CreateRGBSurface</B>.<BR>I've used a 24-bit RGB pixel format
+but some other things will also work. 
+</P>
+<P STYLE="text-decoration: none">To read data from the frame buffer
+is very easy with the <B>glReadPixels</B> command. The format
+is:<BR><B>glReadPixels(x,y,width,height,format,type,pixels)</B></P>
+<P>But now we once again run into the problem that the y axis of the
+GL frame buffer is inverted compared to SDL. The easy way out is to
+ignore the problem and simply flip the image afterwards using some
+other image program. (Linux do have some nice utilities out there)</P>
+<P>But thats not really satisfying.<BR>The one solution is to render
+the image upside down. This is easily achieved by rotating the camera
+matrix before rendering the scene. But this might result in rendering
+the scene twice if we still want to display it on the screen.<BR>So
+the simple solution that I presented is to flip the image inside the
+SDL_Surface pixel buffer. The down-side is that this requires some
+extra processing power. Which could be considered a problem if the
+screen is very BIG. <BR>A very nice and proper solution would be to
+somehow save the BMP file directly from the inverted image data. But
+that would require another image library, or some modification to
+SDL.</P>
+<P>All that remains is to call <B>SDL_SaveBMP</B> with a filename.
+And there you have a screen shot.</P>
+<P>O yes remember that you must take the screen shot before you call
+SDL_GL_Swapbuffers else you will get the wrong data. Or rather not
+the last rendered frame ;)</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>End
+of this tut</FONT></FONT></P>
+<P>Thats all folks!</P>
+<P>Hope you still enjoy openGL! I am :) 
+</P>
+<P>-Heinrich</P>
+<P><BR><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt">Copyright (c)  2005   Heinrich
+du Toit.<BR>      Permission is granted to copy, distribute and/or
+modify this<BR>document under the terms of the GNU Free Documentation
+License, Version 1.2<BR>or any later version published by the Free
+Software Foundation;<BR>with no Invariant Sections, no Front-Cover
+Texts, and no<BR>Back-Cover Texts. A copy of the license is included
+in the file named<BR>&quot;copyright&quot; which might be distributed
+along with this document or it can be obtained<BR>electronically at
+www.fsf.org or www.opensource.org/licenses</FONT></P>
+</BODY>
+</HTML>

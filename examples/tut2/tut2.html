@@ -1,0 +1,290 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050623;17443500">
+	<META NAME="CHANGED" CONTENT="20050711;20464700">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 2</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Ok whats next you ask? Sorry to say but we are still only in basic
+stuff and still far from anything magnificent.</P>
+<P>In this tutorial there will be to parts.</P>
+<P>Part1 will teach you how to use the keyboard. In the example code
+I've created a class to use for the keyboard.</P>
+<P>Part2 will be on opengl. I will show you how to rotate, scale and
+translate an object using the modelview matrix. And I will also show
+you how to use the depth buffer. 
+</P>
+<H1>Part1 &ndash; SDL events</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+keyboard</FONT></FONT></P>
+<P>I believe that most of the people reading this might have seen a
+computer keyboard before. And some of the like me has opened the
+thing. In basic the keyboard send the computer signals telling it how
+keys are pressed and released. So actually a keyboard is a very
+simple device. But since we work on a protected mode operating system
+things can get a little hairy since you can't exactly replace the
+keyboard interrupt handler like some of us have done in those good
+old DOS days! yeah!</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>SDL
+events</FONT></FONT></P>
+<P>SDL makes things fairly simple. SDL has an event system which
+informs our application of all sorts of things. There are events for
+the mouse, the keyboard, window manager commands, joysticks and even
+your own madeup events. For this tutorial we will simply be bothered
+with the keyboard events and discard everything else accept the quit
+event.</P>
+<P>We can wait for the next event using the <B>SDL_WaitEvent</B>
+command. But this is not that great for a game programmer since we
+don't want to get stuck anyware waiting for a user event. That just
+wouldn't be fair to all those hairy monsters in 3D world hey? So we
+much rather use <B>SDL_PollEvent</B>. This command will return
+immediately even if no event is available.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>SDL
+keyboard</FONT></FONT></P>
+<P>This is all great. But sometimes we simply wants to know if the
+key is pressed or released. Now it would be possible to create all
+the structures to keep track of which keys are currently pressed. But
+SDL already does all this for us. Since SDL already contains an array
+with this information we can simply retrieve a pointer to this
+structure using <B>SDL_GetKeyState()</B>.<BR>Note: If you use this
+keyboard state buffer without using SDL_PollEvent you need to call
+<B>SDL_PumpEvents</B> to keep this keystate information updated.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Coding</FONT></FONT></P>
+<P STYLE="font-style: normal"><U>The example code is in keys.cpp</U></P>
+<P>First go and look at the main function. We start by Setting up SDL
+and a small 320x200 video screen. The only reason for the video
+screen is that SDL handles it's keyboard event from the video window
+and not from the console. So the only way to receive keyboard events
+is by creating a graphics window. Make sure the graphics window is
+the active window while running the example. But the output will
+appear in the console. Since the window is really small it shouldent
+be a problem fitting both on your desktop.</P>
+<P>Ok now we create the <B>SDLEventclass</B>. This class has very
+VERY limited functionality but is there to show you the basics of
+handling events. 
+</P>
+<P>The constructor is very simple. It sets some variables and also
+located the keyboard state buffer using <B>SDL_GetKeyState</B>.
+<BR><B>ProcessEvent</B> must be called periodically because this will
+handle the incoming event.<BR>The <B>GetLastEvent</B> function
+returns a pointer to the event structure of the last event processed
+by ProcessEvent. This is here for completeness sake and is not used
+in the example.<BR><B>GetKey</B> is used to lookup the state of a key
+in the keyboard state buffer. If you go look in the main function you
+will see there in the middle of the program loop code that says: <B>if
+(events.GetKey(SDLK_UP))</B> This has the effect of continually
+checking the up-arrow key and printing the message if the key is
+pressed. Run the example and press the up-arrow key and see how the
+console is flooded with the repeated message, even thought no new
+events is received from the keyboard.<BR><B>GetKeySafe</B> is the
+same as GetKey, accept that it does a check to see if the provided
+keysym is valid. Use this if you are not sure if the keysym is
+valid.<BR><B>CheckKeySym</B> is a small function that validates a
+keysym. <BR><B>MustQuit</B> is a function that returns true when the
+system has received an SDL_QUIT event. Or in the case of the example
+the ESC key was pressed. This is used in the main program for the
+while program loop. As soon as this function returns true the program
+will quit.</P>
+<P><U>Processing Events</U></P>
+<P>This is mainly done in the <B>ProcessEvent</B> function. Firstly
+we call SDL_PollEvent to see if any events is available to be
+processed and retrieve the event information if there is an event.</P>
+<P>The SDL_Event structure is quite scary at first. But its really
+not that bad. At the top level of the structure there is a <B>type
+</B>variable. This is what the switch statement in the example checks
+out. We only handle 3 event types in the example: SDL_QUIT,
+SDL_KEYDOWN and SDL_KEYUP. From the descriptions its clear what they
+mean. Now inside the SDL_Event structure there is a number of
+sub-structures in there. And according to the type variable we look
+at one of them specifically. For example for the KEYUP and KEYDOWN
+events we will be looking at the <B>key</B> sub-structure. This
+structure will contain the information about the event we need.
+Likewise there is a sub-structure for every event. Some of them is
+very small and contains nothing really. 
+</P>
+<P STYLE="font-weight: medium">Inside the <B>key</B> sub-structure
+there is again some information that tells us if the key was pressed
+or released. But we already know this. But there is also another
+sub-structure called <B>keysym</B> of type SDL_keysym containing the
+information of the specific key involved in the event. The only 2
+entries of value for us is the <B>scancode</B> and the <B>sym</B>
+values. With the <B>SDL_GetKeyName</B> function we can get a
+meaningfull string for the key from the sym value. Sym values are of
+the format SDLK_keyname. You can look them up in the documentation or
+in the SDL_keysym.h include file. (/usr/include/SDL/ under linux)</P>
+<P STYLE="font-weight: medium">Thats it for processing events. From
+here on it is very simple to process other events like the mouse for
+example. Or a joystick. There is also some intresting events like
+timer events. But we will not look into them now.</P>
+<P STYLE="font-weight: medium"><U>Further improvement</U></P>
+<P STYLE="font-weight: medium">I've moved the SDLEventclass into
+event.h and event.cpp to be used as a library for further
+applications. I've also removed the example output code. The idea is
+that we use this only as a base class for our application and then
+overwrite the eventhandler function but still call the default one
+for the QUIT event. I will continue to increase the functionality of
+this class as the tutorials advance.</P>
+<H1>Part 2 &ndash; Depth Buffer and Transformations</H1>
+<P STYLE="font-weight: medium"><U>previous code</U></P>
+<P STYLE="font-weight: medium">The <B>SDLVideoclass</B> used in
+tutorial 1 is moved into video.h and video.cpp. To be used from there
+as a library. We will also be using the <B>SDLEventclass</B> from
+Part1 of this tutorial as the base class for our programs input
+handling system. By dividing source code into multiple files it makes
+it more controllable, easier to for multiple people to work on the
+same project and increase compile speed as only the modified code
+needs recompilation. 
+</P>
+<P STYLE="font-weight: medium">The example code is in <U>view.cpp</U>.
+I called it view since this is mainly about viewing stuff.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>So
+what is up?</FONT></FONT></P>
+<P STYLE="font-weight: medium">Well rotation is not up... the only
+thing around here that might go up is translation. anyways:</P>
+<P STYLE="font-weight: medium">The first steps you are familiar with.
+Getting the video display up and runnning and getting the keyboard.</P>
+<P STYLE="font-weight: medium">Next we setup the projection matrix.
+Nothing new or funky here. And we select the MODELVIEW matrix for the
+rest of the program.</P>
+<P STYLE="font-weight: medium">Since this tutorial is about the
+effects of the modelview matrix and not how todo geometry I've
+written a small function called drawpiramid. It uses a QUAD and a
+TRIANGLEFAN to draw the piramid. The code is fairly simple to
+understand.</P>
+<P STYLE="font-weight: medium"><U>Depth buffer</U></P>
+<P STYLE="font-weight: medium">Ok so now we have a piramid. Which if
+you haven't notice is actually a 3D object. It consists of a number
+of polygons. (Triangles and Quads) that forms a sort of shell. 
+</P>
+<P STYLE="font-weight: medium">Now when we look from a certain angle
+at the piramid it we actually want to see only those that are in
+front and not the back polygons. Else it would look fairly odd. Now
+if we just draw things normally in in order we want there is a change
+that we are lucky enough that the top polygons are drawn last and
+thus ontop of the other, but the changes aint really in our favour :)</P>
+<P STYLE="font-weight: medium">Now the one way todo things is to sort
+all polygons and draw them from in order. Farthest ones first and
+closest ones last. Accept from giving us more than one headache we
+really don't have time to do this sort of computing. 
+</P>
+<P STYLE="font-weight: medium">So the way out is the depth buffer. We
+enable the depth buffer using the <B>glEnable(GL_DEPTH_TEST)</B>
+function. For every pixel opengl writes in the depth buffer the
+distance the pixel was from the camera. Then we it wants to write
+another pixel on the same location on the screen it first checks if
+the previous pixel is not already infront of this one. This might
+seem like a even slower process, and if you had todo this with your
+cpu in system memory it would be VERY VERY slow. But this process is
+completely implemented with dedicated hardware on your graphics cards
+hardware running in parallel with a million other things. The effect
+is that this runs almost without any speed penalty. Nice hey!</P>
+<P STYLE="font-weight: medium">Now we can do many funky things with
+this depth buffer. But for now we will simply enable it and trust
+that the default behaviour is acceptable. 
+</P>
+<P STYLE="font-weight: medium">Last note on Depth Buffer: We need to
+clear the depth buffer also each time. So I've added
+<B>GL_DEPTH_BUFFER_BIT</B> to <B>glClear</B>. Thus clearing the
+visible color screen and the depth buffer at the same time. Most
+hardware will probably do both in parallel resulting in no speed
+penalty.</P>
+<P STYLE="font-weight: medium"><U>Translation</U></P>
+<P STYLE="font-weight: medium; text-decoration: none">We start with
+the most simple transform. Translating, ie. moving the object around.
+In 3D space we can move the object along any of the x,y and z axis. 
+</P>
+<P STYLE="font-weight: medium; text-decoration: none">The function
+used is <B>glTranslatef(x,y,z)</B>. It alters the current matrix to
+add the given translation.</P>
+<P STYLE="font-weight: medium; text-decoration: none">You can have a
+number of <B>glTranslate</B> calls after each other and they will all
+add up.</P>
+<P STYLE="font-weight: medium; text-decoration: none">In the example
+the keys u and i translate along the x axis.<BR>And keys j and k
+translate along the y axis.</P>
+<P STYLE="font-weight: medium"><U>Scaling</U></P>
+<P STYLE="font-weight: medium; text-decoration: none">Scaling is also
+fairly straight forward. We can stretch or compress the object in any
+of the 3 axis.</P>
+<P STYLE="font-weight: medium; text-decoration: none">The function
+used is <B>glScalef(x,y,z)</B>. It also alters the current matrix to
+add the scaling.</P>
+<P STYLE="font-weight: medium">In the example we only scale the y
+axis. Making the piramid higher or lower.</P>
+<P STYLE="font-weight: medium">The keys a and s scales the piramid in
+the example.</P>
+<P STYLE="font-weight: medium"><U>Rotation</U></P>
+<P STYLE="font-weight: medium">Now here is were things can get crazy.</P>
+<P STYLE="font-weight: medium">Ok we have a function <B>glRotatef</B>
+which rotates the object around a given axis. The crazy thing is that
+we can give it absolutely any axis. You are not limited to the x,y
+and z axis.</P>
+<P STYLE="font-weight: medium">But to make things simpler in the
+example we limit ourselves to the x,y and z axis. So we have 3
+rotational values. And the order in which we do them makes a
+difference in the behaviour of the rotations and also the final
+result of the rotations.</P>
+<P STYLE="font-weight: medium">Ok now try really hard to use your
+imagination! <BR>Imagine yourself sitting in a F-14. (or whatever you
+prefer) You have 3 axis. <BR>The x axis runs throught you from left
+to right. (throught your shoulders)<BR>The y axis runs from top to
+buttom. (through your head and out at the bottom of your chair)<BR>The
+z axis runs from behind to infront. (The z axis point the direction
+your flying)</P>
+<P STYLE="font-weight: medium">Now if you pull back on you control
+stick, your plane starts pulling up its nose. Thus rotation around
+the x axis. Got it? Hope so!<BR>Now the other axis have not changed
+relative to you. The z axis still points the way your going but now a
+bit more up into the sky. And the y axis is more backwards but is
+still the upwards axis according to you.<BR>Next you tell the tail
+flap to go slightly left or right. Your plane now starts to swing.
+Thus rotation around the y axis. And yet after this the z axis still
+points were you are going.<BR>Lastly you push the control stick left
+banking the plane. This rotates you around the z axis. 
+</P>
+<P STYLE="font-weight: medium">Now if we rotate in the order x,y,z we
+can think of it as tilt,swing and roll. Or something like that.</P>
+<P STYLE="font-weight: medium">Now stand up. (Or if you have strong
+imagination, imagine yourself standing up)<BR>Firstly you can turn
+around. This is rotating around the y axis.<BR>Next you can bend over
+or backwards. (looking up or down) This is rotating around your x
+axis.<BR>And then if you turn your head sideways you rotate around
+the z axis.</P>
+<P STYLE="font-weight: medium">So rotating in the order y,x,z would
+be more suited for the view of a character running around in your
+favourite dungeon.</P>
+<P STYLE="font-weight: medium">In the example I've implemented the
+plane type rotation for the piramid. The arrow keys are for tilt and
+roll and the keys z and x control the swing.</P>
+<P STYLE="font-weight: medium"><U>Final word on transformation</U></P>
+<P STYLE="font-weight: medium">Remember the order in which these
+things happen is crucial. I do translating first then rotating then
+scaling.<BR>Feel free to change the order of these things and see
+what happens. The RedBook (version 1.1 already) has good
+illustrations of this. I find that many times the only way to figure
+this out is experimental</P>
+<P STYLE="font-weight: medium">Lastly you might notice that we start
+with the identity matrix each frame and work from there. The reason
+for this is that if we just add the latest changes we each time make
+a very small error in calculation and eventually end up with
+completely the wrong answer. Plus there is no other way to control
+the order of the transformations.</P>
+<P STYLE="font-weight: medium">I use the <B>SDL_GetTicks</B> command
+to calculate the amount of time passed since the last modification.
+Scaling the value changes with this. The result is that the
+transformation speeds will be the same regardless of the framerate. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Finishing
+up</FONT></FONT></P>
+<P STYLE="font-weight: medium">I hope this tutorial tough you
+something worth while. And thay maybe you have a better understanding
+of transformations. In the next tutorial I will have the new code
+also in classes. And then we will apply some lighting to the scene.</P>
+<P STYLE="font-weight: medium">-Heinrich</P>
+</BODY>
+</HTML>

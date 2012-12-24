@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050623;11023100">
+	<META NAME="CHANGED" CONTENT="20050711;22272900">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 0</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Hi, my name is Heinrich.</P>
+<P>Firstly I like to thank NeHe for there absolutely briljant
+tutorials and web-site. Most if what I've ever learned about OpenGL
+is from those tutorials. So why create yet another set of tutorials
+you ask?</P>
+<P>Well I always had this idea that the best way to make sure you
+understand something is to teach it to another. And then having my
+compiler project standing still due to lack of motivation for that
+crappy Rabbit Z180 type architecture and my OS project standing still
+due to the lack of a nice 64-bit processor. Not to mention the fact
+that AMD and Intel seem to take different roads in modern cpu
+development. And then I'm just not quite in the mood for DirectX
+right now. Well I have to admin that what I've seen so far is pretty
+neat. I don't believe either OpenGL or DX is the best. It does sadden
+me that we as yet do not have DX linux drivers :)</P>
+<P>Ok enough chit-chat. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Documentation</FONT></FONT></P>
+<P>Every programmer knows that you go now where without
+documentation. A reference on the subject at hand is always important
+and very handy. I don't think very many of us learn by heart every
+detail of say the complete opengl specification. 
+</P>
+<P>We will assume we have atleast OpenGL 1.4. Yes Version 2.0 is out
+there. But most of the things in version 2.0 is already in 1.4 or 1.5
+as extensions. Where differences occur I will point them out. We will
+come to the Shader language after a few tutorials. But there is a big
+number of things to cover before we ge there. 
+</P>
+<P>I suggest getting your hands on the OpenGL spec atleast version
+1.4. Version 1.1 will probably do for the first few tutorials. As
+most of the real basics never changed. For a start documentation on
+the new shader language is not needed. I will specify documentation
+on that later. I have installed on my system man pages for all the
+opengl functions. But any sort of reference will come in very handy.</P>
+<P>I will use the SDL library for basic setup of the screen and input
+from mouse/keyboard. SDL language is available for free on there
+web-site. The SDL API is fairly simple and you wouldn't really need
+the documentation for the tutorials. I will explain some of the
+basics as we go along.</P>
+<P>Lastly I will use c++ as my programming language. Using the g++
+compiler for now. No I'm not intrested in porting anything to visual
+c++ for now. There is many many documenation and books out there for
+learning c++. And I will pressume you know atleast the basics for
+this. I believe that OOP is the future. And in my opinion Java is not
+a game programming platvorm, that leaving c++ the only option for
+now. The D programming language developed by digital mars looks good
+and maybe I will look into it before the end of these tutorials. The
+idea of the tutorials is not to be bound to any specific language,
+but we need a language to program hey :)</P>
+<P>I'm using GNU Debian Linux as a OS. I have a Geforce FX 5200
+graphics card at the moment. That was infact the cheapest DirectX 9
+card I could buy. I think my Nvidia drivers is out-dated by a few
+months. But so is just about every thing :(</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>What
+now</FONT></FONT></P>
+<P>That is about it for tutorial 0. In tutorial 1 I will start with
+the basics of setting up a window and displaying something in it
+maybe. I will try to move beyond the basic immediate mode stuff as
+soon as possible and get to something feasable.</P>
+<P>In later tutorials I will start working with models as such. The
+model program I recommend is Blender. Blender is competely free. And
+it supports Python plugins to export custom data. Python is not all
+that difficult and standard documentation is available with
+tutorials. Blender is in my opinion a most excelent model editor.
+Althought learning Blender is slightly more difficult than your
+average paint program. Many tutorials and documentation is available
+on the web. And I think it will be worth your while learning atleas
+the basics of blender as a feature game programmer. Atleast for the
+moment before you have somebody else that models things for you. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Lets
+GO</FONT></FONT></P>
+<P>Might I say that althought these tutorials firstly was written for
+myself I wish that they will be usefull to somebody out there.</P>
+<P>I found that nothing good comes cheap in life. Nothing worth while
+without hard work. And generally when we get things cheap and easy
+they seem to be worth less to us. Thus I would like to say there is
+no shortcuts here either. You will not become a great game programmer
+without putting your back into this.</P>
+<P>You can email me at 13806335 at sun.ac.za for now. Although that
+email will expire end of 2005.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Last
+personal note</FONT></FONT></P>
+<P>Althought programming is something I like and love and take up a
+lot of my programming this is not the most important thing in my
+life. Neither is my family or a girlfriend.</P>
+<P>The single most important Person in this world is Jesus Christ. I
+have the priviledge of knowing this man as my Lord and Saviour. I
+really believe that no person on this earth can find peace without
+knowing Jesus. 
+</P>
+<P>Many people in this world do not believe in God or in Jesus for
+that matter. I know that every argument has a argument against it.
+And with the ideas of evolution and humanism storming our world its
+becoming more difficult to stand up for the truth since truth has
+become relative they say. I can spend some time telling you how my
+life changed and meaning was added when I met Jesus. But you don't
+know me personally. But what I would like to tell you is that there
+is more than enough proof in this life that God exists. As of yet
+evolution can not be proven scientifically without using lots of
+unproven theories and made up facts. And it never will. I had the
+experience many times to see God heal and deliver people. God is real
+and the message that He sent to this world is a message of Love
+through his son Jesus Christ. 
+</P>
+<P>All people have 2 things in common. One is being concieved and the
+other is dying. The result of being concieved is being born unless
+you die before that. We spend a big part of our lives trying to deal
+with the fact that we were born. Some never get the hang of it. But
+sometimes we get so busy that we forget that we should also deal with
+the fact that we will die someday. Whatever you believe right now
+this is a valid question. Are you ready? Are you sure what you
+believe is true? What if you are wrong?</P>
+<P>I don't know how you expect me to end this message but I would end
+it with saying:</P>
+<P>GOD IS TRULY AMAZINGLY AWSOME.</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt">Copyright (c)  2005   Heinrich
+du Toit.<BR>      Permission is granted to copy, distribute and/or
+modify this<BR>document under the terms of the GNU Free Documentation
+License, Version 1.2<BR>or any later version published by the Free
+Software Foundation;<BR>with no Invariant Sections, no Front-Cover
+Texts, and no<BR>Back-Cover Texts. A copy of the license is included
+in the file named<BR>&quot;copyright&quot; which might be distributed
+along with this document or it can be obtained<BR>electronically at
+www.fsf.org or www.opensource.org/licenses</FONT></P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

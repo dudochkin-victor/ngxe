@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050624;18545000">
+	<META NAME="CHANGED" CONTENT="20050711;23100800">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 5</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Hi again! 
+</P>
+<P>You already now mostly everything used in this tutorial. But we
+need to do quite some work before having our example finished. The
+example program is quite big and I've split the stuff into multiple
+files as far as possible.</P>
+<P>The following tasks lie ahead of us:<BR>Part 1 &ndash; a Texture
+handling class.<BR>We will create a slightly more usable texture
+class for the demo.<BR>Part 2 &ndash; Drawing the sky-box<BR>This
+part is relatively easy if you understand the logic<BR>Part 3 &ndash;
+Draw some geometry in our 3D world<BR>Also easy enough I'll say.<BR>Part
+4 &ndash; Create a class to simulate the idea of flying around the
+world.<BR>This is neat and gives the thing the &ldquo;atmosphere&rdquo;
+we wanted.<BR>Part 5 &ndash; Add some lighting.<BR>Just to add that
+last wanted effect to our new world or rather universe.</P>
+<P>The complete example is compiled to <B>solarsystem</B>. Start
+looking in solar.cpp at the code or follow the tutorial...</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>example
+controls</FONT></FONT></P>
+<P>View by moving the mouse.<BR>Move around using the w,s,a and d
+keys on the keyboard.<BR>Press F1 to grab the mouse and prevent the
+mouse from leaving the window.<BR>Press F2 to release the mouse
+again.<BR>Press ESC to quit the program.</P>
+<H1>Part 1 &ndash; Texturing</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Why
+you do this?</FONT></FONT></P>
+<P>Well I wanted texture handling to be a bit more &ldquo;automatic&rdquo;
+and also move the code to a class of there own. Getting all that
+texture loading code out of my face. So I create the <B>GLTextureclass</B>.
+The source files is <U>texture.h</U> and <U>texture.cpp</U>. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Whats
+going on</FONT></FONT></P>
+<P>Well this is purely straight forward. The class automatically
+creates a opengl texture and frees it with the destructor. The 2 main
+functions is:<BR><B>Load</B> which is a copy of the code from
+tutorial 3. I've contemplated to start using the SDL_image library
+which has a function IMG_Load that can load almost any image type.
+But decided that there's no need to do that as yet. And then nobody
+needs to download yet another library just to compile/run the
+example. <BR><B>Activate</B> which binds this texture making it the
+current texture being used.</P>
+<P>The other 2 functions wasn't really necessary but here
+goes:<BR><B>SetWrap</B> uses the <B>glTexParameter</B> command to set
+the <B>GL_TEXTURE_WRAP_* </B>values. What happens is that when you
+specify a texture coordinate outside the 1x1 region that defines the
+texture opengl has to decide what to do. The default is to repeat the
+texture. The result is that when I say to map the texture from
+coordinates 0,0 to 2,2 the texture is pasted on the 4 times. The
+default is GL_REPEAT. And is what you normally want. But I've
+included the code for completeness.<BR><B>SetLinearFilter</B> changes
+the filter method to <B>GL_LINEAR</B>. The default filter that the
+class chooses on Loading a texture is <B>GL_NEAREST</B>. <B>GL_LINEAR</B>
+looks nicer because some interpolation of pixel colors are used to
+determine what must be displayed. But this is also slower. The best
+way is off course MipMapping but that will have to wait for another
+tutorial.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+example</FONT></FONT></P>
+<P>The main body of the example is in <U>solar.cpp</U>. You won't
+really see anything of the new texture class directly in there. But
+the texture class is used both inside the SkyBox and Planet classes.
+What you might notice is that both Texturing and Culling is switched
+on.</P>
+<P>Yes I am aware that the example contains a lot of code and that
+things might seem confusing. Try to focus only on a part at a time
+and things will make sense. You are not required to understand every
+line of code, but rather the idea is that you must be able to apply
+the techniques in your own applications.</P>
+<H1>Part 2 &ndash; Sky Box</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+concept</FONT></FONT></P>
+<P>As in the example we want to project some background with the idea
+that it is infinitely far away. You will see this is many games. And
+it's quite easy to create.</P>
+<P>The solution is not to draw something very far and hope it works.
+Some things to keep in mind:<BR>You cannot really draw something
+infinitely far.<BR>The camera setup has a zfar clipping region.
+Meaning things to far away is invisible.</P>
+<P>But what if we draw a box around ourselves and paste a texture on
+it. How would we be able to tell how big the box is? If we stand
+still in the middle of the box its kinda difficult to say. But if we
+can move around in the box then we would quickly be able to estimate
+the size of the box. (at least relatively to the movement speed) <BR>But
+if this box moves with us, so that we always remain in the center of
+the box then the box would seem infinitely big. And with the help of
+a nifty texture things is even more believable.</P>
+<P>So the method is simple: Draw a box around the camera.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Details</FONT></FONT></P>
+<P>We do not want depth_buffer interaction. Because the idea is that
+the box is infinitely far away everything else should seem inside the
+box. So we don't want opengl to write anything into the depth buffer
+while drawing the sky box. This is done by using the <B>glDepthMask</B>
+command to turn of writing to the depth buffer.<BR>Because nothing is
+drawn before the sky box we don't have to disable <U>Depth testing</U>,
+but you may if you want to.</P>
+<P>Because the whole screen is redrawn every frame we no longer need
+to clear the screen, but only the Depth buffer. You will see I've
+removed the <B>GL_COLOR_BUFFER_BIT</B> from the <B>glClear</B>
+command in the <B>DrawScene</B> function in <U>solar.cpp</U>. 
+</P>
+<P>The last important thing is the order in things happen. First
+rotate the camera then draw the skybox and then move the camera
+before drawing the rest of the geometry.</P>
+<P>And off course we disable lighting before drawing the box.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Example</FONT></FONT></P>
+<P>In the example code I've created a <B>SkyBox</B> class in <U>skybox.h</U>
+and <U>skybox.cpp</U>.</P>
+<P>There is 3 functions:<BR><B>Load</B> which Load the texture for
+the SkyBox. And also creates the display list for drawing the
+Box.<BR><B>Draw</B> which displays the sky box by simply calling the
+display list.<BR><B>DrawBox</B> is a private function called by Load
+during the Compilation of the display list.</P>
+<P>In the display list is also the commands to disable writing to the
+depth buffer and to activate the correct texture. Disabling of
+lighting can also be added but that makes the assumption that
+lighting do exist in the scene.<BR><BR><BR>
+</P>
+<H1>Part 3 &ndash; Some geometry</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+solar system</FONT></FONT></P>
+<P>I've created a class called <B>Planetclass</B>. The result is that
+we can specify some planets rotating around the y axis and thus
+creating the solar system. The example has a &ldquo;star&rdquo; and 3
+planets revolving around it.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Planets</FONT></FONT></P>
+<P>The <B>Planetclass</B> is in <U>planet.h</U> and <U>planet.cpp</U>.
+Every planet is a sphere. So therefore we need only one sphere
+drawing function for all planets. Therefore the display list in
+planetclass is static, ie. all planet classes shares this display
+list. 
+</P>
+<P>When the first planetclass object is constructed the constructed
+creates the display list. The display list is simply create by a call
+to <B>gluSphere</B>. The sphere is of radius one. Every planet has
+it's own parameters:<BR>Distance from the center.<BR>Size of planet
+(radius).<BR>Speed of revolving around the center (Star)<BR>Speed of
+turning around it's own axis.<BR>All these parameters can be changed
+using the <B>Set</B> function.</P>
+<P>If you look in <U>solar.cpp</U> you will se where the planet's
+textures are loaded and how there parameters are set before the main
+programming loop.</P>
+<P>To display a planet the <B>Draw</B> function is used.<BR>Go look
+at the code of <B>Planetclass::Draw</B>.<BR>The new commands
+<B>glPushMatrix</B> and <B>glPopMatrix</B> is used to save and
+restore matrix states. When you call glPushMatrix the current matrix
+is placed on a stack. (The stack does have a maximum size) And when
+you call glPopMatrix the matrix is removed from the stack again and
+all in between changes is removed. This is very handy. <BR>Before
+<B>Draw</B> can call the display list to draw the sphere we must use
+rotation scaling and translation to make sure the sphere is drawn in
+the correct location. And also activate the correct texture to use.</P>
+<P>The last thing is the <B>Update</B> function. This function
+updates the position of the planet according to the amount of time
+that elapsed. This makes the planet appear to both revolve around the
+&ldquo;star&rdquo; and also turn around it's axis.</P>
+<P>The star is also a planet that has zero distance from the centre.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>What
+to learn</FONT></FONT></P>
+<P>The planets class is really simple actually. But it is a good
+example of how to use a display list to display multiple things that
+might not seem all that similar in the end. And also how to use
+transformations of the Model view matrix to move things around and
+display things in different places.</P>
+<P>I've actually written the planets and camera code at the same
+time. Without the ability to view around the example seems very dull.</P>
+<H1>Part 4 &ndash; Flying around</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Camera</FONT></FONT></P>
+<P>I've created the <B>Cameraclass</B> by starting with building on
+top of the <B>SDLevent</B> class. The code is in <U>camera.h</U> and
+<U>camera.cpp</U>. 
+</P>
+<P>The camera has basically 2 things:<BR>The direction it is
+looking.<BR>The location in the 3D universe.</P>
+<P>Because the <B>Cameraclass</B> is on top of the <B>SDLevent</B>
+class we need a new <B>ProcessEvent</B> function. The new thing in
+the function is that the mouse motion is monitored and the view
+direction of the camera is altered according to the mouse movement. 
+</P>
+<P>In the <B>Update</B> function the movement keys w,s,a &amp; d is
+checked and the position is altered according to the current viewing
+direction. The update function uses some basic trigonometry maths to
+calculate movement. Don't worry to much about this. This is far from
+the proper way of handling movement inside 3D games. But will be fine
+for the example.</P>
+<P>The 2 functions <B>Rotate</B> and <B>Move</B> are used to get the
+correct location for the camera. Altering the projection matrix. They
+are separate functions to allow us to draw the sky box before moving
+the camera. This is important.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Projection
+vs. Model view</FONT></FONT></P>
+<P>The projection matrix and the model view matrix works together but
+sometimes against each other. <BR>E.g. doing Translatef(1,0,0) in the
+projection matrix has the same effect as Translatef(-1,0,0) in the
+modelview matrix.</P>
+<P>You can mostly get the same effect in either on of these matrices.
+The main differences is that the modelview matrix has a much larger
+stack while things like the way the camera is &ldquo;focuses&rdquo;
+and near/far clipping regions can only be done in the projection
+matrix.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Grabbing
+the input</FONT></FONT></P>
+<P>In the application we view with the mouse. But if we use windowed
+display this is very irritating because moving the mouse out of the
+window stops the camera from rotating. 
+</P>
+<P>SDL gives us the ability to grab the input of the both the mouse
+and keyboard. The result is that the mouse cannot leave the window.
+And the window manager will not longer catch keys before us. (Like
+shortcuts maybe)</P>
+<P>One other important thing to note is the
+<B>SDL_ShowCursor(SDL_DISABLE)</B> command in <U>solar.cpp</U>. This
+makes the mouse pointer invisible. Which is what we want. And also
+now the mouse pointer no longer sticks at the edge of the screen.
+Allowing continues movement in all directions from the mouse. Exactly
+how you want things in your new action fps.</P>
+<H1>Part 5 &ndash; Lighting</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Why?</FONT></FONT></P>
+<P>Well lighting lets the scene look more realistic. The planets are
+only receiving light from the &ldquo;star&rdquo; and no longer from
+all directions. We have night and day. And this makes the whole scene
+more convincing to the eye.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+insides.</FONT></FONT></P>
+<P>There is only one light in the solar system. And that is the light
+shining from the star in the middle.<BR>the light is used with all
+it's mostly default settings. 
+</P>
+<P>Firstly note that lighting is switched off for the sky box. 
+</P>
+<P>Then notice that since the light is inside the &ldquo;star&rdquo;.
+The light hits all the back sides of the star and thus never
+illuminating the star. So no light coming from the star :(<BR>The
+solution is to alter the GL_EMISSION property of the stars material.
+I gave the star a dark reddish type emission. And with the texture I
+got you might just convince yourself that there is something burning
+on the surface.</P>
+<P>Combining textures and lighting can have some really funky
+results.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Making
+the scene even more convincing</FONT></FONT></P>
+<P>Firstly it doesn't take much looking around to see that the sky
+box doesn't do such a great job. Apart from getting a better texture
+we can maybe use another shape. The box is the simplest shape to use.
+But a sphere would do a much better job. Then every point on the
+&ldquo;skysphere&rdquo; will be the same distance from the camera
+unlike the box where the corners makes funny visual results. 
+</P>
+<P>The default setup for the light is no attenuation. But in a real
+solar system the planets further away will get less light than those
+closer. By setting the attenuation factors of the light this can be
+implemented.</P>
+<P>The star doesn't really look like it's shining. Improving the
+situation can be difficult. I'll leave solutions to your imagination
+for now. We don't know enough yet to do this.</P>
+<P>Having populated planets where you can see the city lights on the
+night side. This is also fairly difficult but will look kewl.</P>
+<P>Moons will be nice. And lastly shadows! 
+</P>
+<P>And then there is a many other small enhancements you can make to
+the scene :)</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Lastly</FONT></FONT></P>
+<P>Well I had lotsa fun creating this tutorial. And I hope what you
+see here will inspire you to continue the road of learning how to do
+all sorts of funky graphics things. 
+</P>
+<P>The main things about this tutorial was to give you an idea of
+putting things together to build up something that looks like
+something.</P>
+<P>In the next tutorial I we will look at Mipmaps, blending and Fog. 
+</P>
+<P>Enjoy life!</P>
+<P>-Heinrich</P>
+<P><BR><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt">Copyright (c)  2005   Heinrich
+du Toit.<BR>      Permission is granted to copy, distribute and/or
+modify this<BR>document under the terms of the GNU Free Documentation
+License, Version 1.2<BR>or any later version published by the Free
+Software Foundation;<BR>with no Invariant Sections, no Front-Cover
+Texts, and no<BR>Back-Cover Texts. A copy of the license is included
+in the file named<BR>&quot;copyright&quot; which might be distributed
+along with this document or it can be obtained<BR>electronically at
+www.fsf.org or www.opensource.org/licenses</FONT></P>
+</BODY>
+</HTML>

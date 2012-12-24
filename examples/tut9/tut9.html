@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050702;23495300">
+	<META NAME="CHANGED" CONTENT="20050711;23514700">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 9</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Welcome to yet another tutorial on some interesting programming
+things.</P>
+<P><FONT SIZE=2 STYLE="font-size: 9pt">Windows 3.1 Beer: The world's
+most popular. Comes in a 16-oz. can that<BR>looks a lot like Mac
+Beer's. Requires that you already own a DOS Beer. <BR>Claims that it
+allows you to drink several DOS Beers simultaneously, but <BR>in
+reality you can only drink a few of them, very slowly, especially
+<BR>slowly if you are drinking the Windows Beer at the same time.
+Sometimes, <BR>for apparently no reason, a can of Windows Beer will
+explode when you <BR>open it.</FONT></P>
+<P>What is up in this tutorial you ask?</P>
+<P>Part 1 &ndash; Introduction to particle engines<BR>Part 2 -
+Texture coordinate generation.<BR>Part 3 &ndash; A bit more on
+collisions</P>
+<H1>Part 1 &ndash; particle engine intro</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+concept</FONT></FONT></P>
+<P>In basic a particle engine is a bunch of code to render a number
+of particles. <BR>Every particle has some properties that determines
+how the particle acts and is displayed.<BR>After a while the particle
+engine will kill a particle and create a new particle.</P>
+<P>Usually blending is also heavily used to enhance the general
+effect of the engine but this is not required.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Rain</FONT></FONT></P>
+<P>For example lets say we want to render rain. 
+</P>
+<P>We have a cloud above somewhere. And every particle is a drop of
+water. We can maybe used a blended stretched triangle to render the
+rain drop. And then with time the drops respond to gravity. Or if we
+simplify the problem, they fall to the earth with a certain speed.</P>
+<P>When they reach the bottom they might generate a little splash and
+then the particle is destroyed.</P>
+<P>As time goes on the particle engine will create new particles at a
+certain height.</P>
+<P>And then we have rain.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+art</FONT></FONT></P>
+<P>I'm not going to write the rain particle engine :)</P>
+<P>Writing particle engine is build on a few principles but in the
+end its an art. You need to use some imagination to conquer the
+problem at hand.</P>
+<P>The only thing to keep in mind is that more particles mean more
+computation which will result in reduced performance. So the general
+idea is to get as much results with as little as possible particles.
+One way todo this is to use the blending technique and to increase
+the size of the particles. While this aint always possible.<BR>We
+also switch the depth buffer off many times since we work with
+blending</P>
+<P>Many times some physics will also find its way into a particle
+engine. eg. The particles will react to wind/gravity or something
+else. <BR>And lastly randomization is largely used in particle
+engines.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Stupid
+example</FONT></FONT></P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid">I've created a
+very dump example. The idea in my head was of this sword blade
+swinging through the air with giving off this &ldquo;magical&rdquo;
+cloud of &ldquo;energy&rdquo;. This result I obtain looks like crap
+:(</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid">I decided not
+to make a better particle engine today. I don't think I want to start
+focusing on special effects just yet. If you write a brilliant
+particle engine feel free to mail it to me if you think I can use it
+as an example in this tutorial.</P>
+<P>We have some other things to attend to..</P>
+<H1>Part 2 &ndash; Texture coordinate generation</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Automatic!</FONT></FONT></P>
+<P>Sometimes its a slept to type in all the texture coordinates. And
+sometimes they need to be calculated every frame. 
+</P>
+<P>Opengl support some methods for automatically generating texture
+coordinates. Lets check it out.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Opengl
+commands</FONT></FONT></P>
+<P>The example code is in <U>texgen1.cpp</U>.</P>
+<P>Since we still only work with 2D textures there is only 2
+coordinates for textures which is called S and T.<BR>We control there
+generation separately.</P>
+<P>First we must tell opengl the method
+used:<BR><B>glTexGeni(coord,GL_TEXTURE_GEN_MODE,mode)</B><BR>coord is
+either <B>GL_S</B> or <B>GL_T</B>. And mode can be one
+of:<BR><B>GL_OBJECT_LINEAR</B> &ndash; coordinate calculated using
+the distance from a place in object space.<BR><B>GL_EYE_LINEAR</B> &ndash;
+coordinate calculated using the distance from a plane in
+eye-coordinate space. <BR><B>GL_SPHERE_MAP</B> &ndash; coordinates
+generated using Normal vector and the coordinates in eye space.</P>
+<P>If <B>GL_EXT_texture_cube_map</B> is available it gives a whole
+new method of texture coordinate generation, but that is a topic for
+another day.</P>
+<P>If you use GL_OBJECT_LINEAR or GL_EYE_LINEAR you need to specify
+the plane. A plane is specified using a single vector (3
+coordinates). And is passed to opengl as
+follows:<BR>glTexGenfv(coord,<B>GL_OBJECT_PLANE</B>,*planecoords)
+or<BR>glTexGenfv(coord,<B>GL_EYE_PLANE</B>,*planecoords)</P>
+<P>You will see I've specified 2 different planes for the S and T
+coordinates. They were chosen carefully to nicely cover the whole
+cube in the fire texture.</P>
+<P>And we need to enable the texture generation mode in opengl
+with:<BR><B>glEnable(GL_TEXTURE_GEN_S)</B>
+and<BR><B>glEnable(GL_TEXTURE_GEN_T)</B></P>
+<P STYLE="font-weight: medium">After this we simply draw the object
+as normal and opengl creates the texture coordinates.<BR>Note that if
+you use GL_SPHERE_MAP you need to supply normals for every vertex.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Uses?</FONT></FONT></P>
+<P>Well the linear modes are easy ways to sort off &ldquo;wrap&rdquo;
+a texture over an object. <BR>I have this idea that these can be used
+to put light-maps over complicated objects but I wont bet on it.</P>
+<P>The sphere mode is used for generating the idea of reflections.
+You create a sphered texture map. Easily generated in any image
+program like GIMP for example. And then the things gets mapped in
+such a way that it seems to be a nice reflection on the object. There
+exist many many tutorials and example on sphere mapping on the web.
+Actually its gives quite nice results for very little effort. But the
+method has some limitations. This is also called Environment mapping.</P>
+<P>The cube map extension gives a more realistic way of creating
+reflections. I will try and cover that later.</P>
+<H1>Part 3 &ndash; A bit more on collisions</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>were
+is this going?</FONT></FONT></P>
+<P>Ok we should start thinking about getting things to a place where
+we can use this. In a real game you would have a slightly more
+complex environment than little spheres bouncing around.</P>
+<P>Ok the next object we add is a <U>face</U>. A face is basically a
+flat polygon in 3D space. And then we can use a number of these
+objects to construct a n-sided polygon in 3D space. In order to keep
+the geometry simplified we stay with convex polygons. A cube would be
+a very simple example.</P>
+<P>Firstly we need the definition of a <B>plane</B>. A plane is a
+flat surface in 3D space that has no boundaries. It stretches to
+infinity :) <BR>A plane is simply described by one vector that
+stretches from the origin and meet the plane perpendicular. This can
+be confusing but don't worry.</P>
+<P>Next we have a <B>line-segment</B>. A line segment is simply
+defined by 2 coordinates: a start and end location so to speak.</P>
+<P>And then we have a <B>point</B>. Obviously defined by a simple
+point.</P>
+<P>Using planes, lines and points we can construct faces and also
+n-sided 3D polygons. This gives us more than enough to produce some
+nice 3D collision detection environments. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>what
+first</FONT></FONT></P>
+<P>Best not to get ahead of ourselves.</P>
+<P>I'm going to start with the previous examples code and surround
+the balls with 6 planes. Effectively putting the balls inside a box.
+This will be enough for this tutorial :)</P>
+<P>Sorry the walls are invisible for this example. We will make the
+walls visible when we start to properly work with faces and polygons.</P>
+<P>The solution has a few limitations at the moment:<BR>-If the
+elasticity is too low the balls fall through the planes.<BR>-When a
+ball do seem to &ldquo;lay&rdquo; on a plane it generates a collision
+just about every frame. <BR>-It will only check the collision
+correctly if the sphere is coming from the &ldquo;inside&rdquo; of
+the plane.<BR>-There is some problems when multiple planes/spheres
+get hit at the same time.<BR>-The simulation does not give the same
+results every time. This is ok for gaming purposes, but hopefully
+will will make things a little bit more accurate later.</P>
+<P>The upside is that the collision code is fairly simple and should
+run fast. Which is good since this is going to be used a lot.</P>
+<P>Don't worry about the problems for now. We will work around them
+and find solutions when needed. In a later tutorial.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Speeding
+up collision detection</FONT></FONT></P>
+<P>Well the basic principle is that firstly multiplications is a
+relative measurement of time. So the less multiplications you use in
+the detection the faster the code. Complex functions like sqrt take
+about the time of 10 multiplications I would say?</P>
+<P>Anyways the other principle we use is the fact that collisions
+only happen a very small percentage of the time we check. So we
+exploit this by trying to write early-exit code. We write functions
+that use simpler methods at the beginning to quickly make some check
+that will make sure no collision is possible and then quit the check.
+This will result in faster execution time. Using more complex
+mathematical formulas and functions later on will not be so bad since
+they are only executed a very small percentage of the time.</P>
+<P>The other thing to avoid is &ldquo;continues collision&rdquo;<BR>This
+happens in the example I wrote.<BR>We need to create ways to avoid
+continues collision circumstanced. Or detect them and then switch
+some things to handle the situation in a different way.<BR>E.g. When
+the ball stop bouncing it starts to &ldquo;roll&rdquo; on the table.
+In which case we would need to switch to a different physics handling
+method involving friction rather than collision.</P>
+<P>This is way in the future but lets quickly talk about this. Say
+you have a complex model like a dragon with wings and a tail and
+horns ect ect.. ok now you shoot an arrow at this dragon. How do you
+do collision detection? <BR>Firstly it would be very expensive to
+test collision with every face (triangle) of the model every frame.
+And secondly it is fairly complex to construct non-convex 3D polygons
+and do collision detection on them using plane mechanism. And what if
+there is a 100 arrows flying at the dragon?<BR>What I suggest here is
+layered collision detection. E.g.<BR>Firstly you will create a
+perfect sphere around the dragon that encapsulate the whole dragon.
+If the arrow is inside the sphere we have a second layer of simple
+polygons or maybe even more spheres. On for each segment of the
+dragon. E.g. head, tail, wings, body ect.<BR>If it hits one of these
+regions we might have a slightly more detailed polygon inside that to
+do the final level of collision detection. <BR>This will hopefully
+speed up the whole process nicely.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+maths explained</FONT></FONT></P>
+<P>So a plane is defined by a simple vector. Picture this in your
+imagination like follows:<BR>The vector starts at the origin (0,0,0)
+and then an arrow stretches out to the given coordinates. And then
+perpendicular on top of this arrow we place the infinite plane.</P>
+<P>Maybe when I revise these tutorials we get some pictures :D</P>
+<P>I calculate a normalized vector also because we need that in some
+of the calculations.</P>
+<P>Ok the answer to a <B>dot product</B> between vectors A and B is
+|A||B|cos(theta) theta being the angle between the 2 vectors. (both
+starting at the origin) This means that if the dot product is zero
+then the angle is 90 degrees (or 270 which is just about the same
+things in 3D)</P>
+<P>We like to test if a point A is on the plane. So we construct a
+vector starting at P and going to A. (P is the planes vector) And we
+use -P as the other vector. If the dot product gives zero A is on the
+plane. If positive on the one side and negative on the other side.
+Easy enough.</P>
+<P>Ok I made 2 methods. But we work with a sphere and not a point! So
+firstly we calculate <B>epos</B>. Epos is the point on the surface of
+the sphere closest to the plane. In the positive direction. These
+calculations has been simplified a little. (This is why this will
+only work from one side)</P>
+<P>Now in the first function <B>CheckCollision(Planeclass,deltatime)</B>
+we say that the position of the point is a function of time: epos +
+time*vel<BR>Then we push this into the dot product which results in a
+linear equation and solves this and get a time of collision. 
+</P>
+<P>To apply the early exit thing we first calculate a dot product to
+see if the sphere is moving towards or away from the plane. 
+</P>
+<P>This method has a few problems but is the simplest way to get an
+exact time of collision. But it is a bit slower than the second
+solution in <B>CheckCollision2(Planeclass,deltatime)</B>.</P>
+<P>The second solution is a bit faster but doesn't give an exact time
+of collision.</P>
+<P>The method is to calculate the dot product of the position with -P
+before and after the movement for the given time. If either one of
+them is on the place or they are on different sides of the plane a we
+have a collision. 
+</P>
+<P>If you now go to the function <B>HandleCollision(Planeclass)</B>.</P>
+<P>Firstly the velocity in the perpenducalar direction of collision
+with the plane is calculated and removed from the object. And we
+calculate the scaler of this velocity.</P>
+<P>Then we use the elasticity value of the object to scale this
+velocity and put it back into the objects velocity in the opposite
+direction causing the object to bounce away.</P>
+<P>You will see I removed the some code in the <B>drawscene</B>
+function. This is because in cases where multiple collisions happen
+at the same time we have problems with that code.</P>
+<P>You might agree to some extent that this solution is sorta not
+&ldquo;perfect&rdquo;: That is true.<BR>But we laid some ground work
+for further physics development. <BR>We will go yet one step further
+in the next tutorial.</P>
+<P>As I said before, collision detection is based on 3D geometry. So
+it will only do you good to get a grasp of it. Go pick up a applied
+maths text book somewhere. Computing the actual physics is much more
+complicated and we will simply use formulas already simplified. After
+all physics is simply mathematical theory trying to predict and
+estimate the real world.</P>
+<H1>Quick look at fixed point maths</H1>
+<P>Looking around other things you might come around to some
+documentation on fixed point maths. And wonder what that is.. or
+rather was! 
+</P>
+<P>Fixed point math is a way to simulate real numbers using 32-bit
+integers. The main reason being the beginning that floating point
+number is slower than fixed point numbers. And this definitely was
+true on old 386 and 486 PCs (maybe even Pentium 1?) <BR>The method
+involved some pretty funky techniques in some places but in the end
+you build up a complete maths library with this technique.</P>
+<P>BUT! With modern hardware things changed a bit. Most graphics
+hardware are heavily optimized to work with floating point maths. And
+your pc calculates floating point maths using a maths co-processor.
+Well actually that processor is embedded in the CPU chip but still
+its there. And we have numerous other hardware capabilities such as
+3dnow and MMX and SSE ect ect. These things are optimize to make
+calculations faster but not only that they compute in parallel to you
+other code. Which results in some pretty kewl parallel processing
+happening. 
+</P>
+<P>The result being that floating point running faster than fixed
+point maths in the end. This was a nice optimization trick but it's
+days are history. So don't be bothered with that, unless you like to
+do something on ancient pc's or maybe embedded hardware where this
+technique will still be valid.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>End
+of this tut</FONT></FONT></P>
+<P>Ok thats enough for this tutorial.</P>
+<P>This tutorial wasn't that successful according to me :( I'm sorry
+if you feel the same.</P>
+<P>But don't worry we're working towards something. I just have so
+many ideas and things in my head that this its difficult to select a
+next topic. 
+</P>
+<P>bye bye</P>
+<P>-Heinrich</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt">Copyright (c)  2005   Heinrich
+du Toit.<BR>      Permission is granted to copy, distribute and/or
+modify this<BR>document under the terms of the GNU Free Documentation
+License, Version 1.2<BR>or any later version published by the Free
+Software Foundation;<BR>with no Invariant Sections, no Front-Cover
+Texts, and no<BR>Back-Cover Texts. A copy of the license is included
+in the file named<BR>&quot;copyright&quot; which might be distributed
+along with this document or it can be obtained<BR>electronically at
+www.fsf.org or www.opensource.org/licenses</FONT></P>
+</BODY>
+</HTML>

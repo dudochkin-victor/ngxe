@@ -1,0 +1,348 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050625;11493500">
+	<META NAME="CHANGED" CONTENT="20050711;23202700">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 6</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>The previous tutorial looked nice but didn't teach that many new
+things for opengl. 
+</P>
+<P>In this tutorial I want to look a bit more at texturing and some
+other nice effects we can use to improve our 3D world.</P>
+<P>Part 1 &ndash; Fog<BR>Part 2 &ndash; MipMaps<BR>Part 3 &ndash;
+Compressed textures<BR>Part 4 &ndash; Blending<BR><BR>This is a mouth
+full! So lets get started...</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Examples</FONT></FONT></P>
+<P>To compile the examples:</P>
+<P>Step 1: go into the <B>support</B> directory and run <B>make</B>
+to compile all the support library.<BR>Step 2: go into the specific
+directory (e.g. fog) and run <B>make</B> to compile.</P>
+<P>It's crucial that you keep the directory structure and run make
+from the specified directory. Else the compiler will be unable to
+find the files needed for compilation.</P>
+<H1>Part 1 &ndash; Fog</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>I
+can't see no nothing but mist captain!</FONT></FONT></P>
+<P>The concept of fog is very simple. The farther things are away the
+less we see of them. This decreases visibility. The one big advantage
+about fog is that it gives us a good excuse for not rendering objects
+far away and thus increasing performance.</P>
+<P>Basic Fog in opengl is very simple and straight forward. But we
+will also look at volumetric fog quickly.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
+basics</FONT></FONT></P>
+<P>Doing fog in opengl is very easy. We simply have to tell opengl
+some things about the fog and then opengl does the rest for us. Look
+at the example with the nice green toxic fog. (Use the up/down keys
+to move the cube)</P>
+<P>Go look in <U>fog1.cpp</U> in the <B>setup</B> function near the
+end. There you can see how we set all the fog parameters using the
+<B>glFog</B> command.</P>
+<P>The <B>fog mode</B> determine the equation used to calculate the
+density of the fog from the distance.<BR>The <B>fog density</B> is
+like a scaling factor to make the fog less or more dense.<BR>The <B>fog
+start and end</B> parameters are the distances from the camera where
+the fog start and ends. This is also used in the fog density equation
+by opengl. Note that these values are only used if the fog mode is
+GL_LINEAR. (making the initial entries in the example of no
+effect)<BR>The <B>fog color</B> is off course the color of the fog.</P>
+<P>In the example there is a commented out section labeled &ldquo;setup
+version 2 for fog&rdquo;. You can uncomment these for a different fog
+setup. Now there is the effect of a wall of fog at a certain
+distance. And we can move the cube in and out of this wall of fog. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Volumetric
+fog</FONT></FONT></P>
+<P>Lets take a quick peek at volumetric fog. This is definitely not
+the a-z of volumetric fog. Creating fog and shadow volumes is
+actually a quite advanced topic. Hopefully I will later make another
+tutorial with more professional fog volume code.</P>
+<P><U>Note</U>: The <B>glFogCoord</B> was promoted as a core function
+in <U>opengl version 1.4.</U> But I currently have the development
+files for opengl version 1.3 installed :( So there is some code in
+the example to handle the extension. You may ignore this for now. I
+will have a proper tutorial on extensions sometime in the future I
+think. 
+</P>
+<P>When opengl calculates fog density it uses the z coordinate which
+is the distance from the camera. But with volumetric fog we give
+opengl this coordinate. And now it is no longer the z coordinate but
+the <B>fog-coordinate</B>. To apply this is simple. To make it look
+good is a different story.</P>
+<P>In the example we create the effect that there is fog on the right
+hand side only. You can move the cube left and right with the arrows.
+The code is in <U>fog2.cpp</U>.</P>
+<P>I've setup fog mode to GL_LINEAR. Because this works better for
+the example. I didn't set any Begin and End fog values, since the
+defaults of 0.0 and 1.0 will suite us fine.<BR>We need to tell opengl
+that we will now give it the fog-coordinate using the <B>glFogCoord</B>
+function by
+calling:<BR><B>glFogi(GL_FOG_COORDINATE_SOURCE_EXT,GL_FOG_COORDINATE_EXT);</B><BR>Both
+of these values are defined at the top of the source file.<BR>In
+opengl 1.4 and above they are simply:<BR><B>GL_FOG_COORDINATE_SOURCE</B>
+and <B>GL_FOG_COORDINATE</B> (The default is <B>FRAGMENT_DEPTH</B>)</P>
+<P>The drawing of the background (in <B>drawback</B>) is really
+trivial and doesn't use texturing or lighting. 
+</P>
+<P>If you look at the <B>drawbox</B> function, you will see there is
+now a lot of <B>glFogCoordfEXT</B> functions.<BR>In opengl 1.4 and
+above you can simply call <B>glFogCoordf</B> and you don't have todo
+all the extension lookup functions.</P>
+<P><BR>Now we calculate to fog coordinate values. One for the left
+side and one for the right side of the cube. Since the right side is
+more deeply inside the linear fog. We calculate the fog value from
+the location of the cube along the x axis given in the <B>locx</B>
+variable.<BR>The four vertices on the left side of the cube get the
+lower fog coordinate, while the four vertices on the right hand side
+get the higher fog coordinate.</P>
+<P>The result is really not THAT impressive. But it the idea is just
+give you a quick introduction to volumetric fog. Creating real fog
+volumes is a lesson for another time.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Last
+fog hint</FONT></FONT></P>
+<P>You can alter the way opengl calculates the fog using the
+following commands:<BR><B>glHint(GL_FOG_HINT,GL_NICEST)</B> for
+smooth nice fog,<BR><B>glHint(GL_FOG_HINT,GL_FASTEST)</B> for not so
+smooth but faster fog.</P>
+<P>And that is all about fog for this lesson. I just like to give
+special thanks to Jeff Molofee for his NeHe tutorial on volumetric
+fog.</P>
+<H1>Part 2 &ndash; MipMaps</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Say we have a 16x16 texture for example. And we render this
+picture to a 4x4 region on the screen. If we compute the values of
+the pixels either using the linear or nearest filters then there is a
+very small change that the texture is going be a good representation
+of the 16x16 image. But if we first scale the image to a 8x8 texture
+using linear interpolation of every block of 4 pixels. And then scale
+that image down to a 4x4 region we will get a much better result.</P>
+<P>Doing this real-time is obviously not possible. But we can do this
+at the time of loading the texture. We effectively double the memory
+used by the texture but gain a huge increase in quality.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Lets
+do this</FONT></FONT></P>
+<P>I've created a new class called Textureclass. The code is in
+<U>mipmap.cpp</U>. I've started with the previous GLTextureclass as
+base. (Resize sunset.bmp if your implementation cannot support
+256x256 sized textures.)</P>
+<P>All we really have to do is tell OpenGL how todo things and it
+will sort out the rest for us. Quite easy!</P>
+<P>Firstly the class has a private boolean <B>mipmap</B> variable
+indicating if we will use mipmapped textures.<BR>Simply call the
+<B>Mipmap</B> function before Load to tell the class to create
+Mip-Mapped textures.</P>
+<P>Now goto the <B>Load</B> function. You will notice that just about
+everything stayed exactly the same. Accept for right at the end we
+call <B>gluBuild2DMipmaps</B> if we want a have Mipmaps for the
+texture.<BR>The syntax
+is:<BR><B>gluBuild2DMipmaps(target,internalformat,width,height,format,type,data)</B><BR>The
+info is exactly the same as for the <B>glTexImage2D</B>
+function.<BR>This new glu function actually will make a separate call
+to <B>glTexImage2D</B> for every mipmap with a different level value.
+Thus doing all the hard work for us.</P>
+<P>The other thing that changes with mipmaps is the filtering of the
+texture. Since mipmaps only has to do with minification only the
+<B>GL_TEXTURE_MIN_FILTER</B> must get new values.<BR>In deciding the
+eventual color of the pixel to draw opengl must first select a mipmap
+and then the color from the mipmap.<BR>There are 4 filters to
+use:<BR><B>GL_NEAREST_MIPMAP_NEAREST</B> select the closest sized
+mipmap and select the nearest value on that
+mipmap.<BR><B>GL_LINEAR_MIPMAP_NEAREST</B> applies linear filtering
+on the closest sized mipmap.<BR><B>GL_NEAREST_MIPMAP_LINEAR</B>
+select the nearest value from the closest 2 sized mipmaps and
+generate a interpolated value. <BR><B>GL_LINEAR_MIPMAP_LINEAR</B>
+applies linear filtering on the closest 2 mipmaps and interpolate the
+answers.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>a
+few notes</FONT></FONT></P>
+<P>A mipmapped textures uses 1.3 times as much memory as a normal
+texture. Making it normally worth it to use mipmaps.</P>
+<P>To decide on a filter is a difficult choice sometimes. A fairly
+good solution is to select GL_NEAREST_MIPMAP_NEAREST if you want to
+boost performance and then one of the others for normal usage.
+GL_LINEAR_MIPMAP_LINEAR is usually overkill. I'll say
+GL_LINEAR_MIPMAP_NEAREST is a good starting place to balance
+performance and quality.</P>
+<P>Adding mipmaping to your application is easy so use it.</P>
+<H1>Part 3 &ndash; Compressed Textures</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>are
+you sure?!</FONT></FONT></P>
+<P>The first thought I also had is that compressing textures will
+really mess with performance. And on older hardware this will be
+true. Probably why older hardware doesn't support this feature. But
+on modern hardware the texture can be decompressed on the fly with
+dedicated hardware in parallel to everything else resulting in almost
+no performance penalty. But the really big upside is that the texture
+will use less memory giving us the ability to store more and bigger
+textures in memory which will increase performance. Getting more
+textures in the dedicated memory on board the graphics card is very
+good for performance. In fact since we decrease memory bandwidth
+usage compressed textures can many times be faster than normal
+textures. 
+</P>
+<P>Not so fast there before you compress everything. Compressing
+textures reduces details in the texture and may also add some weird
+unwanted effects on the texture. Only by actually seeing the texture
+being used compressed will you be able to tell if the compression is
+acceptable or not.</P>
+<P>Compressed textures is only a core feature from opengl version
+1.3. You will need at least opengl version 1.3 development files to
+compile this program. I'm not sure if this will run on opengl version
+1.2 drivers even if the <B>GL_ARB_texture_compression</B> extension
+is available. 
+</P>
+<P><B>Lets do this</B></P>
+<P>Ok let me first explain how this works and then tell you how to do
+this. 
+</P>
+<P>The ARB_texture_compression that became part of the core features
+of opengl version 1.3 makes room for textures to be stored in
+compressed format. But it doesn't provide compression techniques. The
+first extension that provides compression formats is
+GL_EXT_texture_compression_s3tc. Now if we have both of these
+extensions available we can load and compress a texture and then use
+that compressed texture. 
+</P>
+<P>There exist some other extensions that provide other compression
+capabilities. The only other one that is really of value is
+GL_NV_texture_compression_vtc which extend the compression techniques
+of s3tc to also work for 3D textures. We will get to 3D textures
+someday later.</P>
+<P>So to do this is really easy. Everything is done as normal accept
+when you call glTexImage2D you tell opengl that the internal format
+should be a compressed format. In the example code (<U>compress.cpp</U>)
+I've extended the previous <B>Textureclass</B> to now be able todo
+compressed textures. Just like the mipmap interface you call the
+<B>Compress</B> function before <B>Load</B>. Inside the Load function
+just before the last call to create the texture there is a short if
+statement that selects a compressed internal format. 
+</P>
+<P>Thats it for compressed textures :)</P>
+<H1>Part 4 &ndash; blending</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>yes</FONT></FONT></P>
+<P>Blending is the way opengl renders partly see through geometry.
+Like glass, even colored or textured glass. Blending is the doorway
+to a whole new world of graphics effects. And the upside is that
+modern graphics hardware support many many blending capabilities at
+lightning speed.</P>
+<P>The example code is in <U>blend1.cpp</U>.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Alpha
+value</FONT></FONT></P>
+<P>To do blending we must add a fourth value to the color value of
+every pixel. This is called the Alpha value. The Alpha value tells us
+the transparency. If something is closely to solid (like coke) the
+Alpha value will be close to 1. And if it is almost completely
+invisible like glass the Alpha value will be close to 0.</P>
+<P>We can specify the Alpha value using the <B>glColor4</B> command.
+This is what I did in the example. Or you can put the Alpha value in
+the texture. Then every pixel in the texture has it's own alpha
+value. This gives much more freedom in what can be rendered but also
+require the construction of textures with Alpha values. As I wanted
+to stick with loading simple BMP's I couldn't do this. 
+</P>
+<P>Picture formats that support an Alpha channel include png and
+tiff. (I think png is more popular?) You can edit and construct
+pictures with alpha channels with the popular <B>GIMP</B> editing
+program that is also freely available. (PhotoShop also work I
+believe) If you use the <B>SDL_image</B> library you will be able to
+load these formats.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Rendering
+the scene</FONT></FONT></P>
+<P>Rendering a scene now suddenly becomes more difficult. Say we use
+our normal strategy. We have 2 transparent faces. They are drawn on
+top of each other. If we were to draw the front one first the depth
+buffer will prevent the one behind it from being drawn resulting in
+something that doesn't look correct. The other problem is that the
+color buffer that we are drawing to usually do not have an Alpha
+value. 
+</P>
+<P>Without going to trouble you with all the logic behind it. The
+correct way to draw a scene with geometry containing alpha:<BR>1.
+Switch depth buffer testing and writing on. With blending off.<BR>2.
+Draw all solid geometry in any order<BR>3. Switch blending on.<BR>4.
+Switch depth buffer writing off. (keep testing on)<BR>5. Draw all the
+geometry containing alpha from back to front. (This requires sorting
+them according to distance from camera)</P>
+<P>In real time applications (like the example) we rarely actually
+sort the faces. In most cases the &ldquo;wrong&rdquo; result we get
+is close enough to the &ldquo;correct&rdquo; result and the human eye
+doesn't quickly see the difference. Especially not in a real-time
+moving/changing scene like a game. And we can use that processing
+power for something more productive. But I believe program that
+render high-detail still images (Blender for example) does the
+sorting thing because time is not important but visual quality is.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Doing
+it in opengl</FONT></FONT></P>
+<P>Once again everything is mostly done for you. You simply need to
+tell opengl how to do things. When blending is enabled there is 2
+values that gets combined in the process. The Source value from the
+texture and the destination value already in the frame buffer. (When
+we get to multi-texturing things will change a little but don't worry
+now) In our simple case there is only one Alpha value and that is the
+alpha vlaue in the source pixel. We must now tell opengl how to
+combine these pixels using the <B>glBlendFunc(sfactor,dfactor)</B>
+command.</P>
+<P>There is many values for the factors. But I'm not going to bore
+you with all the details right now. The setup we will use
+is:<BR><B>glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);</B><BR>And
+in most cases this works well enough. Say the alpha value is 0.7 then
+the resulting color will consist 70% of the source color and 30% of
+the destination color. This is what we want!</P>
+<P>Ok go look at the <B>drawscene</B> function in the example
+<U>blend1.cpp</U>. <BR>The first part is easy. We draw a solid cube
+with depth testing and writing both enabled and blending still
+active. Part 1 &amp; 2 of the above formula. <BR>Now we Rotate and
+scale a bit more to get the second cube surrounding the first cube.
+The second cube will be partly transparent. <BR>We enable Blending
+with <B>glEnable(GL_BLEND)</B>. (part 3)<BR>And we disable
+depth-buffer writing with <B>glDepthMask(GL_FALSE)</B>. (part 4)
+<BR>Because the texture doesn't have an Alpha value we use
+<B>glColor4f(R,G,B,Alpha)</B> to give it one.<BR>Draw the cube. As u
+can clearly see no effort is done to sort the faces from back to
+front.<BR>We disable Blending again with <B>glDisable(GL_BLEND)</B>.<BR>And
+lastly we re-enable depth-buffer writing with <B>glDepthMask(GL_TRUE)</B>.</P>
+<P><BR>And as easy as that things are done!</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>What
+to use Blending for?</FONT></FONT></P>
+<P>Blending is firstly off course used for drawing semi-transparent
+geometry. This is obvious. 
+</P>
+<P>Blending is also used in anti-aliasing techniques. Which makes the
+whole scene look nicer. Modern graphics cards have many things to do
+anti-aliasing. If you don't now what anti-aliasing is the basic idea
+is to blur the pixel of edges to make edges look smooth and not like
+a jagged-edge ladder.</P>
+<P>Then blending is largely used in special effect. Anything to do
+with lighting. Like fire balls, lasers ect ect ect.<BR>Anything
+glowing. All these things rely heavily on blending.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Closing
+this tutorial</FONT></FONT></P>
+<P>I hope you learned something from this tutorial. I also learned
+some things creating it. If you have any correction or improvements
+feel free to mail them to me.</P>
+<P>Theres so many things to choose from to write tutorials on. But I
+want the aim of these tutorials to gradually shift more and more to
+game programming rather than graphics programming. 
+</P>
+<P>In the next tutorial we will look at vertex arrays among some
+other things.</P>
+<P>Enjoy programming!<BR>-Heinrich</P>
+<P><BR><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt">Copyright (c)  2005   Heinrich
+du Toit.<BR>      Permission is granted to copy, distribute and/or
+modify this<BR>document under the terms of the GNU Free Documentation
+License, Version 1.2<BR>or any later version published by the Free
+Software Foundation;<BR>with no Invariant Sections, no Front-Cover
+Texts, and no<BR>Back-Cover Texts. A copy of the license is included
+in the file named<BR>&quot;copyright&quot; which might be distributed
+along with this document or it can be obtained<BR>electronically at
+www.fsf.org or www.opensource.org/licenses</FONT></P>
+</BODY>
+</HTML>

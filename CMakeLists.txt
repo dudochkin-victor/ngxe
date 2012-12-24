@@ -1,0 +1,35 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_POLICY(VERSION 2.6)
+
+PROJECT(NGX)
+
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake/Modules)
+INCLUDE( ${CMAKE_SOURCE_DIR}/CMake/Modules/TargetDistclean.cmake)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
+
+#FIND_PACKAGE(Gettext)
+
+SET(PKG_DATADIR ${CMAKE_INSTALL_PREFIX}/share/ngx)
+SET(LOCALEDIR ${CMAKE_INSTALL_PREFIX}/share/locale)
+SET(PKG_BINDIR ${CMAKE_INSTALL_PREFIX}/bin)
+SET(DATA_DIR ${PKG_DATADIR}/data)
+
+#install (FILES "${CMAKE_SOURCE_DIR}/data/markov.txt" "${CMAKE_SOURCE_DIR}/data/words.txt"        
+#         DESTINATION ${DATA_DIR})
+
+ADD_SUBDIRECTORY(contrib)         
+#ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(examples)
+ADD_SUBDIRECTORY(tools)
+
+IF (GETTEXT_FOUND AND ENABLE_NLS)
+    ADD_SUBDIRECTORY(po)
+ENDIF()
+
+########### Add uninstall target ###############
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/CMake/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake") 

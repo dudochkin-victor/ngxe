@@ -1,0 +1,1 @@
+/usr/bin/c++       CMakeFiles/jazzsvc.dir/main.cpp.o CMakeFiles/jazzsvc.dir/lli.cpp.o  -o ../../jazzsvc -rdynamic 

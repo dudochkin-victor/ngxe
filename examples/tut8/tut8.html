@@ -1,0 +1,438 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050630;23595800">
+	<META NAME="CHANGED" CONTENT="20050711;23431100">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 8</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Welcome to yet another tutorial. Ok the quote:</P>
+<P>I<FONT SIZE=2 STYLE="font-size: 9pt">f I'd known computer science
+was going to be like this, I'd never have<BR>given up being a rock
+'n' roll star.<BR>-- G. Hirst</FONT></P>
+<P>Part 1 &ndash; Collisions<BR>Part 2 &ndash; Rendering Text<BR>Part
+3 &ndash; Multi pass rendering<BR>Part 4 &ndash; Multi texturing</P>
+<P>This tutorial seems quite BIG :) Maybe it should have been 4
+tutorials? O well lets rumble:</P>
+<H1>Part 1 &ndash; Collisions</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>More
+physics</FONT></FONT></P>
+<P>Yes we continue with the physics thing. Starting with everything
+done in the previous tutorial as a basis.</P>
+<P>The first thing is to find out if things collided or not:</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Collision
+detection</FONT></FONT></P>
+<P>The 100% complete solution to collision detection would be to test
+every primitive in object A with every primitive in object B. A
+primitive would usually be a triangle in 3D space. This solution
+would render a 100% correct answer... BUT it would take ages to
+compute!</P>
+<P>The best way to detect collisions is determined by the situation.
+Usually the answer comes down to some complex 3D geometry problem.
+Testing static collision detection is usually not that hard. Things
+become a lot more complex when testing between moving objects.</P>
+<P>One way to solve the moving problem is to divide the time segment
+into a number of smaller segments and do static collision detection
+on each of these small time segments. But this method is also limited
+and also make for a lot more calculations which may slow things down.
+But none the less a method to keep in the back of your head.</P>
+<P>If 3D geometry scares you, you can either try to overcome that
+fear by making some effort into studying it. (I did a few courses at
+university with this stuff which makes things a little bit easier) Or
+you can try to avoid it by simply taking the results of other peoples
+work. In which case you simply want to quickly scan through this
+section of the tutorial.</P>
+<P>3D geometry uses to things heavily: The dot product and the cross
+product.<BR>I'm not going to give you a complete 3D geometry class in
+these tutorials. That a subject for you own research!<BR>But in basic
+<B>dot product</B> is:<BR>If there is 2 vectors A and B. Then A dot B
+gives a scaler of the size size(A)*size(B)*sin(Theta). Where Theta is
+the angle between the 2 vectors.<BR>size(A) can computed as
+sqrt(x*x+y*y+z*z) where x,y and z is the components of the vector.<BR>A
+dot B = A.x*B.x + A.y*B.y + A.z+B.z <BR>Its easy and its fast. The
+main reason we use this is because of the sinus term in the answer.
+If the answer is positive the angle between the 2 vectors is less
+than 90 degrees and if the answer is negative the angle is more the
+90 degrees. ect. <BR><BR><BR>
+</P>
+<P>A <B>cross product</B> is more complex:<BR>Once again between to
+vectors A and B. The answer is this time another vector we will call
+C.<BR>the size of C equals size(A)*size(B)*cos(Theta) <BR>But
+remember C is a vector! The direction of C is tangent to both A and B
+and the direction is determined according to the ordering of A and B.
+<BR>If A and B is both flat on your desk. Now Theta is determined
+from A to B. So you put your right hand down in a thumbs up way. Then
+your fingers show the direction from A to B. And you thumb points in
+the direction of C.<BR>I should probably make a diagram for this.</P>
+<P>C = A cross B is computed as follows:<BR>C.x = A.y*B.z &ndash;
+A.z*B.y<BR>C.y = A.z*B.x &ndash; A.x*B.z<BR>C.z = A.x*B.y &ndash;
+A.y*B.x<BR>Quite intimidating at first. But don't worry this is
+simply a function to use.<BR>The main advantage of this function is
+that C is perpendicular to both A and B.</P>
+<P>To <B>Normalize</B> a vector we divide it by it's size. The reason
+for wanting to do this is that the size of a normalized vector is 1.
+Thus removing the size vectors from the answers from the dot and
+cross products. The problem is that we need to compute a square-root
+to do this which is a expensive operation. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Ok
+lets look at Collision detection</FONT></FONT></P>
+<P>Lets look at a very simple example. 2 Spheres.<BR>Calculating the
+distance between the 2 center points of the spheres is very simple.
+And when this distance is smaller or equal than the sum of the
+radius's of both spheres we have a collision. Now the most simple
+solution would be to check this every frame. But this will only work
+if the spheres move relatively slowly.</P>
+<P>The second solution we might determine is to cut op every frame
+into a number of segments and check collision for every segment. The
+number of segments may be determined by the speed of the spheres. But
+this will only work if the spheres move at moderate speeds. Which in
+most cases will be good enough. But this will result in a little bit
+of inaccuracy. 
+</P>
+<P>The main problem is that to accurately determine the result of the
+collision we need to now the exact locations (ie. time) of the
+spheres when colliding. To solve this problem we need a new
+algorithm:<BR>Starting with the distance between the spheres as A-B
+where A and B is the positions of the spheres. We are looking for
+when A-B = (sum of sizes) <BR>But now we add time (t) to the
+equation. Now A.x = xpos + t*xvelocity (same for y and z and also for
+B)<BR>Lets work only in 1 dimension for now. (It's easy to add the
+other dimensions later)<BR>A.x-B.x becomes (A.xpos-B.xpos) +
+t*(A.xvelocity &ndash; B.xvelocity) = deltaxpos + t*deltaxvel =
+xdiff<BR>now in 3 dimensions we need to calculate xdiff^2 + ydiff^2 +
+zdiff^2 = (sum of sizes)^2<BR>So xdiff^2 = deltaxpos^2 +
+t*2*deltaxvel*deltaxpos + (deltaxvel^2)*(t^2) <BR>And then we can add
+up all the terms resulting in a quadratic equation of the form a(t^2)
++ bt + c = 0.<BR>(note that if a=0 then also would b=0 and the
+spheres are standing still: no collision)<BR>remember c = deltapos^2
+&ndash; xdiff^2 to get a 0 at the other side of the equation.<BR>This
+type of equation we solve somewhere in high school :) <BR>First
+calculate Delta = b^2 &ndash; 4ac (if delta is negative no answer
+exist)<BR>Then t = (-b (+or-) sqrt(Delta))/2a resulting in 2
+answers!<BR>We want the first answer. Because the second answer would
+be the time after they passed through each other. (not interested)<BR>So
+we calculate t1 = (-b + sqrt(delta))/2a and t2 = (-b &ndash;
+sqrt(delta))/2a and take the smaller one.</P>
+<P>As easy as that! <BR>Btw this technique is called local
+linearization because we linearize the motion and throw away
+acceleration. :)<BR>The example is in <U>coll1.cpp</U> check out the
+<B>CheckCollision</B> function.</P>
+<P><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Collision handling</FONT></FONT></P>
+<P>When 2 objects collide we have some energy that is involved here.
+Energy has to go somewhere:<BR>-Heat, explosion ect.<BR>-Deforming
+the object... even breaking it.<BR>-Altering the velocity of the
+object result in it to bounce away or coming to standstill</P>
+<P>Now firstly we must construct a normal vector in the direction of
+the other sphere. Only forces in this direction will be altered in
+the collision. Everything else will go on as normal for now. This is
+only true if there is no friction, and a good approximation for 2
+spheres colliding.</P>
+<P>We get a direction vector by simply subtracting the positions from
+each other and normalizing the vector.<BR>Now if we multiply the
+velocity components with this vector we get a new velocity vector
+that is the velocity that is perpendicular to the collision. This
+means we have effectively made the whole thing 1 dimensional, well
+sort off :) There is still 3 components to the vector. 
+</P>
+<P>I found this amazing sight on physics by Martin Baker
+(<A HREF="http://www.euclideanspace.com/">www.euclideanspace.com</A>)
+If you want to know anything about physics and the formulas for
+gaming purposes go there. Thanks Martin.</P>
+<P>Since we simplified our problem to a 1 dimensional problem we can
+use the 1D solution to calculate the new velocities of the objects.</P>
+<P>The formula given is :</P>
+<P>Avelfinal =
+Avel*(Amass-e*Bmass)/(Amass+Bmass)+Bvel*(e+1)*(Bmass)/(Amass+Bmass)</P>
+<P>e is the <B>elastistisity factor</B> from 0 to 1. And depends on
+the material of the object.</P>
+<P>Step 1- calculate the normal between the objects.<BR>Step 2-
+calculate the perpendicular velocity's and remove it from the
+object.<BR>Step 3- calculate the new perpendicular velocity's and add
+them to the object.</P>
+<P>Check the function <B>HandleCollision</B> in <U>coll1.cpp</U>.</P>
+<P>Since collisions happens only a very small fraction of the times
+we check for collisions we can safely get away with much more complex
+collision handling things that are more expensive in processing
+power. The place to optimize is in collision detection. In collision
+handling we want to make out application more realistic that is the
+main aim.</P>
+<P>The above method for collision handling is very simple. We will
+later look at more complex ways to do these things. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Enough
+about collisions (for now)</FONT></FONT></P>
+<P>Ok thats it for physics and collisions now. But this will be an
+ongoing theme through my tutorials. If that really bugs you, you can
+skip those sections :)</P>
+<P>Next time we will look at simple structural physics. (no nothing
+big) I think a simple rope will be a good start.</P>
+<P>Please note that there can never be one complete tutorial on
+collisions since it is up to you to find the best solution for the
+problem at hand. But you can learn a lot at seeing and reading.</P>
+<H1>Part 2 &ndash; Rendering text</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Hello</FONT></FONT></P>
+<P>Ok rendering text seems more a problem than you would think. <BR>But
+don't worry nothing is impossible!</P>
+<P>Firstly I like to quickly tell you something different: text is
+2D... for the moment :)<BR>Anyways this means that a 3D world and a
+3D viewing camera setup with <B>gluPerspective</B> might not be
+always as nice. especially if you want text somewhere specific on the
+screen.<BR>So we rather use <B>gluOrtho2D</B> to setup the camera
+this time this gives us a nice flat viewing region where the z
+coordinate gets ignored. So now we can use <B>glVertex2</B> functions
+and only specify x and y coordinates.</P>
+<P><B>gluOrtho2D(left,right,bottom,top)</B></P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Freetype
+library</FONT></FONT></P>
+<P>I decided to use the freetype library to produce the text we want
+to get rendered. The reasons:<BR>Its free always a bonus.<BR>It works
+with true-type fonts. Which is what we want.<BR>It does anti-aliasing
+which is kewl.</P>
+<P>Go look at the example in <U>ttf1.cpp</U>. It displays some text
+on the screen. Very basic.</P>
+<P>I've created a <B>Textclass</B> to handle the text for us. You
+will need a separate <B>Textclass</B> object for every font.</P>
+<P>Ok the basic strategy is:<BR>Create one BIG texture and put all
+the characters on it. Then get some functions working to select only
+the portion of the texture we want. ie. the portion with the wanted
+character.</P>
+<P>Now go look in the <B>Load</B> function:<BR>Firstly we initialize
+the freetype library with <B>FT_Init_FreeType</B>.<BR>Then we load
+the font with <B>FT_New_Face</B>. Freetype has some really wacky
+terminology :)<BR>Set the pixel size with <B>FT_Set_Pixel_Size</B>.<BR>Now
+we determine the texture size we need. This is done from the
+pixelsize selected. This is a non-optimal method but will have to do
+for now.<BR>We create a bitmap for the image. 2 components per pixel:
+luminance and alpha.<BR>We create an array to hold the coordinates
+for the characters.</P>
+<P>Now then next step is to load each character and copy it to the
+bitmap. But this is a little more tricky than it would sound. The
+first reason for this being that the letters have variable sizes
+apart from the fact that some don't exist. In fact some will create
+bitmaps that has more than 16 rows! This is because of the
+anti-aliasing.</P>
+<P>Anyways the solution is quite simple: Stack them into the texture
+as they arrive. This is what the x and y variables do. ymax simply
+keeps track of the rows maximum height so that the next row will be
+below that. This method packs all the characters nicely in the
+texture while leaving nice 2 pixel boundaries between them and yet
+leaving almost 50% of the texture unused. We also calculate the
+texture coordinates needed for every character.</P>
+<P>All that remains is to pass this bitmap to opengl to make a
+texture from it. <BR>And clean-up a bit.</P>
+<P>The first simple render function is <B>PutChar</B>. Everything
+inside is pretty straightforward. It loads the texture coordinates
+and scales the width and height to get the character in the correct
+aspect ratio. And then rendered a textured QUAD. 
+</P>
+<P><B>PutString</B> is a nice little function to put a complete
+string of text on the screen. And also keep track of the width of
+every character so the letters seems nicely spaced.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Anti-aliasing</FONT></FONT></P>
+<P>You probably noticed that I've created a texture with both
+luminance and alpha. And free-type generate anti-aliased text. So all
+that remain to make things nice is to enable blending as you will see
+in the main
+program:<BR><B>glEnable(GL_BLEND);<BR>glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);</B></P>
+<P>This also takes away the black background of the text. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Further
+improvements</FONT></FONT></P>
+<P>Firstly you will see that much of the texture is wasted. Some
+algorithm can be devised to make more complete usage of the texture.</P>
+<P>Then the switch between Ortho view and Perspective viewing can be
+streamlined using 2 display lists.</P>
+<P>And then the printing of every character can also be enhanced by
+using display lists.</P>
+<P>And since we are using c++ some work can be done to make it
+possible to use streams to write text to the screen. e.g. Mytextclass
+&lt;&lt; &ldquo;Hello&rdquo; &lt;&lt; endl; 
+</P>
+<P>But this will be all for now. You are off course aloud to go wild!</P>
+<H1>Part 3 &ndash; Multi-pass rendering</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>huh?</FONT></FONT></P>
+<P>I guess your first thought would be that this is just going to
+slow things down.. or maybe you were wondering if I've been drinking?
+<BR>Ok no! no drinking here. But this is kinda kewl.</P>
+<P>Every ran around a FPS game and when you spray your rail gun on
+the walls you get all these nice little bullet holes. Or maybe when
+you hit something the blood that comes out the back and hit the wall?
+Not? Umm... use your imagination.</P>
+<P>Anyways these things are normally done with multi-pass rendering
+techniques.</P>
+<P>On the first pass the wall will be drawn in one big quad or
+something like that.<BR>On the second pass smaller quads will be
+drawn at various locations with the texture of the bullet hole. 
+</P>
+<P>Great hey! So whats the fuzz?</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Depth
+buffer problems</FONT></FONT></P>
+<P>Well the things is if you draw to quads in exactly the same place
+you will by default see only the first one. This is not good! Since
+this will mean our bullet holes gets wiped by the depth-buffer.</P>
+<P>Opengl provides the capability to alter the depth buffer testing
+function with <B>glDepthFunc(method)</B>.<BR>The default is GL_LESS.
+Now we can change this to GL_LEQUAL.</P>
+<P>In theory this should make the second quad also show and we will
+see our bullet holes.. right? almost right! But not good enough.</P>
+<P>You see that we work with finite accuracy floating point numbers.
+In the case of a bullet hole the coordinates of will be a linear
+approximation from the wall coordinates which result in a small
+error.<BR>And then the coordinates gets run through some matrix
+multiplication and other things. The end result is that if we render
+2 Quad on top of each other they are likely to not give the same
+depth values in the same places every time. You will see this in the
+example if you disable the proper solution.</P>
+<P>So what do we do?<BR>We tell opengl to alter the depth values
+after calculation. <BR>This is done with the
+<B>glPolygonOffset(factor,units)</B> function.<BR>If we enabled this
+feature with <B>glEnable(GL_POLYGON_OFFSET_FILL)</B> then opengl will
+alter the final depth values calculated according to the values of
+factor and units we provide.</P>
+<P>Don't bother with factor for now. Leave it at 0.<BR>units is a
+number that is added to the final z value. A unit is the smallest
+difference that the depth-buffer can monitor. <BR>This means if we
+call <B>glPolygonOffset(0,-1)</B> before the second draw we are
+guaranteed that the second drawn quad will be visible and there is
+extremely little change that this new layer will get in front of
+something else it shouldn't.</P>
+<P>The example code is in <U>multi1.cpp</U>. The example is very
+straight forward. I've drawn a blue stripe over a red square. You can
+disable the glEnable(GL_POLYGON_OFFSET_FILL) command to see the
+result without this new technique. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>what
+else</FONT></FONT></P>
+<P>multi-pass is many times combined with blending techniques.</P>
+<P>One common technique for multi-pass rendering is shadow- &amp;
+light-maps. A method to make a scene look like there is lighting
+going on but in fact we don't have lighting enabled. But that is a
+topic for another day.</P>
+<H1>Part 4 &ndash; Multi-texturing</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>great
+what is this?</FONT></FONT></P>
+<P>Modern graphics cards have more than one texture unit. And we can
+control all these texture units.</P>
+<P>This firstly enables us to optimize rendering a bit by limiting
+the number of texture switches required:<BR>Example we have a model
+with 2 textures: A and B. so rather than switching between textures A
+and B the whole time we can simple load texture A into one texture
+unit and B into another and simply switch on the desired texture
+unit. This sound great? 
+</P>
+<P>Well thats really nothing. The texture units are connected in
+series. Meaning that we can have multiple texture units work on the
+same geometry at the same time. This in effect gives us a multi-pass
+rendering system in one go!</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>How
+this work</FONT></FONT></P>
+<P>I have very stupid example in <U>mtext1.cpp</U>.</P>
+<P>In the Setup function you will firstly find some code checking the
+number of texture units. My Geforce FX 5200 have 4 of them and my old
+Geforce 4 MX had 2. So I guess if you want to work on the older
+hardware 2 is all you get but if you are going to program for only
+the new generation cards you can expect at least 4 of them.</P>
+<P>Note: Multi-texturing only became part of opengl version 1.3.</P>
+<P>Firstly you must select a texture unit to work with. This is done
+with:<BR><B>glActiveTexture(target)</B><BR>Where target is of the
+form <B>GL_TEXTUREi</B> with i starting at 0<BR>After selecting a
+texture unit the setup of a texture is as normal. <BR>Don't forget
+that <B>glEnable(GL_TEXTURE_2D)</B> works on the current active
+texture unit only!</P>
+<P>Obviously we can't have a thousand texture unit changes while
+rendering so passing texture coordinates works like
+follows:<BR><B>glTexCoord</B> gives coordinates to texture unit 0
+always!<BR><B>glMultiTexCoord*(target,coordinates)</B> is used to
+give texture coordinates to a specific texture unit.</P>
+<P>And as easy as that you can work multi-texturing. <BR>You can also
+use Arrays to pass texture coordinates to different texture
+units:<BR><B>glTexCoordPointer</B> still works the same but it
+specifies the texture coordinate array for the current active texture
+unit. You will also need to call <B>glEnable(GL_TEXTURE_ARRAY)</B>
+for every texture unit you want to use.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Interaction</FONT></FONT></P>
+<P>When you have multiple texture units active you have control over
+the way every texture unit interacts with the colors. This is done
+using the complex <B>glTexEnv</B> command.</P>
+<P>At first the specs seem to make this whole thing overly complex.
+Lets try to simplify:</P>
+<P>The command
+is:<BR><B>glTexEnvi(target,parametername,parametervalue)</B><BR>or<BR><B>glTexEnvfv(target,paramtername,*values)</B></P>
+<P>target is always <B>GL_TEXTURE_ENV</B>.<BR>(Actually there is also
+GL_TEXTURE_FILTER_CONTROL but that is not for now. Check the specs
+yourself.)<BR>With the first form of the command we will use the
+parameter name <B>GL_TEXTURE_ENV_MODE</B>.<BR>And in the second form
+we will use parameter name <B>GL_TEXTURE_ENV_COLOR</B> and specify an
+array of 4 color components (RGBA).<BR>If we specify
+<B>GL_TEXTURE_ENV_MODE</B> there is 4 possible parameter
+values:<BR><B>GL_MODULATE<BR>GL_DECAL<BR>GL_BLEND<BR>GL_REPLACE</B></P>
+<P STYLE="font-weight: medium">Each of these have a different result.
+You can check the complete table in the specs. In basics there is 3
+colors involved:<BR>The incoming color. (From a previous texture unit
+or specified with the glColor command)<BR>The texture color.<BR>The
+env color. (Specified with GL_TEXTURE_ENV_COLOR)<BR>All off these can
+have different formats. But in essence we have 3 color components
+(RGB) and 1 alpha component A.</P>
+<P STYLE="font-weight: medium">Now:<BR>MODULATE simply multiplies the
+incoming colors with the texture colors. Sort off like mixing.<BR>DECAL
+can only be used if the texture has a alpha channel. DECAL is like
+blending the texture color with the incoming color using
+glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA). Use this for
+regular blending.<BR>BLEND multiply the alpha channels and mix the
+texture color with both the incoming and env colors. The darker the
+texture color the more of the env color will be in the resulting
+color. (I'm not sure what the use of this is)<BR>REPLACE simply
+throws away the incoming and env colors and output the texture color.
+(As far as possible)</P>
+<P STYLE="font-weight: medium">If the extension
+GL_ARB_texture_env_add is present you can also use GL_ADD_ARB. This
+simply adds the texture and incoming color components together.</P>
+<P STYLE="font-weight: medium">If GL_ARB_texture_env_combine is
+present you can use GL_COMBINE_ARB. This extension gives a whole
+number of new parameter names that can be set to result in a wide
+number of results. Check the docs if your interested. In general
+anything funky can be done with this.</P>
+<P STYLE="font-weight: medium">If GL_ARB_texture_env_crossbar is
+available then this extents the above functionality to the point
+where a texture unit can access the texture colors of other texture
+units.</P>
+<P STYLE="font-weight: medium">If you have GL_ARB_texture_env_dot3
+then you can use GL_DOT3_RGB_ARB and GL_DOT3_RGBA_ARB. This extent
+the above functionality to compute the dot-product between different
+colors. 
+</P>
+<P STYLE="font-weight: medium">Yes this seem a little overwhelming
+doesn't it.</P>
+<P><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Uses</FONT></FONT></P>
+<P>Well firstly multi-texturing gives us the capability to speed
+things up a little if we're smart about it.</P>
+<P>But more than that multi-texturing gives us the capability to
+produce multi-pass results in one-go.<BR>Things like bump-mapping,
+shadow-mapping and light-mapping can all be done with this.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>All
+for today</FONT></FONT></P>
+<P>Ok thats enough for this tutorial. I hope you learned something
+today. Well if not well, I did :)</P>
+<P>Hopefully I will get to applying these techniques soon in method
+like light-mapping. 
+</P>
+<P>Cheerios. Have fun.</P>
+<P>-Heinrich du Toit</P>
+<P><BR><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt">Copyright (c)  2005   Heinrich
+du Toit.<BR>      Permission is granted to copy, distribute and/or
+modify this<BR>document under the terms of the GNU Free Documentation
+License, Version 1.2<BR>or any later version published by the Free
+Software Foundation;<BR>with no Invariant Sections, no Front-Cover
+Texts, and no<BR>Back-Cover Texts. A copy of the license is included
+in the file named<BR>&quot;copyright&quot; which might be distributed
+along with this document or it can be obtained<BR>electronically at
+www.fsf.org or www.opensource.org/licenses</FONT></P>
+</BODY>
+</HTML>

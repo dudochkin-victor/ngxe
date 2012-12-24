@@ -1,0 +1,257 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=iso-8859-1">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.0  (Linux)">
+	<META NAME="CREATED" CONTENT="20050623;21561900">
+	<META NAME="CHANGED" CONTENT="20050711;22531100">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<H1 ALIGN=CENTER>Tutorial 3</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Introduction</FONT></FONT></P>
+<P>Hi again. In this tutorial I want to add quite a few things. You
+might notice I've never spend much time on drawing primitives such as
+the pyramid in tutorial 2. The reason is simple. If you've seen the
+triangle in tutorial 1 and you have the red-book version 1.0 you can
+do everything there is to it. And besides I like to move to things
+beyond that. Faster ways of drawing things. Plus just about every
+tutorial on opengl spend lots off time on that stuff. The idea of
+these tutorials are not to replace all others. They are to complement
+the rest.</P>
+<P>So what we learn today you ask? (Actually its night) Ok here we go</P>
+<P>Part 1 will be on basic lighting.<BR>Part 2 will be on texture
+mapping.<BR><BR>That should be enough hey? But please note that this
+tutorial will only be a basic introduction on these topics.</P>
+<H1>Part 1 &ndash; Lighting</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>so
+whats the fuzz?</FONT></FONT></P>
+<P>Basically lighting is easy. You tell opengl about the light and
+your graphics card crunches out the correct results. The problem is
+that mainly that most you aren't really capable of using all 8 lights
+and still get the frame rate you were hoping for. And then in the end
+creating a magnificent looking scene using lighting is art. There is
+no 3 steps to making lighting brilliant. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>How
+lighting works</FONT></FONT></P>
+<P>Well opengl gives us a gazillion options for lighting. Lets try to
+break down the complexity a bit at first.</P>
+<P>When you run the example (<U>light1</U>) you see a sphere with a
+light moving around the sphere. What you want to know is how this
+works right?</P>
+<P>In this new light filled 3D world we no longer have simply colors
+for the geometry. No we have materials now. Material properties tell
+opengl how the light interact with the surface. There is four types
+of light that is simulated in opengl. Using them as an approximation
+of the real-world. And if you do things well you. Hey things look
+good! 
+</P>
+<P>AMBIENT light is the light that is sorta all around. It comes from
+all directions and goes in all directions.<BR>DIFFUSE light comes
+from a light source. It comes from one direction only and them when
+it hits a surface it scatters in all directions. The intensity of the
+light that comes of depends on the angle it hits the
+surface.<BR>SPECULAR light comes from a source. And then reflects
+like a mirror of the object. <BR>EMISSION is light the the material
+itself gives out. 
+</P>
+<P>Lets look at a light. Opengl supports at least 8 light sources.
+(there may be more but this is completely impractical for performance
+based applications) <BR>Firstly a light has a position. Then it has
+ambient, diffuse and specular light properties. This is the
+basics.<BR>Beyond this we can make a spotlight by letting the light
+shine in a defined direction. <BR>And then we can set the ATTENUATION
+of the light which affect how the light fall off with distance.</P>
+<P>Ok lets look at material. Firstly material has ambient and diffuse
+properties. This defines how the material reacts and reflects these
+kind of light. This is pretty straight forward. Then the material has
+an emission property which is light the material emits. This will in
+effect make an object visible even if now light source or ambient
+light is available. (Maybe the coals of a burnt out fire after the
+bad guys had run into the woods?)<BR>The specular property defines
+how the material reflects specular light. Now remember that specular
+light reflects mirror like from a surface! To tell opengl exactly how
+directly the light reflect we use the SHININESS property. I used a
+value of 100 in the example and got a nice reflective effect on the
+sphere.<BR><BR>Lastly there is a world ambient light that doesn't
+come from any light but is in the world. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Normals</FONT></FONT></P>
+<P>For opengl to be able to do all these new calculations with light
+it needs some new information. This information tell opengl which way
+is upwards. (directly 90 degrees perpendicular to the surface) This
+is called normals. Every vertex must have a normal. In the example
+the gluSphere command that draws the sphere generate normals
+automatically for the sphere. But in many other cases we need to
+supply normals ourselves. The simplest way todo this is using the
+<B>glNormal</B> command. (usually with <B>3f</B> extension).</P>
+<P>OpenGL expects normals to be normalized. That means there length
+is exactly 1. Else the light will be either to light or too dark. If
+you are unable to normalize the normals you can tell OpenGL to do
+normalizing for you by setting <B>glEnable(GL_NORMALIZE)</B> but this
+will probably result in a performance penalty. But don't worry most
+modeling programs calculate normals for you. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Lighting
+commands</FONT></FONT></P>
+<P>In the example most of the lighting setup is done in the
+<B>setuplight</B> function. 
+</P>
+<P>The lights are called by the opengl identifiers GL_LIGHTi where i
+is the number of the light.<BR>All of the lights properties are set
+using <B>glLightfv(light,property,newvalue)</B> The example code is
+fairly clear on what must happen. It sets the 3 light properties of
+LIGHT0. You can change there values and see what happens.</P>
+<P STYLE="font-weight: medium">We set the world ambient light using
+<B>glLightModelfv(property,newvalue)</B>. This will affect the
+overall brightness/darkness of the seen.</P>
+<P STYLE="font-weight: medium">Next we want to enable
+lighting:<BR><B>glEnable(GL_LIGHT0)</B> switches light 0 on.
+<BR><B>glEnable(GL_LIGHTING)</B> switches on global lighting mode.
+Opengl will do light calculation from now on.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Material
+commands</FONT></FONT></P>
+<P STYLE="font-weight: medium">All material properties can be set
+using <B>glMaterialf</B> and <B>glMaterialfv</B> commands. <BR>In the
+form <B>glMaterial(face,property,newvalue)</B>. I've specified both
+front and back faces in all cases but actually opengl only uses the
+front face by default. You will understand more about faces later on.</P>
+<P STYLE="font-weight: medium">There is a faster better way to update
+material properties: Since we no longer use <B>glColor</B> for
+setting the color of the surface. We can now use <B>glColor</B> to
+change the material properties. (According to documentation this is
+the preferred way.) <BR>Firstly we tell opengl which properties of
+the material <B>glColor</B> should affect with:
+<BR><B>glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE)</B>;<BR>Choosing
+ambient and diffuse affects the general colour of the object. And
+thus glColor have more or less the same result as you would expect it
+to have.<BR>Then enable this capability with
+<B>glEnable(GL_COLOR_MATERIAL)</B>.</P>
+<P>Just before the <B>gluSphere</B> command in the example there is a
+<B>glColor3f</B> command that sets the ambient and diffuse properties
+of the sphere.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Last
+Notes on lighting for now</FONT></FONT></P>
+<P>Go play with the example and change the values to get the feel of
+how these things works. As I said at the start of this thing.
+Lighting is art.<BR>If things in your application looks funny its
+quite likely you have forgotten something.</P>
+<P>You will probably never again get rid of lighting, so its best to
+get a good grasp of what is up with it.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Quadrics</FONT></FONT></P>
+<P>You might be asking what this gluSphere command is hey? Well the
+glu library gives some basic 3D geometry commands it calls quadrics.
+The available forms are:<BR>SPHERE &ndash; a round ball
+thing<BR>CYLINDER &ndash; like a straight pipe<BR>DISK &ndash; can be
+like a pizza or a CD. <BR>PARTIALDISK &ndash; a pizza with some
+missing slices ;)</P>
+<P>You start by declaring a <B>GLUquadric</B> object and create it
+using <B>gluNewQuadric</B>.<BR><BR>And then you can draw the quadric
+using one of the following
+commands:<BR><B>gluSphere(quadric,radius,slices,stacks)</B> &ndash;
+slices and stacks determines the number of faces used to built up the
+sphere.<BR><B>gluCylinder(quadric,baseradius,topradius,height,slices,stacks)<BR>gluDisk(quadric,innerradius,outerradius,slices,loops)<BR>gluPartialDisk(quadric,innerradius,outerradius,slices,loops,startangle,sweepangle)</B></P>
+<P STYLE="font-weight: medium">Fairly easy I'll say.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Light
+classes</FONT></FONT></P>
+<P STYLE="font-weight: medium">I've created to classes <B>GLLightclass</B>
+and <B>GLMaterialClass</B>. They are in material.cpp/h and
+light.cpp/h. These classes include the basic functionality to handle
+these new OpenGL capabilities. I will use them in the following
+tutorials.</P>
+<H1>Part 2 &ndash; Textures</H1>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Wow
+cool</FONT></FONT></P>
+<P>Yes textures are cool. But where do we start with explaining this?</P>
+<P>Textures is the process of sticking pictures/bitmaps on geometry.
+So we no longer have only colors and materials. We can now apply a
+nice looking pattern to the geometry. The result is that we need
+fewer primitives (Triangles and Quads) and we have more detail in the
+end.</P>
+<P>OpenGL support many different texture capabilities and formats.
+All this is so complex that we will use the glu library to help us
+out. 
+</P>
+<P>We will only look into basic 2D textures for now and there basic
+usage. All the advance topics will have to wait for a next tutorial.</P>
+<P STYLE="font-weight: medium"><U>The example code is in texture1.cpp</U></P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>What
+must be done</FONT></FONT></P>
+<P STYLE="font-weight: medium">Firstly we need to ask OpenGL to
+create a texture. Using <B>glGenTextures</B>.<BR>Then we bind a
+texture to a texture target. Using <B>glBindTexture</B>.<BR>There is
+a few targets but for now we will simply use <B>GL_TEXTURE_2D</B>.</P>
+<P STYLE="font-weight: medium">Next we tell opengl how to handle the
+texture when it is either <U>Mag</U>nified or <U>Min</U>ified. <BR>For
+the example I've set both GL_TEXTURE_MAG_FILTER and
+GL_TEXTURE_MIN_FILTER to GL_NEAREST.<BR>GL_NEAREST is the fastest way
+of scaling textures but also produces the worst visual results. We
+will look into more detail on this in a later tutorial.</P>
+<P STYLE="font-weight: medium">Now we load the image from file using
+<B>SDL_LoadBMP</B>. Using the SDL_Image library we can load any
+format.<BR>But we have a slight problem. We need to tell opengl the
+format of the image. And also need to flip the image. Because the y
+axis is upwards and not downwards in opengl. In the example there
+follows quite a bit of code to figure out which paramenters to send
+opengl and also to flip the image by copying it into a new buffer.</P>
+<P STYLE="font-weight: medium">Now we can tell opengl to create the
+texture using <B>glTexImage2D</B>. If everything is ok we will have a
+new usable texture now.</P>
+<P STYLE="font-weight: medium">The last thing to do is to enable
+texturing using <B>glEnable(GL_TEXTURE_2D)</B>.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>What
+else?</FONT></FONT></P>
+<P STYLE="font-weight: medium">Well, what else is pretty unlimited.
+Textures plays a big part in the rendering of most graphics
+applications. OpenGL provides hundreds of options and there exists
+thousands of possibilities when it comes to textures mapping.</P>
+<P STYLE="font-weight: medium">We can start by mentioning that mostly
+the width and height of a texture must be 2^(n) (2,4,8,16, ect) And
+some platforms doesn't support textures larger than 64x64. Although
+this is mostly ancient systems and I think that the width and height
+restriction is also no longer there on all platforms?</P>
+<P STYLE="font-weight: medium">There exist so many possibilities with
+textures.<BR>Next thing in textures is probably mip-mapping. A
+technique to get beautifully scaled textures. And also Wrapping.
+<BR>Then we might look at compressed textures and also texture
+proxying. And off course the multi-texturing capabilities of opengl.
+All this is to increase speed.<BR>Then there is 3D textures. And
+there is light-maps which is a whole field on its own. And there is
+bump-mapping.<BR>And Masking... And environment mapping.<BR>And
+Cell-Shading. And we can also render to a texture. And then comes
+shaders :D</P>
+<P STYLE="font-weight: medium">But this will all have to wait, sorry.</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Code</FONT></FONT></P>
+<P STYLE="font-weight: medium">The example code is in <U>texture1.cpp</U></P>
+<P STYLE="font-weight: medium">Most of the hard work is done in the
+<B>setuptexture</B> function.<BR>I've inserted some comments to make
+the code more readable.</P>
+<P STYLE="font-weight: medium">In the main program you will see some
+<B>glTexCoord</B> commands for drawing the Quad.</P>
+<P STYLE="font-weight: medium">As easy as that. 
+</P>
+<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>Last
+notes</FONT></FONT></P>
+<P>Although everything in this tutorial is still actually amateur
+stuff it is very necessary to understand the basics. I hope that
+maybe somebody learns something. Well I did and I had some fun
+creating this tutorial.</P>
+<P>All the best for ya!</P>
+<P>My next tutorial will be on, umm... How about I sleep first?</P>
+<P STYLE="font-weight: medium">-Heinrich</P>
+<P><BR><BR>
+</P>
+<P><FONT SIZE=1 STYLE="font-size: 8pt">Copyright (c)  2005   Heinrich
+du Toit.<BR>      Permission is granted to copy, distribute and/or
+modify this<BR>document under the terms of the GNU Free Documentation
+License, Version 1.2<BR>or any later version published by the Free
+Software Foundation;<BR>with no Invariant Sections, no Front-Cover
+Texts, and no<BR>Back-Cover Texts. A copy of the license is included
+in the file named<BR>&quot;copyright&quot; which might be distributed
+along with this document or it can be obtained<BR>electronically at
+www.fsf.org or www.opensource.org/licenses</FONT></P>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

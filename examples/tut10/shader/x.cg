@@ -1,0 +1,26 @@
+struct appin
+{
+ float4 pos : POSITION;
+ float4 normal  :NORMAL;
+ float4 color :COLOR0;
+ float4 ind: BLENDINDICES;
+};
+struct vertout
+{
+ float4 HPos : POSITION;
+ float4 Color : COLOR0;
+};
+
+
+vertout main(appin IN,uniform float4x4 ModelViewProj,
+	uniform float3x4 junk[26])
+{
+  vertout OUT;
+  OUT.HPos = mul(ModelViewProj, IN.pos);
+  OUT.HPos.xyz = mul(junk[IN.ind.x],OUT.HPos);
+  OUT.HPos.xyz = mul(junk[IN.ind.y],OUT.HPos);
+  OUT.HPos.xyz = mul(junk[IN.ind.z],OUT.HPos);
+  OUT.HPos.xyz = mul(junk[IN.ind.w],OUT.HPos);
+  OUT.Color = IN.color;
+  return OUT; 
+}
