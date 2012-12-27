@@ -22,6 +22,10 @@ SET (LIBRARY ngx)
 
 SET(LIBRARY_SRCS
     Engine.cpp
+    View.cpp
+    Video.cpp
+    Sound.cpp
+    Input.cpp
     )
 
 #set (INTERNAL_LIBRARIES ${INTERNAL_LIBRARIES}
