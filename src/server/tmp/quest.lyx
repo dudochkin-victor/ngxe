@@ -1,0 +1,225 @@
+#LyX 1.6.10 created this file. For more info see http://www.lyx.org/
+\lyxformat 345
+\begin_document
+\begin_header
+\textclass report
+\use_default_options true
+\language russian
+\inputencoding auto
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\cite_engine basic
+\use_bibtopic false
+\paperorientation portrait
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\headheight 1cm
+\headsep 1cm
+\footskip 1cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\defskip medskip
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\author "" 
+\author "" 
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Квестовый движок
+\end_layout
+
+\begin_layout Standard
+Система квестового движка имеет регистровую структуру.
+ В наличии регистры A, B, C, D.
+ В регистре А должен всегда лежать актульный общий контекст пользователя,
+ т.е.
+ все данные относящиеся к пользователю.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename quest-engeine.svg
+	width 95line%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Устройство контекста
+\end_layout
+
+\begin_layout Standard
+Контекст фактически многоуровневый массив.
+ Начальные уровни, которого типизированны.
+\end_layout
+
+\begin_layout Standard
+1.
+ Уровень 
+\begin_inset Quotes eld
+\end_inset
+
+Контекст
+\begin_inset Quotes erd
+\end_inset
+
+ содержит массив объектов имеющих идентификаторы.
+\end_layout
+
+\begin_layout Standard
+2.
+ Уровень 
+\begin_inset Quotes eld
+\end_inset
+
+Объекта
+\begin_inset Quotes erd
+\end_inset
+
+ содержит массив свойств идентитифицируемых по ключу свойства.
+\end_layout
+
+\begin_layout Standard
+3.
+ Уровень 
+\begin_inset Quotes eld
+\end_inset
+
+Свойства
+\begin_inset Quotes erd
+\end_inset
+
+ является регистром (в понятиях 1с) и содержит старое и новое значение.
+\end_layout
+
+\begin_layout Standard
+P.S.
+ Объект обязательно должен содержать свойство 
+\begin_inset Quotes eld
+\end_inset
+
+type
+\begin_inset Quotes erd
+\end_inset
+
+, определяющее его тип.
+\end_layout
+
+\begin_layout Subsection
+Механизм обработки инструкций
+\end_layout
+
+\begin_layout Standard
+Инструкция условия в базе данных хранится в нескольких полях:
+\end_layout
+
+\begin_layout Itemize
+in
+\end_layout
+
+\begin_layout Itemize
+out
+\end_layout
+
+\begin_layout Itemize
+cmd
+\end_layout
+
+\begin_layout Itemize
+param
+\end_layout
+
+\begin_layout Itemize
+cond
+\end_layout
+
+\begin_layout Itemize
+value
+\end_layout
+
+\begin_layout Standard
+Инструкция условия не меняет состояния Аккамулятора а лишь может производить
+ выборки в B, C и D из А-ккамулятора, сравнивая свойства (param) со значением
+ (value) инструкции по условию (cond).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename instruction.svg
+	width 50text%
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Если после условий остается состояние регистров, то его нужно сопоставить
+ задаче, для того чтобы сохранить выборку в условиях и инструкциях.
+\end_layout
+
+\begin_layout Standard
+В регистре А общий контекст пользователя, и он должен всегда там находится
+ и быть актуальным, т.е.
+ его сохранять не надо.
+\end_layout
+
+\begin_layout Standard
+Регистры B, C и D содержат выборки для исполнения инструкций и проверок
+ условий.
+ Так как действия происходят над ссылками и структура контента 2-х уровневая,
+ то нужно лищь хранить идентификаторы объектов контекста регистров BCD.
+ Фактически хранить их в user_tasks.
+ 
+\end_layout
+
+\begin_layout Standard
+В случае не триггерной задачи есть вариант выделить еще один регистр T для
+ цели задачи.
+\end_layout
+
+\begin_layout Standard
+Инструкция фактически является черным ящиком и внутри нее не известно откуда
+ беруться данные и куда они попадают.
+ Эту задачу решает механизм выборки.
+\end_layout
+
+\begin_layout Standard
+Исполнение инструкций условий является успешным, только в том случае, если
+ на выходе есть результат.
+ Инструкция исполнения может не возвращать результат если она не имеет на
+ выходе регистра назначения.
+ Т.е.
+ использовать инструкции исполнения с установленным регистром назначения
+ желательно меньше.
+\end_layout
+
+\end_body
+\end_document

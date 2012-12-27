@@ -1,0 +1,17 @@
+{
+"1":{"in":"B","cmd":"SET","param":"coins","val":50000,"client_cmd":"","client_param":"","out":""},
+"2":{"in":"B","cmd":"SET","param":"accumulated","val":0,"client_cmd":"","client_param":"","out":""},
+"3":{"in":"B","cmd":"SET","param":"plundered","val":0,"client_cmd":"","client_param":"","out":""},
+"4":{"in":"B","cmd":"SET","param":"attacked","val":0,"client_cmd":"","client_param":"","out":""},
+"5":{"in":"B","cmd":"SET","param":"invited","val":0,"client_cmd":"","client_param":"","out":""},
+"6":{"in":"B","cmd":"SET","param":"friendattacked","val":0,"client_cmd":"","client_param":"","out":""},
+"7":{"in":"B","cmd":"SET","param":"built","val":0,"client_cmd":"","client_param":"","out":""},
+"8":{"in":"A","cmd":"INIT","param":"","val":1,"client_cmd":"","client_param":"","out":"C"},
+"9":{"in":"A","cmd":"INIT","param":"","val":2,"client_cmd":"","client_param":"","out":"C"},
+"10":{"in":"A","cmd":"INIT","param":"","val":3,"client_cmd":"","client_param":"","out":"C"},
+"11":{"in":"A","cmd":"INIT","param":"","val":4,"client_cmd":"","client_param":"","out":"C"},
+"12":{"in":"A","cmd":"INIT","param":"","val":5,"client_cmd":"","client_param":"","out":"C"},
+"13":{"in":"A","cmd":"INIT","param":"","val":6,"client_cmd":"","client_param":"","out":"C"},
+"14":{"in":"A","cmd":"INIT","param":"","val":7,"client_cmd":"","client_param":"","out":"C"},
+"15":{"in":"A","cmd":"INIT","param":"","val":8,"client_cmd":"","client_param":"","out":"C"}
+}

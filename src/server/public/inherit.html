@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/style.css" />
+<script type="text/javascript">
+	Pers = function() {
+	};
+	
+	Pers.prototype = Image();
+	Pers.prototype.constructor = function() {
+		var self = this;
+		self.type = "Pers";
+		self.go = function() {
+			console.log("A Pers is going...");
+		}
+	};
+	Pers.prototype.isJapaneseCar = true;
+	var t = new Pers();
+	console.log(t instanceof Pers);
+	console.log(t instanceof Image);
+</script>
+<style type="text/css">
+.style1 {
+	font-family: "Courier New", Courier, monospace;
+}
+</style>
+</head>
+<body bgcolor="#000000">
+	<canvas id="canvas"></canvas>
+</body>
+</html>
+

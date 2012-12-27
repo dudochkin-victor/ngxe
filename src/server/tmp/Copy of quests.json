@@ -1,0 +1,38 @@
+{ "0" : {
+	"title" : "Init Quest",
+	"triggers" : [{
+		"1":{"object" : "personage", "cmd":"SELECT","param":"type","condition":"==","val":"0"},
+		"2":{"object" : "personage", "cmd":"SELECT","param":"level","condition":"==","val":"0"}
+		}],
+	"instructions" : {
+			"0":{
+				"contditions" : [{"object" : "personage","cmd":"SELECT","param":"level","condition":">","val":"1"}],
+				"steps" : 
+					{
+					"1":{"object" : "personage","cmd":"SET","param":"coins","val":50000,"client_cmd":"","client_param":""},
+					"2":{"object" : "personage","cmd":"SET","param":"accumulated","val":0,"client_cmd":"","client_param":""},
+					"3":{"object" : "personage","cmd":"SET","param":"plundered","val":0,"client_cmd":"","client_param":""},
+					"4":{"object" : "personage","cmd":"SET","param":"attacked","val":0,"client_cmd":"","client_param":""},
+					"5":{"object" : "personage","cmd":"SET","param":"invited","val":0,"client_cmd":"","client_param":""},
+					"6":{"object" : "personage","cmd":"SET","param":"friendattacked","val":0,"client_cmd":"","client_param":""},
+					"7":{"object" : "personage","cmd":"SET","param":"built","val":0,"client_cmd":"","client_param":""},
+					"8":{"object" : "personage","cmd":"SET","param":"level","val":1,"client_cmd":"","client_param":""}
+					},
+				"next" : 1,
+				"or" : 2
+			},
+			"1":{
+				"steps" : 
+					{
+					"1":{"object" : "personage","cmd":"SET","param":"coins","val":150000,"client_cmd":"","client_param":""}
+					}
+			},
+			"2":{
+				"steps" : 
+					{
+					"1":{"object" : "personage","cmd":"SET","param":"coins","val":20000,"client_cmd":"","client_param":""}
+					}
+			}
+		}
+	}
+}

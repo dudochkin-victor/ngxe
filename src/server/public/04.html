@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="../rpg-beta-2.js"></script> 
+	<script>
+		var rpg;
+		RPGJS.loadPath = "../rpgjs/core/";
+		RPGJS.load(function() {
+			rpg = new Rpg("canvas_rpg");
+ 
+			rpg.addAction('skill', {
+				suffix_motion: [''], 
+				duration_motion: 1, 
+				block_movement: true,
+				wait_finish: 5,
+				speed: 25,
+				keypress: [Input.A],
+				onStart: function() {
+					rpg.animations['Thunder 1'].setPosition(8, 6);
+					rpg.animations['Thunder 1'].play();
+				}
+			});
+ 
+			rpg.setGraphicAnimation(192, 192);
+			rpg.addAnimation({
+				name: 'Thunder 1',
+				graphic: '017-Thunder01.png',
+				sound: '123-Thunder01.ogg',
+				frames: [
+					[{pattern: 1, opacity: 100}],
+					[{pattern: 1, opacity: 255}],
+					[{pattern: 2, opacity: 200}],
+					[{pattern: 2, opacity: 255}],
+					[{pattern: 1, opacity: 150}],
+					[{pattern: 1, opacity: 255}],
+					[{pattern: 2, opacity: 100}],
+					[{pattern: 1, opacity: 255}]
+				]
+			});
+ 
+			rpg.loadMap('MAP001', {
+				tileset: '040-Tower02.png',
+				autotiles: ['053-Wall01.png'],
+				player:  {
+					x: 13, 
+					y: 5,	
+					filename : '001-Fighter01.png',
+					direction: 'left',
+					actions: ['skill']
+				},
+ 
+			}, function() {
+				rpg.setScreenIn("Player"); 
+			});
+ 
+		});
+	</script>	
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>
+

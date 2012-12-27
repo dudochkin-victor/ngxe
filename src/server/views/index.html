@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Fallen</title>
+<link href="/css/bootstrap.css" rel="stylesheet"/>
+<link rel="stylesheet" href="css/style.css">
+<script src="/js/jquery-1.6.js"></script>
+<script src="/js/bootstrap-modal.js"></script>
+<!-- script type="text/javascript" src="UILib.js"></script-->
+<script type="text/javascript" src="sprite.js"></script>
+<script type="text/javascript" src="engine.js"></script>
+<script src="/rpg-beta-2.js"></script>
+<!-- script type="text/javascript">
+	window.onload = fallen_main; // Call the main() function when the window has been loaded
+</script-->
+<style type="text/css">
+.style1 {
+	font-family: "Courier New", Courier, monospace;
+}
+body {
+	font-size: 62.5%;
+	font-family: Georgia, serif;
+	overflow: hidden;
+	background: #000000;
+}
+
+.bg {
+	width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -100;
+}
+#content {
+	background: url(images/transpBlack.png);
+	padding: 0px 0 0px 0;
+	position: relative;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	text-align: center;
+	color: white;
+	font-size: 18px;
+	/*z-index: 6000;*/
+}
+
+.tooltip {
+	background-color: rgba(255, 255, 210, .6);
+	padding: 5px;
+	font-size: 10px;
+	font-family: Arial;
+	border-radius: 5px;
+	display: none;
+}
+
+</style>
+</head>
+<body>
+<!-- div id="content"-->
+	<div id="modal" class="modal hide fade">
+		<div id="modal-header" class="modal-header">
+			<a href="#" class="close">&times;</a>
+			<h3></h3>
+		</div>
+		<div id="modal-body" class="modal-body">
+			<p></p>
+		</div>
+		<div id="modal-footer" class="modal-footer">
+			<a href="#" id="modal-apply" class="btn primary" onClick="hideModal();">Apply</a>
+			<a href="#" id="modal-cancel" class="btn secondary" onClick="hideModal();">Cancel</a>
+		</div>
+	</div>
+	<img id="background" class="bg" src="/intro.jpg" alt=""/>
+	<canvas id="canvas" tabindex="0" contentEditable="true" style="position: absolute; left: 370px; z-index: -1; display: none;"></canvas>
+	
+<!-- /div-->
+</body>
+
+<script>
+		var rpg;
+		RPGJS.loadPath = "/rpgjs/core/";
+		RPGJS.load(function() {
+			fallen_main();
+			rpg = new Rpg("canvas");
+			rpg.addAction('attack', {
+				suffix_motion: ['_SWD'], 
+				duration_motion: 1, 
+				block_movement: true,
+				wait_finish: 5,
+				speed: 25,
+				keypress: [Input.A]
+			});
+			
+			rpg.loadMap('Base', {
+				tileset: '027-Castle03.png',
+				autotiles: ['053-Wall01.png'],
+				player:  {
+					x: 1, 
+					y: 14,
+					regX: 35,
+					regY: 68,
+					direction: 'right',			
+					filename: 'Hero.png',
+					actions: ['attack']
+				},
+				transfert: [{
+					x: 17,
+					y: 0,
+					map: 'Base2',
+					x_final: 9,
+					y_final: 19,
+					direction: 'up'
+				}]
+			}, loadMap);
+ 
+			rpg.prepareMap('MAP002', {
+				tileset: '027-Castle03.png',
+				autotiles: ['053-Wall01.png'],
+				transfert: [{
+					x: 9,
+					y: 19,
+					map: 'MAP001',
+					x_final: 17,
+					y_final: 0,
+					direction: 'bottom'
+				},
+				{
+					x: 29,
+					y: 18,
+					map: 'MAP003',
+					x_final: 0,
+					y_final: 13,
+					direction: 'right'
+				}]
+			}, loadMap);
+ 
+			rpg.prepareMap('MAP003', {
+				tileset: '027-Castle03.png',
+				autotiles: ['053-Wall01.png'],
+				transfert: [{
+					x: 0,
+					y: 13,
+					map: 'MAP002',
+					x_final: 29,
+					y_final: 18,
+					direction: 'left'
+				}]
+			}, loadMap);
+ 
+			function loadMap() {
+				rpg.player.setTypeMove("tile");
+				rpg.player.useMouse(true);
+				rpg.setScreenIn("Player"); 
+				
+				rpg.addHtmlElement('<div id="tooltip" class="tooltip">It\'s me !</div>', 30, 20, rpg.player);
+				 
+				rpg.bindMouseEvent('over', function(obj) {
+					var tooltip = obj.event.getElementById('tooltip');
+					$(tooltip).fadeIn(); // jQuery
+				}, rpg.player);
+ 
+				rpg.bindMouseEvent('out', function(obj) {
+					var tooltip = obj.event.getElementById('tooltip');
+					$(tooltip).fadeOut(); // jQuery
+				}, rpg.player);
+			}
+ 
+			Input.lock(rpg.canvas, true);
+		});	
+	</script>
+</html>
+

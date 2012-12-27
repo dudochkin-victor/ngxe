@@ -1,0 +1,29 @@
+Loading ...
+
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="../rpg-beta-2.js"></script> 
+	<script>
+		var rpg;
+		RPGJS.loadPath = "../rpgjs/core/";
+		RPGJS.load(function() {
+			rpg = new Rpg("canvas_rpg");
+			rpg.loadMap('MAP001', {
+				tileset: '023-FarmVillage01.png',
+				player:  {
+					x: 26, 
+					y: 18, 
+					filename: '001-Fighter01.png'
+				}
+			}, function () { 
+				rpg.setScreenIn("Player"); 
+			});
+		});	
+	</script>	
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>
+

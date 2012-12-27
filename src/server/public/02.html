@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script src="/rpg-beta-2.js"></script>
+	<style>
+ 
+		.tooltip {
+			background-color: rgba(255, 255, 210, .6);
+			padding: 5px;
+			font-size: 10px;
+			font-family: Arial;
+			border-radius: 5px;
+			display: none;
+		}
+ 
+	</style>
+	<script>
+		var rpg;
+		RPGJS.loadPath = "/rpgjs/core/";
+		RPGJS.load(function() {
+			rpg = new Rpg("canvas_rpg");
+ 
+			rpg.addAction('attack', {
+				suffix_motion: ['_SWD'], 
+				duration_motion: 1, 
+				block_movement: true,
+				wait_finish: 5,
+				speed: 25,
+				keypress: [Input.A]
+			});
+			
+			rpg.loadMap('MAP001', {
+				tileset: '027-Castle03.png',
+				autotiles: ['053-Wall01.png'],
+				player:  {
+					x: 1, 
+					y: 14,
+					regX: 35,
+					regY: 68,
+					direction: 'right',			
+					filename: 'Hero.png',
+					actions: ['attack']
+				},
+				transfert: [{
+					x: 17,
+					y: 0,
+					map: 'MAP002',
+					x_final: 9,
+					y_final: 19,
+					direction: 'up'
+				}]
+			}, loadMap);
+ 
+			rpg.prepareMap('MAP002', {
+				tileset: '027-Castle03.png',
+				autotiles: ['053-Wall01.png'],
+				transfert: [{
+					x: 9,
+					y: 19,
+					map: 'MAP001',
+					x_final: 17,
+					y_final: 0,
+					direction: 'bottom'
+				},
+				{
+					x: 29,
+					y: 18,
+					map: 'MAP003',
+					x_final: 0,
+					y_final: 13,
+					direction: 'right'
+				}]
+			}, loadMap);
+ 
+			rpg.prepareMap('MAP003', {
+				tileset: '027-Castle03.png',
+				autotiles: ['053-Wall01.png'],
+				transfert: [{
+					x: 0,
+					y: 13,
+					map: 'MAP002',
+					x_final: 29,
+					y_final: 18,
+					direction: 'left'
+				}]
+			}, loadMap);
+ 
+			function loadMap() {
+				rpg.player.setTypeMove("tile");
+				rpg.player.useMouse(true);
+				rpg.setScreenIn("Player"); 
+				
+				rpg.addHtmlElement('<div id="tooltip" class="tooltip">It\'s me !</div>', 30, 20, rpg.player);
+				 
+				rpg.bindMouseEvent('over', function(obj) {
+					var tooltip = obj.event.getElementById('tooltip');
+					$(tooltip).fadeIn(); // jQuery
+				}, rpg.player);
+ 
+				rpg.bindMouseEvent('out', function(obj) {
+					var tooltip = obj.event.getElementById('tooltip');
+					$(tooltip).fadeOut(); // jQuery
+				}, rpg.player);
+			}
+ 
+			Input.lock(rpg.canvas, true);
+		});	
+	</script>	
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>

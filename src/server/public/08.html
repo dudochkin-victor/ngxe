@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="../rpg-beta-2.js"></script> 
+	<script>
+		var rpg;
+		RPGJS.loadPath = "../rpgjs/core/";
+		RPGJS.load(function() {
+			rpg = new Rpg("canvas_rpg");
+			rpg.loadMap('MAP001', {
+				tileset: '005-Beach01.png',
+				events: ['EV001', 'EV002', 'EV003'],
+				player:  {
+					x: 14, 
+					y: 8,
+					direction: 'right',
+					filename: '001-Fighter01.png'
+				}
+			}, function () { 
+				rpg.setScreenIn("Player"); 
+			});
+ 
+			Input.lock(rpg.canvas, true);
+		});
+ 
+	</script>	
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>
+

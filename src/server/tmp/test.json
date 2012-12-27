@@ -1,0 +1,81 @@
+var asd = {
+	"b173bd0d-a83a-47cf-a60b-7157e12a11db" : {
+		"text" : "Начало игры",
+		"type" : "STATE",
+		"logics" : {
+			"ec18a39c-f0e3-4129-b72b-447184a79fd8" : {
+				"type" : "TRIGGER",
+				"text" : "Не выбрана расса, пол и тип персонажа",
+				"x" : 472.0023192493529,
+				"y" : 83.32933838925288,
+				"next" : "ab740ff3-1dea-41b7-903c-889ddf65c95a",
+				"or" : "f366c92e-d0e9-440f-82d7-44efea90689d",
+				"conditions" : [ {
+					"object" : "personage",
+					"cmd" : "SELECT",
+					"param" : "lvl",
+					"condition" : "==",
+					"val" : "0"
+				} ]
+			},
+			"ab740ff3-1dea-41b7-903c-889ddf65c95a" : {
+				"type" : "INSTRUCTION",
+				"text" : "Выбираем рассу",
+				"x" : 842.7418873637989,
+				"y" : 279.24604203787476,
+				"next" : "52e07c9b-67f8-492b-83cd-194ed06d725d",
+				"conditions" : [ {
+					"object" : "personage",
+					"cmd" : "SELECT",
+					"param" : "lvl",
+					"condition" : "==",
+					"val" : "0"
+				} ],
+				"steps" : [ {
+					"object" : "personage",
+					"cmd" : "",
+					"param" : "",
+					"val" : "",
+					"client_cmd" : "startSelectRace",
+					"client_param" : ""
+				} ]
+			},
+			"52e07c9b-67f8-492b-83cd-194ed06d725d" : {
+				"type" : "INSTRUCTION",
+				"text" : "Устанавливаем уровень",
+				"x" : 860.3872252471103,
+				"y" : 408.99657471671424,
+				"conditions" : [ {
+					"object" : "personage",
+					"cmd" : "SELECT",
+					"param" : "race",
+					"condition" : "!=",
+					"val" : "0"
+				} ],
+				"steps" : [ {
+					"object" : "personage",
+					"cmd" : "SET",
+					"param" : "lvl",
+					"val" : "1",
+					"client_cmd" : "",
+					"client_param" : ""
+				} ]
+			},
+			"f366c92e-d0e9-440f-82d7-44efea90689d" : {
+				"type" : "INSTRUCTION",
+				"text" : "Не сработало",
+				"x" : 432.4699008280272,
+				"y" : 280.5132255325717,
+				"conditions" : [],
+				"steps" : [ {
+					"object" : "personage",
+					"cmd" : "",
+					"param" : "",
+					"val" : "",
+					"client_cmd" : "alert",
+					"client_param" : "Вы уже здесь были"
+				} ]
+			}
+		}
+	}
+};

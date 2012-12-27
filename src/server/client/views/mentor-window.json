@@ -1,0 +1,33 @@
+{
+	"mentor-window" : {
+		"element" : "div",
+		"style" : {
+			"position": "fixed",
+			"background" : "#FFFFFF",
+			"top" : "173px",
+			"right" : "0px",
+			"bottom" : "212px",
+			"padding" : "10px",
+			"display" : "block",
+			"minHeight" : "148px",
+			"minWidth" : "220px",
+			"display" : "none"
+		},
+		"text" : "Mentor",
+		"className" : "rounded shadowed",
+		"childs" : {
+			"" : {
+				"element" : "br"
+			},
+			"mentorWIcon" : {
+				"element" : "img",
+				"src" : "/img/mentor.png",
+				"onclick" : "toggleMentor"
+			},
+			"mentor_message" : {
+				"element" : "p",
+				"text" : "mentor message"
+			}
+		}
+	}
+}

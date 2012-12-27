@@ -1,0 +1,4 @@
+{
+"1":{"in":"A","cmd":"SELECT","param":"type","condition":"==","val":"0","out":"B"},
+"2":{"in":"B","cmd":"SELECT","param":"gametime","condition":">=","val":"150","out":"B"}
+}

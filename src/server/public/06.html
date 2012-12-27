@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script src="../rpg-beta-2.js"></script> 
+	<script>
+		var rpg;
+		RPGJS.loadPath = "../rpgjs/core/";
+		RPGJS.load(function() {
+			rpg = new Rpg("canvas_rpg");
+			rpg.loadMap('MAP001', {
+				tileset: '012-PortTown02.png',
+				autotiles: ['053-Wall01.png'],
+				events: ['EV001'],
+				player:  {
+					x: 3, 
+					y: 5,
+					direction: 'right',
+					filename: '001-Fighter01.png'
+				}
+			}, function () { 
+				rpg.setScreenIn("Player"); 
+ 
+				rpg.addHtmlElement('<div id="tooltip" class="tooltip">It\'s me !</div>', -5, -25, rpg.player);
+ 
+				rpg.bindMouseEvent('over', function(obj) {
+					var tooltip = obj.event.getElementById('tooltip');
+					$(tooltip).fadeIn(); // jQuery
+				}, rpg.player);
+ 
+				rpg.bindMouseEvent('out', function(obj) {
+					var tooltip = obj.event.getElementById('tooltip');
+					$(tooltip).fadeOut(); // jQuery
+				}, rpg.player);
+ 
+			});
+ 
+			Input.lock(rpg.canvas, true);
+		});
+ 
+	</script>	
+	<style>
+ 
+		.tooltip {
+			background-color: rgba(255, 255, 210, .6);
+			padding: 5px;
+			font-size: 10px;
+			font-family: Arial;
+			border-radius: 5px;
+			display: none;
+		}
+ 
+	</style>
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>
+

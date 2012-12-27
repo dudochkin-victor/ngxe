@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="../rpgjs/rpg-beta-2.js"></script> 
+	<script>
+		var rpg;
+		RPGJS.loadPath = "../rpgjs/core/";
+		RPGJS.load({
+			plugins: ['title']
+		}, function() {
+			rpg = new Rpg("canvas_rpg");
+ 
+			var scene = new Scene_Title(rpg);
+			scene.onExit = function(init) {	
+				if (!init) return;
+				rpg.loadMap('MAP001', {
+					tileset: 'forest.png',
+					autotiles: ['002-G_Shadow01.png', '002-G_Shadow01.png', '003-G_Ground01.png', '004-G_Ground02.png', '011-G2_Ground02.png'],
+					events: ['EV001'],
+					player:  {
+						x: 12, 
+						y: 20,
+						direction: 'up',					
+						filename: '001-Fighter01.png'
+					}
+				}, loadMap);
+ 
+			}
+ 
+		});
+ 
+		function loadMap() {
+			rpg.bind("eventCall_save", function() {
+				rpg.save(1);
+				window.location.reload();
+			});
+			rpg.setScreenIn("Player"); 
+		}
+ 
+	</script>	
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>
+

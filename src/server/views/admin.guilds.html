@@ -1,0 +1,270 @@
+<div style="margin-right: 10px; margin-left: 10px; height: 100%" id="usersframe">
+	<h1 style="margin-top: 60px; margin-left: 10px;">Гильдии
+	<a href="" data-controls-modal="modal" data-backdrop="static" data-keyboard="true" onclick="return NewGuild();" class="btn success">Add Guild</a>
+	</h1>
+	<script id="itemTemplate" type="text/x-jquery-tmpl">
+	<tr>
+		<td data-getfrom="[id]"></td>
+		<td data-getfrom="[title]"></td>
+		<td data-getfrom="[body]"></td>
+	</tr>
+	</script>
+	<script id="paginationTemplate" type="text/x-jquery-tmpl">
+		<li class="{{=class}}"><a href="#">{{=title}}</a></li>
+	</script>
+	<div id="usertable">
+		<table class="zebra-striped" id="itemTable">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th class="blue">title</th>
+					<th class="blue">body</th>
+				</tr>
+			</thead>
+			<tbody id="itemList">
+			</tbody>
+		</table>
+	</div>
+
+	<div class="pagination">
+		<ul id="pagination">
+		</ul>
+	</div>
+</div>
+
+<div id="userContext" class="contextmenu">
+	<ul class="cmenu">
+	</ul>
+</div>
+<script type="text/javascript">
+	var userContext = document.getElementById('userContext'); // makes my life easier
+	$("#itemTemplate").template("itemTemplate");
+	$("#paginationTemplate").template("paginationTemplate");
+	var users = [];
+	var pages = [];
+	
+	jsonRPC({
+		"method" : "admin.guilds",
+		"params" : null,
+		"id" : "id value (optional)"
+	}, onItems, onError);
+	$("#pagination").delegate("li", "click", function() {
+		console.log($(this));
+	});
+	
+	function onItems(data) {
+		if (data.result.data) {
+			numpages = data.result.data[0].count/25;
+			curpage = data.result.current;
+			pages = [];
+			if (numpages > 1)
+			{
+				var firstpage = 0;
+				var lastpage = 0;
+				
+				if (curpage-3 > 0)
+				{
+					if (curpage+3<=numpages)
+					{
+						firstpage = curpage-4;
+						lastpage = curpage+5;
+					} else
+					{
+						firstpage = (numpages-7 > 0)?(numpages-7):0;
+						lastpage = numpages+2;
+					}
+				} else
+				{
+					if (numpages > 6)
+					{
+						firstpage = 0;
+						lastpage = 9;
+					} else
+					{
+						firstpage = 0;
+						lastpage = numpages+2;
+					}
+				}
+				
+				for (var i = firstpage; i<lastpage; i++)
+				{
+					switch (i){
+					case firstpage:
+						if (curpage == firstpage+1)
+							pages.push({'title' : 'Previos', 'class' : 'prev disabled'});
+						else
+							pages.push({'title' : 'Previos', 'class' : 'prev'});
+						break;
+					case lastpage-1:
+						if (curpage == lastpage-2)
+							pages.push({'title' : 'Next', 'class' : 'next disabled'});
+						else
+							pages.push({'title' : 'Next', 'class' : 'next'});
+						break;
+					default:
+						if (i == curpage)
+							pages.push({'title' : i, 'class': 'active'});
+						else
+							pages.push({'title' : i});
+						break;
+					}
+				}
+			}
+
+			$('#pagination').link(pages, 'paginationTemplate');
+			users = data.result.data;
+			$('#itemList').link(users, 'itemTemplate');
+
+			$("table#itemTable").trigger("update");  
+		}
+	}
+	$("table#itemTable").tablesorter(); 
+
+	//context menu
+	var usertable = document.getElementById('itemList'); // makes my life easier
+	if (usertable.addEventListener) {
+		usertable.addEventListener('contextmenu', function(e) {
+			if (_replaceContext)
+				UserContextShow(e);
+			else
+				e.preventDefault();
+		}, false);
+	} else {
+		document.attachEvent('oncontextmenu', function() {
+			window.event.returnValue = false;
+		});
+	}
+	
+	var usersframe = document.getElementById('usersframe');
+	usersframe.onmousedown = userDown;
+	_replaceContext = true;
+	
+	function userDown(e)
+	{
+		_mouseOverContext = false;
+		userContext.style.display = 'none';
+	}
+	
+	var userElement = null;
+	function UserContextShow(event)
+	{
+		_replaceContext = true;
+		if (_noContext || _mouseOverContext)
+			return;
+
+		// IE is evil and doesn't pass the event object
+		if (event == null)
+			event = window.event;
+
+		// we assume we have a standards compliant browser, but check if
+		// we have IE
+		var target = event.target != null ? event.target : event.srcElement;
+		userElement = $(target).parent();
+		if (_replaceContext) {
+			// document.body.scrollTop does not work in IE
+			var scrollTop = document.body.scrollTop ? document.body.scrollTop
+					: document.documentElement.scrollTop;
+			var scrollLeft = document.body.scrollLeft ? document.body.scrollLeft
+					: document.documentElement.scrollLeft;
+
+			userContext.innerHTML = '<ul class="cmenu">'
+					+ '<li><a href="" data-controls-modal="modal" data-backdrop="static" data-keyboard="true" onclick="return NewGuild();">Add</a></li>'
+					+ '<li><a href="" data-controls-modal="modal" data-backdrop="static" data-keyboard="true" onclick="return EditGuild();">Edit</a></li>'
+					+ '<li><a href="" data-controls-modal="modal" data-backdrop="static" data-keyboard="true" onclick="return DeleteGuild();">Delete</a></li>'
+					+ '</ul>';
+					
+			userContext.style.display = 'none';
+			userContext.style.left = event.clientX + scrollLeft + 'px';
+			userContext.style.top = event.clientY + scrollTop + 'px';
+			userContext.style.display = 'block';
+
+			//_replaceContext = false;
+		}
+		if (event.preventDefault)
+			event.preventDefault();
+		event.returnValue = false;
+		
+		return false;
+	}
+	
+	function EditGuild()
+	{
+		kids = userElement.children();
+		title = $(kids[1]).text();
+		body = $(kids[2]).text();
+		$('#modal-header h3:first').text('Edit user \'' + title + '\'');
+		$('#modal-body').html('<p>'+ 
+				'Identifier<br/><input id="title" value="'+title+'"><br/>'+
+				'Description<br/><input id="body" value="'+body+'"><br/>'+
+				'<p>');
+		$('#modal-apply').unbind("click").click(function() {
+			$('#modal').modal('hide');
+			jsonRPC({
+				"method" : "admin.updateGuild",
+				"params" : [ $(kids[0]).text(), $('#title').val(), $('#body').val() ],
+				"id" : "id value (optional)"
+			}, function (data) {
+				jsonRPC({
+					"method" : "admin.guilds",
+					"params" : null,
+					"id" : "id value (optional)"
+				}, onItems, onError);
+			}, onError);
+			
+		});
+		_mouseOverContext = false;
+		userContext.style.display = 'none';
+		return false;
+	}
+	
+	function NewGuild()
+	{
+		$('#modal-header h3:first').text('New Guild');
+		$('#modal-body').html('<p>'+ 
+				'Identifier<br/><input id="title" value=""><br/>'+
+				'Description<br/><input id="body" value=""><br/>'+
+				'<p>');
+		$('#modal-apply').unbind("click").click(function() {
+			$('#modal').modal('hide');
+			jsonRPC({
+				"method" : "admin.updateGuild",
+				"params" : [ null, $('#title').val(), $('#body').val() ],
+				"id" : "id value (optional)"
+			}, function (data) {
+				jsonRPC({
+					"method" : "admin.guilds",
+					"params" : null,
+					"id" : "id value (optional)"
+				}, onItems, onError);
+			}, onError);
+			
+		});
+		_mouseOverContext = false;
+		userContext.style.display = 'none';
+		return false;
+	}
+	
+	function DeleteGuild()
+	{
+		kids = userElement.children();
+		$('#modal-header h3:first').text('Delete Guild \'' + $(kids[1]).text() + '\'');
+		$('#modal-body').html('<p>Are you sure?<p>');
+		$('#modal-apply').unbind("click").click(function() {
+			$('#modal').modal('hide');
+			jsonRPC({
+				"method" : "admin.deleteGuild",
+				"params" : $(kids[0]).text(),
+				"id" : "id value (optional)"
+			}, function (data) {
+				jsonRPC({
+					"method" : "admin.guilds",
+					"params" : null,
+					"id" : "id value (optional)"
+				}, onItems, onError);
+			}, onError);
+		});
+		_mouseOverContext = false;
+		userContext.style.display = 'none';
+		return false;
+	}
+</script>

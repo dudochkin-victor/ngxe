@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+<meta http-equiv="content-type"
+	content="text/html; charset=windows-1251">
+<title></title>
+<link href="css/bootstrap.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+<script src="/js/jquery-1.6.js"></script>
+
+<script type="text/javascript">
+	function hideAll(){
+		$('#personage-tab').hide();
+		$('#inventory-tab').hide();
+		$('#map-tab').hide();
+		$('#shop-tab').hide();
+		$('#quest-tab').hide();
+		$('#clan-tab').hide();
+		$('#duel-tab').hide();
+		$('#premium-tab').hide();
+	}
+	
+	function toggleTab(tab){
+		hideAll();
+		$('#'+tab+'-tab').show();
+	}
+	function toggleInventoryTab(){
+		toggleTab('inventory');
+	}
+	function toggleMapTab(){
+		toggleTab('map');
+	}
+	function toggleShopTab(){
+		toggleTab('shop');
+	}
+	function togglePersonageTab(){
+		toggleTab('personage');
+	}
+	function toggleClanTab(){
+		toggleTab('clan');
+	}
+	function toggleDuelTab(){
+		toggleTab('duel');
+	}
+	function toggleQuestTab(){
+		toggleTab('quest');
+	}
+	function togglePremiumTab(){
+		toggleTab('premium');
+	}
+</script>
+
+</head>
+<body>
+	<div id="best-window" class="rounded bordered shadowed control-panel">
+		<img class="bgimage" src="/img/bg.jpg" />
+		<div id="stats">
+			<div id="personageIcon" style="background: url('/img/iAvatarM.png') no-repeat center;float: left;" onclick="togglePersonageTab();">
+				<img id="personageIcon" src="/img/CharPanelBg.png" onclick="togglePersonageTab();"/>
+				<div style="position: absolute; top: 66px; left: 69px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em; width: 15px; text-align: center;"><strong id="LVL">25</strong></div>
+			</div>
+			<div style="float: left; padding-top: 10px;">
+				<div id="HP" style="background: url('/img/RedProgress.png') no-repeat 0 0; background-size: 0% 100%;">
+					<img id="HPIMG" src="/img/CharProgress.png" />
+				</div>
+				<div id="MP" style="background: url('/img/GreenProgress.png') no-repeat 0 0; background-size: 0% 100%;">
+					<img id="MPIMG" src="/img/CharProgress.png" />
+				</div>
+				<div id="SP" style="background: url('/img/BlueProgress.png') no-repeat 0 0; background-size: 0% 100%;">
+					<img id="SPIMG" src="/img/CharProgress.png" />
+				</div>
+			</div>
+		</div>
+		<div style="float: left; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em; padding-top: 7px; padding-left: 3px;">
+			<p id="HPLABEL" style="margin: 5px 0px"><b>HP</b></p>
+			<p id="MPLABEL" style="margin: 5px 0px"><b>MP</b></p>
+			<p id="SPLABEL" style="margin: 5px 0px"><b>SP</b></p>
+		</div>
+		<div style="float: right; padding: 20px 5px 0px;">
+			<img id="premiumIcon" class="shadow rounded-icon" src="/img/premium.png" onclick="togglePremiumTab();"/>
+		</div>
+		<br style="clear: both;"/> 
+		<div id="icons" style="text-align: center;">
+			<img id="inventoryIcon" class="shadow rounded-icon" src="/img/iInventory.png" onclick="toggleInventoryTab();" /> 
+			<img id="mapIcon" class="shadow rounded-icon" src="/img/iMap.png" onclick="toggleMapTab();" /> 
+			<img id="shopIcon" class="shadow rounded-icon" src="/img/shop.png"  onclick="toggleShopTab();" /> 
+			<img id="questIcon" class="shadow rounded-icon" src="/img/iQuest.png"  onclick="toggleQuestTab();" /> 
+			<img id="clanIcon" class="shadow rounded-icon" src="/img/iClan.png" onclick="toggleClanTab();" />
+			<img id="duelIcon" class="shadow rounded-icon" src="/img/duel.png" onclick="toggleDuelTab();" /> 
+		</div>
+		<div id="personage-tab" class="" style="text-align: center;">
+			<div id="" style="background: url('/img/titles.png') no-repeat center; padding: 10px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em">
+				<b>PERSONAGE</b>
+			</div>
+			<div id="personageImage" style="background: url('/img/pers/w.4.png') no-repeat center; background-size: auto 323px; height: 323px;">
+				<div id="headSlot" class="cell rounded shadowed gradient" style="float: left;" onclick="takeoff(this);" title="Снять">
+				</div>
+				<div id="neckSlot" class="cell rounded shadowed gradient" style="float: right;" onclick="takeoff(this);" title="Снять">
+				</div>
+				<br style="clear: both;"/> 
+				<div id="shouldersSlot" class="cell rounded shadowed gradient" style="float: left;" onclick="takeoff(this);" title="Снять">
+				</div>
+				<div id="handsSlot" class="cell rounded shadowed gradient" style="float: right;" onclick="takeoff(this);" title="Снять">
+				</div>
+				<br style="clear: both;"/>
+				<div id="chestSlot" class="cell rounded shadowed gradient" style="float: left;" onclick="takeoff(this);" title="Снять">
+				</div>
+				<div id="hipSlot" class="cell rounded shadowed gradient" style="float: right;" onclick="takeoff(this);" title="Снять">
+				</div>
+				<br style="clear: both;"/> 
+				<div id="legSlot" class="cell rounded shadowed gradient" style="float: left;" onclick="takeoff(this);" title="Снять">
+				</div>
+				<div id="footSlot" class="cell rounded shadowed gradient" style="float: right;" onclick="takeoff(this);" title="Снять">
+				</div>
+				<br style="clear: both;"/>
+			</div>
+		</div>
+		<div id="inventory-tab" class="hidden" style="text-align: center;">
+			<div id="" style="background: url('/img/titles.png') no-repeat center; padding: 10px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em">
+				<b>INVENTORY</b>
+			</div>
+			<div id="inventoryItems"
+				style="padding: 2px; height: 323px; width: 315px; overflow-y: scroll;">
+				<div class="cell">Inventory</div>
+			</div>
+		</div>
+		<div id="map-tab" class="hidden" style="text-align: center;">
+			<div id="" style="background: url('/img/titles.png') no-repeat center; padding: 10px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em">
+				<b>MAP</b>
+			</div>
+			<div id="mapItems"
+				style="padding: 2px; height: 323px; width: 315px; overflow-y: scroll;">
+				<div id="mapImage" style="background: url('/img/map.png') no-repeat center; height: 800px; width: 800px"></div>
+			</div>
+		</div>
+		<div id="shop-tab" class="hidden" style="text-align: center;">
+			<div id="" style="background: url('/img/titles.png') no-repeat center; padding: 10px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em">
+				<b>SHOP</b>
+			</div>
+			<div id="shopItems"
+				style="padding: 2px; height: 323px; width: 315px; overflow-y: scroll;">
+				<div class="cell">Shop</div>
+			</div>
+		</div>
+		<div id="quest-tab" class="hidden" style="text-align: center;">
+			<div id="" style="background: url('/img/titles.png') no-repeat center; padding: 10px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em" >
+				<b>QUEST</b>
+			</div>
+			<div id="questItems"
+				style="padding: 2px; height: 323px; width: 315px; overflow-y: scroll;">
+				<div class="cell">Quest</div>
+			</div>
+		</div>
+		<div id="clan-tab" class="hidden" style="text-align: center;">
+			<div id="" style="background: url('/img/titles.png') no-repeat center; padding: 10px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em" >
+				<b>CLAN</b>
+			</div>
+			<div id="clanItems"
+				style="padding: 2px; height: 323px; width: 315px; overflow-y: scroll;">
+				<div class="cell">Clan</div>
+			</div>
+		</div>
+		<div id="duel-tab" class="hidden" style="text-align: center;">
+			<div id="" style="background: url('/img/titles.png') no-repeat center; padding: 10px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em" >
+				<b>DUEL</b>
+			</div>
+			<div id="attackUser" style="position: relative; width: 315px; float: right; text-align: center;">
+				<h2>Attack?</h2>
+				<span id="userToAttack" class="label important">
+					asd
+				</span><br/>
+				<a href="#" id="challengeDuel" class="btn warning" onclick="challenge">Challenge</a>
+				<a href="#" id="acceptChallenge" class="btn warning" onclick="acceptChallenge">Fight</a><br/>
+				<a href="#" id="rejectChallenge" class="btn warning" onclick="rejectChallenge">Run Away</a>
+			</div>
+		</div>
+		<div id="premium-tab" class="hidden" style="text-align: center;">
+			<div id="" style="background: url('/img/titles.png') no-repeat center; padding: 10px; color: white; text-shadow: black 1px 1px 2px, red 0 0 1em" >
+				<b>PREMIUM</b>
+			</div>
+			<div id="premiumItems"
+				style="padding: 2px; height: 323px; width: 315px; overflow-y: scroll;">
+				<div class="cell">Buy premium</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

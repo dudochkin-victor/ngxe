@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Admin console</title>
+<link href="/css/bootstrap.css" rel="stylesheet">
+<script src="/js/jquery-1.6.js"></script>
+</head>
+<body>
+	<ul class="breadcrumb">
+		<h2>Login Form</h2>
+	</ul>
+	<div class="clearfix">
+		<label for="login">Login &nbsp;</label>
+		<div class="input">
+			<input class="xlarge" id="login" name="login" size="30" type="text">
+		</div>
+	</div>
+	<legend>&nbsp;</legend>
+	<div class="clearfix">
+		<label for="password">Password &nbsp;</label>
+		<div class="input">
+			<input class="xlarge" id="password" name="password" size="30"
+				type="password">
+		</div>
+	</div>
+	<!-- /clearfix -->
+	<div class="actions">
+		<input class="btn primary" value="login" type="submit"
+			onclick="return test();">&nbsp;
+	</div>
+	<script>
+		function jsonRPC(obj, onData, onError) {
+			$.ajax({
+				contentType : 'application/json',
+				data : JSON.stringify(obj),
+				dataType : 'json',
+				success : onData,
+				error : onError,
+				processData : false,
+				type : 'POST',
+				url : '/jsonrpc/'
+			});
+			return false;
+		}
+		function onData(data) {
+			var code = data.result.code;
+			if (code == 0) location.reload();
+			else
+				console.log("Error: "+ data.result.description);
+		}
+		function onError() {
+			console.log("Device control failed");
+		}
+		function test() {
+			var login = $('#login').val();
+			var password = $('#password').val();
+			jsonRPC({
+				"method" : "admin.login",
+				"params" : [ login, password],
+				"id" : "id value (optional)"
+			}, onData, onError);
+		}
+	</script>
+</body>
+</html>

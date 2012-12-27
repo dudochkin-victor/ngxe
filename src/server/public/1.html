@@ -1,0 +1,409 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Site name</title>
+<link href="css/bootstrap.css" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen"/>
+<script src="js/jquery-1.6.js"></script>
+<script src="js/jquery.form.js"></script>
+<script src="js/jquery.tablesorter.min.js"></script>
+<script src="js/bootstrap-modal.js"></script>
+<script src="js/bootstrap-dropdown.js"></script>
+<script src="js/bootstrap-twipsy.js"></script>
+<script src="js/bootstrap-scrollspy.js"></script>
+<script src="js/bootstrap-tabs.js"></script>
+<script>
+	$(document).ready(function() {
+		window.onresize = onResize;
+		onResize();
+		//select all the a tag with name equal to modal
+		$('a[name=modal]').click(function(e) {
+			//Cancel the link behavior
+			e.preventDefault();
+
+			//Get the A tag
+			var id = $(this).attr('href');
+
+			//Get the screen height and width
+			var maskHeight = $(document).height();
+			var maskWidth = $(window).width();
+
+			//Set heigth and width to mask to fill up the whole screen
+			$('#mask').css({
+				'width' : maskWidth,
+				'height' : maskHeight
+			});
+
+			//transition effect		
+			$('#mask').fadeIn(1000);
+			$('#mask').fadeTo("slow", 0.8);
+
+			//Get the window height and width
+			var winH = $(window).height();
+			var winW = $(window).width();
+
+			//Set the popup window to center
+			$(id).css('top', winH / 2 - $(id).height() / 2);
+			$(id).css('left', winW / 2 - $(id).width() / 2);
+
+			//transition effect
+			$(id).fadeIn(2000);
+		});
+
+		//if close button is clicked
+		$('.window .modal-close').click(function(e) {
+			//Cancel the link behavior
+			e.preventDefault();
+			$('#mask').hide();
+			$('.window').hide();
+		});
+
+		//if mask is clicked
+		/*$('#mask').click(function() {
+			$(this).hide();
+			$('.window').hide();
+		});*/
+
+	});
+
+	function onResize() {
+		var windowHeight = $(document).height();
+		var windowWidth = $(document).width();
+		$('#content').css({
+			'width' : windowWidth,
+			'height' : windowHeight,
+		});
+	}
+
+	function jsonRPC(obj, onData, onError) {
+		$.ajax({
+			contentType : 'application/json',
+			data : JSON.stringify(obj),
+			dataType : 'json',
+			success : onData,
+			error : onError,
+			processData : false,
+			type : 'POST',
+			url : '/jsonrpc/'
+		});
+		return false;
+	}
+</script>
+<style type="text/css">
+
+html {
+	background-color:#000000;
+	height: 100%; 
+	width: 100%;
+}
+
+	span.reference{
+		font-family:Arial;
+		//position:fixed;
+		//left:10px;
+		//bottom:10px;
+		//font-size:11px;
+	}
+	span.reference a{
+		color:#aaa;
+		text-decoration:none;
+		margin-right:20px;
+	}
+	span.reference a:hover{
+		color:#ddd;
+	}
+</style>
+
+</head>
+<body style="background-color: #000000; height: 100%; width: 100%;">
+	<div class="topbar" data-scrollspy="scrollspy">
+		<div class="topbar" data-dropdown="dropdown">
+			<div class="topbar-inner">
+				<div class="container">
+					<h3>
+						<a href="#">Site name</a>
+					</h3>
+					<ul class="nav">
+						<li class="active"><a href="#">Главная</a></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle">Новости</a>
+							<ul class="dropdown-menu">
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Первая новость</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Вторая новость</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Тертья новость</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Четвертая новость</a></li>
+							</ul></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle">Деятельность</a>
+							<ul class="dropdown-menu">
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Первая статья</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Вторая статья</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Тертья статья</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Четвертая статья</a></li>
+							</ul></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle">Галлерея</a>
+							<ul class="dropdown-menu">
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Первый альбом</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Второй альбом</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Третий альбом</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Четвертый альбом</a></li>
+							</ul></li>
+					</ul>
+					<form class="pull-left" action="">
+						<input placeholder="Search" type="text">
+					</form>
+					<ul class="nav secondary-nav">
+						<li><a href="" data-controls-modal="modal-from-dom"
+							data-backdrop="true" data-keyboard="true">Контакты</a></li>
+						<li><a href="" data-controls-modal="modal-from-dom"
+							data-backdrop="true" data-keyboard="true">Написать нам</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /topbar-inner -->
+		</div>
+		<!-- /topbar -->
+	</div>
+	<!-- /topbar-wrapper -->
+
+	<script>
+		function onData(data) {
+			console.log("device control succeeded");
+		}
+		function onError() {
+			console.log("Device control failed");
+		}
+		function test() {
+			jsonRPC({
+				"method" : "mobile.locate",
+				"params" : [ "фыв", "фыв", "werовадпо" ],
+				"id" : "id value (optional)"
+			}, onData, onError);
+		}
+	</script>
+	<br /> <br />
+	<div id="content">
+		
+		<!-- a href="" onclick="return test();"> send</a-->
+		<br/>
+		<div id="st_main" class="st_main">
+			<img src="images/album/1.jpg" alt="" class="st_preview" style="display:none;"/>
+			<div class="st_overlay"></div>
+			<h1>Gallery</h1>
+			<div id="st_loading" class="st_loading"><span>Loading...</span></div>
+			<ul id="st_nav" class="st_navigation">
+				<li class="album">
+					<span class="st_link">Photos<span class="st_arrow_down"></span></span>
+					<div class="st_wrapper st_thumbs_wrapper">
+						<div class="st_thumbs">
+							<img src="images/album/thumbs/1.jpg" alt="images/album/1.jpg"/>
+							<img src="images/album/thumbs/2.jpg" alt="images/album/2.jpg"/>
+							<img src="images/album/thumbs/3.jpg" alt="images/album/3.jpg"/>
+							<img src="images/album/thumbs/4.jpg" alt="images/album/4.jpg"/>
+							<img src="images/album/thumbs/1.jpg" alt="images/album/1.jpg"/>
+							<img src="images/album/thumbs/2.jpg" alt="images/album/2.jpg"/>
+							<img src="images/album/thumbs/3.jpg" alt="images/album/3.jpg"/>
+							<img src="images/album/thumbs/4.jpg" alt="images/album/4.jpg"/>
+							<img src="images/album/thumbs/1.jpg" alt="images/album/1.jpg"/>
+							<img src="images/album/thumbs/2.jpg" alt="images/album/2.jpg"/>
+							<img src="images/album/thumbs/3.jpg" alt="images/album/3.jpg"/>
+							<img src="images/album/thumbs/4.jpg" alt="images/album/4.jpg"/>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+        <div class="referencecontainer">
+            <span class="reference">
+                <a href="">gallery</a>
+            </span>
+		</div>
+	<script>
+		function hideModal() {
+			$('#modal-from-dom').modal('hide');
+			return false;
+		}
+	</script>
+	<!-- sample modal content -->
+	<div id="modal-from-dom" class="modal hide fade">
+		<div class="modal-header">
+			<a href="#" class="close">&times;</a>
+			<h3>Всплывающее окно</h3>
+		</div>
+		<div class="modal-body">
+
+			<p>
+				Тестовое окно для отображения контента…<br /> реагирует на кнопку
+				ESC
+			</p>
+		</div>
+		<div class="modal-footer">
+			<a href="" class="btn primary" onClick="hideModal(); return false;">Primary</a>
+			<a href="" class="btn secondary" onClick="hideModal(); return false;">Secondary</a>
+		</div>
+	</div>
+	<script>
+		function tableClick() {
+			$('#usertable').toggle('fast');
+			onResize();
+			/*if ($('#usertable').is(":visible"))
+				$('#usertable').fadeOut(300);
+			else
+				$('#usertable').fadeIn(300);*/
+		}
+		$(function() {
+			$("table#sortTableExample").tablesorter({
+				sortList : [ [ 1, 0 ] ]
+			});
+		});
+		
+		$(function() {
+			//the loading image
+			var $loader		= $('#st_loading');
+			//the ul element 
+			var $list		= $('#st_nav');
+			//the current image being shown
+			var $currImage 	= $('#st_main').children('img:first');
+			
+			//let's load the current image 
+			//and just then display the navigation menu
+			$('<img>').load(function(){
+				$currImage.fadeIn(3000);
+				//slide out the menu
+				setTimeout(function(){
+					$list.animate({'left':'-20px'},500);
+					$loader.hide();
+				},
+				1000);
+			}).attr('src',$currImage.attr('src'));
+			
+			//calculates the width of the div element 
+			//where the thumbs are going to be displayed
+			buildThumbs();
+			
+			function buildThumbs(){
+				$list.children('li.album').each(function(){
+					var $elem 			= $(this);
+					var $thumbs_wrapper = $elem.find('.st_thumbs_wrapper');
+					var $thumbs 		= $thumbs_wrapper.children(':first');
+					//each thumb has 180px and we add 3 of margin
+					var finalW 			= $thumbs.find('img').length * 183;
+					$thumbs.css('width',finalW + 'px');
+					//make this element scrollable
+					makeScrollable($thumbs_wrapper,$thumbs);
+				});
+			}
+			
+			//clicking on the menu items (up and down arrow)
+			//makes the thumbs div appear, and hides the current 
+			//opened menu (if any)
+			$list.find('.st_arrow_down').live('click',function(){
+				var $this = $(this);
+				hideThumbs();
+				$this.addClass('st_arrow_up').removeClass('st_arrow_down');
+				var $elem = $this.closest('li');
+				$elem.addClass('current').animate({'height':'170px'},200);
+				var $thumbs_wrapper = $this.parent().next();
+				$thumbs_wrapper.show(200);
+			});
+			$list.find('.st_arrow_up').live('click',function(){
+				var $this = $(this);
+				$this.addClass('st_arrow_down').removeClass('st_arrow_up');
+				hideThumbs();
+			});
+			
+			var waitId = setInterval(animate, 5000);
+			var imgs = $list.find('.st_thumbs img');
+			var idx = 0;
+			function animate()
+			{
+				var $this = $(imgs[idx]);
+				idx++;
+				if (idx>=imgs.length)
+					idx = 0;
+				$loader.show();
+				$('<img class="st_preview"/>').load(function(){
+					var $this = $(this);
+					var $currImage = $('#st_main').children('img:first');
+					$this.insertBefore($currImage);
+					
+					$currImage.fadeOut(2000,function(){							
+						$loader.hide();
+						$(this).remove();
+					});
+				}).attr('src',$this.attr('alt'));
+					
+			}
+			//clicking on a thumb, replaces the large image
+			$list.find('.st_thumbs img').bind('click',function(){
+				var $this = $(this);
+				$loader.show();
+				$('<img class="st_preview"/>').load(function(){
+					var $this = $(this);
+					var $currImage = $('#st_main').children('img:first');
+					$this.insertBefore($currImage);
+					
+					hideThumbs();
+					$arrow = $list.find('.st_arrow_down');
+					$arrow.addClass('st_arrow_down').removeClass('st_arrow_up');
+					$currImage.fadeOut(2000,function(){							
+						$loader.hide();
+						$(this).remove();
+					});
+				}).attr('src',$this.attr('alt'));
+			}).bind('mouseenter',function(){
+				$(this).stop().animate({'opacity':'1'});
+			}).bind('mouseleave',function(){
+				$(this).stop().animate({'opacity':'0.7'});
+			});
+			
+			//function to hide the current opened menu
+			function hideThumbs(){
+				$list.find('li.current')
+					 .animate({'height':'50px'},400,function(){
+						$(this).removeClass('current');
+					 })
+					 .find('.st_thumbs_wrapper')
+					 .hide(200)
+					 .andSelf()
+					 .find('.st_link span')
+					 .addClass('st_arrow_down')
+					 .removeClass('st_arrow_up');
+			}
+
+			//makes the thumbs div scrollable
+			//on mouse move the div scrolls automatically
+			function makeScrollable($outer, $inner){
+				var extra 			= 800;
+				//Get menu width
+				var divWidth = $outer.width();
+				//Remove scrollbars
+				$outer.css({
+					overflow: 'hidden'
+				});
+				//Find last image in container
+				var lastElem = $inner.find('img:last');
+				$outer.scrollLeft(0);
+				//When user move mouse over menu
+				$outer.unbind('mousemove').bind('mousemove',function(e){
+					var containerWidth = lastElem[0].offsetLeft + lastElem.outerWidth() + 2*extra;
+					var left = (e.pageX - $outer.offset().left) * (containerWidth-divWidth) / divWidth - extra;
+					$outer.scrollLeft(left);
+				});
+			}
+        });
+	</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<map>
+    <tiles width="30" height="30">
+	<defaultTile>
+	    <image>Media/land/grass.png</image>
+	</defaultTile>
+	<tile x="0" y="12">
+	    <image>Media/land/sand.png</image>
+	</tile>
+	<tile x="0" y="13">
+	    <image>Media/land/ground.png</image>
+	</tile>
+	<tile x="0" y="14">
+	    <image>Media/land/light_grass.png</image>
+	</tile>
+	<tile x="0" y="15">
+	    <image>Media/land/sedge.png</image>
+	</tile>
+	<tile x="0" y="16">
+	    <image>Media/land/brown.png</image>
+	</tile>
+	<tile x="0" y="17">
+	    <image>Media/land/gray.png</image>
+	</tile>
+    </tiles>
+    <units>
+	<unit uid="1" title="Толчёк" module="shop" x="2" y="9">
+	    <image>Media/env/tualet.png</image>
+	</unit>
+	<unit uid="2" title="Поилка" module="warehouse" x="6" y="19">
+	    <image>Media/env/poilka_full.png</image>
+	</unit>
+	<unit uid="3" title="Кормилка" module="farm" x="5" y="7">
+	    <image>Media/env/kormushka_full.png</image>
+	</unit>
+	<unit uid="4" title="Стойло" module="mill" x="14" y="14">
+	    <image>Media/env/stoilo.png</image>
+	</unit>
+	<unit uid="6" title="Камушки" module="arena" x="1" y="28">
+	    <image>Media/env/stones.png</image>
+	</unit>
+	<unit uid="5" title="Клиника" module="castle" x="4" y="13">
+	    <image>Media/env/clinic.png</image>
+	</unit>
+	<unit uid="7" title="Зигурат" module="player" x="9" y="15" type="movie">
+	    <movie>Media/straus_34.swf</movie>
+	</unit>
+	<unit uid="7" title="Игрок" module="player" x="8" y="17" type="class" class="animal">
+	    <resource class="thirst.resources.CRhinoResource">Media/CRhinoResource.swf</resource>
+	</unit>
+
+    </units>
+</map>

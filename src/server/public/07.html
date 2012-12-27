@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="../rpg-beta-2.js"></script> 
+	<script>
+		var rpg;
+		RPGJS.loadPath = "../rpgjs/core/";
+		RPGJS.load(function() {
+			rpg = new Rpg("canvas_rpg");
+			rpg.loadMap('MAP001', {
+				tileset: 'tribunal1.png',
+				autotiles: ['053-Wall01.png'],
+				player:  {
+					x: 11, 
+					y: 14,
+					direction: 'up',					
+					filename: '001-Fighter01.png'
+				}
+			}, function () { 
+				rpg.player.setTypeMove("tile");
+				rpg.player.useMouse(true);
+				rpg.setScreenIn("Player"); 
+			});
+		});
+	</script>	
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>

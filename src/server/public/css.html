@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+<meta http-equiv="content-type"
+	content="text/html; charset=windows-1251">
+<title></title>
+<link href="css/bootstrap.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css">
+<script src="/js/jquery-1.6.js"></script>
+<script src="styles.js"></script>
+
+</head>
+<body>
+<div id="preview"><p>Preview</p></div>
+	<div id="chat-window" class="rounded shadowed"
+		style="position: fixed; background: none repeat scroll 0% 0% rgb(255, 255, 255); right: 0px; left: 245px; bottom: 0px; min-height: 148px; padding: 10px;">
+		<div title="css editor" class="row boxsizingBorder">
+			<div class="span11 boxsizingBorder" style="width: 80%;">
+				<a href="#">Main Channel</a> | <a href="#">Channels</a> | <a
+					href="#">Messages</a>
+				<ul id="cmessages" class="boxsizingBorder"
+					style="width: 100%; height: 110px; margin-bottom: 10px; min-height: 110px; overflow-y: auto; margin-left: 2px; padding-left: 2px; border: 1px solid #CCCCCC;">
+				</ul>
+				<input id="cproperty" style="width: 100%; min-height: 30px;">
+			</div>
+			<div class="span5" style="width: 17%">
+				<a href="#">Properties</a> <select id="citems" name="multiSelect"
+					multiple="multiple" class="large"
+					style="min-height: 140px; width: 100%;">
+				</select>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		function UI() {
+			var elements = {};
+
+			this.getByName = function(name) {
+				return elements[name];
+			};
+
+			this.create = function(uimodel, parent) {
+				for ( var prop in uimodel) {
+					model = uimodel[prop];
+					var obj = document.createElement(model.element);
+					obj.setAttribute('id', prop);
+					if (model.className)
+						obj.className = model.className;
+					if (model.style) {
+						for (styleAttr in model.style)
+							obj.style[styleAttr] = model.style[styleAttr];
+					}
+
+					if (model.text)
+						obj.innerHTML = model.text;
+					if (model.src)
+						obj.setAttribute('src', model.src);
+					if (model.onclick) {
+						if (model.onclick in methods) {
+							{
+
+							}
+						} else
+							jsonRPC({
+								"method" : "ad.serve",
+								"params" : [ {
+									"cmd" : "getMethod",
+									"method" : model.onclick
+								} ],
+								"id" : "id value (optional)"
+							}, onData, onError);
+						eval('obj.onclick = function(){return methods[\''
+								+ model.onclick + '\'](this);};');
+					}
+					if (parent)
+						parent.appendChild(obj);
+					else
+						document.body.appendChild(obj);
+					var name = (parent) ? parent + '/' + prop : prop;
+					elements[name] = obj;
+					if (uimodel[prop].childs)
+						this.create(uimodel[prop].childs, obj);
+				}
+			};
+		};
+		var ui = new UI();
+		//ui.create(data.params.body);
+		var style = {};
+		for ( var name in styles) {
+			$('#citems').append('<option>' + name + '</option>');
+		}
+		$('#citems').change(function() {
+			$("#citems option:selected").each(function() {
+				if (style[$(this).text()])
+					$('#cproperty').val($(this).text() + ': '+ style[$(this).text()]);
+				else
+					$('#cproperty').val($(this).text() + ':');
+			});
+		});
+
+		$('#cproperty').keypress(function(e) {
+			if (e.which == 13) {
+				var pair = $('#cproperty').val().split(':');
+				if (pair[0] in styles)
+				{
+					var value = pair[1].replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+					if (value)
+						style[pair[0]] = value;
+					else
+						delete style[pair[0]]; 
+					$('#cproperty').val('');
+					var obj = document.getElementById('preview');
+					for (css in style)
+					{	
+						obj.style[styles[css].dom] = style[css];
+					}
+					console.log(obj);
+				}
+			}
+		});
+	</script>
+</body>
+</html>

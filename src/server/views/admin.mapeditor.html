@@ -1,0 +1,62 @@
+<script type="text/javascript" src="mapeditor.js"></script>
+<link href="/css/bootstrap.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css">
+
+	<div class="shadowed"
+		style="position: absolute; left: 10px; top: 40px; bottom: 10px; width: 340px; color: white; padding: 5px;">
+		<span id="tilesetLabel" class="label success"
+			style="padding: 4px; cursor: pointer;" onclick="editor.switchPanel('tileset');">TileSet</span>|<span
+			id="autoLabel" class="label" style="padding: 4px; cursor: pointer;"  onclick="editor.switchPanel('auto');">Auto</span>|<span
+			id="settingsLabel" class="label"
+			style="padding: 4px; cursor: pointer;"  onclick="editor.switchPanel('settings');">Settings</span>|<span
+			id="outputLabel" class="label" style="padding: 4px; cursor: pointer;"  onclick="editor.switchPanel('output');">Output</span>
+		<div id="autoPage"
+			style="position: absolute; top: 30px; bottom: 10px; left: 5px; right: 10px; overflow-y: scroll; display:none;">
+			<canvas id="autoCanvas" tabindex="0" contentEditable="true"></canvas>
+		</div>
+		<div id="tilesetPage"
+			style="position: absolute; top: 30px; bottom: 10px; left: 5px; right: 10px; overflow-y: scroll;">
+			<canvas id="tilesetCanvas" tabindex="0" contentEditable="true"></canvas>
+		</div>
+		<div id="settingsPage" tabindex="0"
+			style="width: 100%; height: 100%; display: none;">
+			Settings<hr/>
+			<select id="editMap">
+			</select>
+			<hr/>
+			Width:
+			<input type="text" id="mapWidth" style="width:20px;" onchange="resizeMap(this.value, $('#mapHeight').val())"> Height:
+			<input type="text" id="mapHeight" style="width:20px;" onchange="resizeMap($('#mapWidth').val(),this.value);">
+			<hr/>Tile Texture:
+			<select id="tileTexture" onchange="editor.tileset.src = this.value; redraw();">
+			</select>
+			<hr/>Auto Texture:
+			<select id="autoTexture" onchange="editor.tileset.src = this.value; redraw();">
+			</select>
+			<hr/>
+			<button onclick="saveMap();">Save</button>
+		</div>
+		<div id="outputPage" tabindex="0"
+			style="width: 100%; height: 100%; display: none;">
+			Output
+		</div>
+	</div>
+	<div class="shadowed"
+		style="position: absolute; top: 40px; bottom: 10px; left: 370px; right: 10px; color: white;">
+		<div style="padding: 10px;">Edit: <select id="editLayer">
+		<option value="0">layer 0</option>
+		<option value="1">layer 1</option>
+		<option value="2">layer 2</option>
+		</select>
+		View: 
+		
+		<input type="checkbox" id="layer0" checked onchange="redraw();"> layer 0
+		<input type="checkbox" id="layer1" checked onchange="redraw();"> layer 1
+		<input type="checkbox" id="layer2" checked onchange="redraw();"> layer 2
+		</div>
+		<canvas id="mapCanvas" tabindex="0" contentEditable="true"></canvas>
+	</div>
+
+<script type="text/javascript">
+	editor_main(); // Call the main() function when the window has been loaded
+</script>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="../rpg-beta-2.js"></script> 
+	<script>
+		var rpg;
+		RPGJS.loadPath = "../rpgjs/core/";
+		RPGJS.load(function() {
+			rpg = new Rpg("canvas_rpg");
+ 
+			rpg.addAction('attack', {
+				suffix_motion: ['_SWD'], 
+				duration_motion: 1, 
+				block_movement: true,
+				wait_finish: 5,
+				speed: 25,
+				keypress: [Input.A]
+			});
+ 
+			rpg.loadMap('MAP001', {
+				tileset: '035-Ruins01.png',
+				autotiles: ['002-G_Shadow01.png', '002-G_Shadow01.png', '003-G_Ground01.png', '005-G_Road01.png'],
+				player:  {
+					x: 8, 
+					y: 15,	
+					regX: 35, 
+					regY: 68, 
+					filename: 'Hero.png',
+					actions: ['attack']
+				},
+ 
+			}, function() {
+				rpg.setScreenIn("Player"); 
+			});
+ 
+		});
+	</script>	
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>
+

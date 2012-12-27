@@ -9,6 +9,8 @@ First goals
 
 This should be easy to do
 
+- Engine must have a server part
+
 Main idea
 ===
 Any part can be replaced, any part can be used independently. 
@@ -22,6 +24,12 @@ Dependency
 - FreeAlut
 - FreeType
 - WxWidgets (must be replaced by Qt)
+
+Server Dependency
+==
+- node.js
+
+All details later
 
 Possible Dependencies
 ==

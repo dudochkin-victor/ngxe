@@ -1,0 +1,44 @@
+{
+	"b173bd0d-a83a-47cf-a60b-7157e12a11db" : {
+		"text" : "Начало игры",
+		"type" : "STATE",
+		"logics" : {
+			"ec18a39c-f0e3-4129-b72b-447184a79fd8" : {
+				"type" : "TRIGGER",
+				"text" : "Не выбрана расса, пол и тип персонажа",
+				"x" : 364.0023192493529,
+				"y" : 93.32933838925288,
+				"next" : "ab740ff3-1dea-41b7-903c-889ddf65c95a",
+				"or" : "1340cb73-ea40-4c77-b4d2-da5eda07828f",
+				"conditions" : [ {
+					"object" : "personage",
+					"cmd" : "SELECT",
+					"param" : "lvl",
+					"condition" : "==",
+					"val" : "0"
+				} ]
+			},
+			"ab740ff3-1dea-41b7-903c-889ddf65c95a" : {
+				"type" : "INSTRUCTION",
+				"text" : "Положительно",
+				"x" : 741.7418873637989,
+				"y" : 262.24604203787476,
+				"conditions" : [ {
+					"object" : "personage",
+					"cmd" : "SELECT",
+					"param" : "lvl",
+					"condition" : "==",
+					"val" : "0"
+				} ],
+				"steps" : [ {
+					"object" : "personage",
+					"cmd" : "",
+					"param" : "",
+					"val" : "",
+					"client_cmd" : "SELECT_RACE",
+					"client_param" : ""
+				} ]
+			}
+		}
+	}
+}

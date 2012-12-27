@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Site name</title>
+<link href="/css/bootstrap.css" rel="stylesheet">
+<script src="/js/jquery-1.6.js"></script>
+<script src="/js/jquery.form.js"></script>
+<script src="/js/jquery.tablesorter.min.js"></script>
+<script src="/js/bootstrap-modal.js"></script>
+<script src="/js/bootstrap-dropdown.js"></script>
+<script src="/js/bootstrap-twipsy.js"></script>
+<script src="/js/bootstrap-scrollspy.js"></script>
+<script src="/js/bootstrap-tabs.js"></script>
+<script>
+	$(document).ready(function() {
+		window.onresize = onResize;
+		onResize();
+		//select all the a tag with name equal to modal
+		$('a[name=modal]').click(function(e) {
+			//Cancel the link behavior
+			e.preventDefault();
+
+			//Get the A tag
+			var id = $(this).attr('href');
+
+			//Get the screen height and width
+			var maskHeight = $(document).height();
+			var maskWidth = $(window).width();
+
+			//Set heigth and width to mask to fill up the whole screen
+			$('#mask').css({
+				'width' : maskWidth,
+				'height' : maskHeight
+			});
+
+			//transition effect		
+			$('#mask').fadeIn(1000);
+			$('#mask').fadeTo("slow", 0.8);
+
+			//Get the window height and width
+			var winH = $(window).height();
+			var winW = $(window).width();
+
+			//Set the popup window to center
+			$(id).css('top', winH / 2 - $(id).height() / 2);
+			$(id).css('left', winW / 2 - $(id).width() / 2);
+
+			//transition effect
+			$(id).fadeIn(2000);
+		});
+
+		//if close button is clicked
+		$('.window .modal-close').click(function(e) {
+			//Cancel the link behavior
+			e.preventDefault();
+			$('#mask').hide();
+			$('.window').hide();
+		});
+
+		//if mask is clicked
+		/*$('#mask').click(function() {
+			$(this).hide();
+			$('.window').hide();
+		});*/
+
+	});
+
+	function onResize() {
+		var windowHeight = $(document).height();
+		var windowWidth = $(document).width();
+		$('#content').css({
+			'width' : windowWidth,
+			'height' : windowHeight,
+		});
+	}
+
+	function jsonRPC(obj, onData, onError) {
+		$.ajax({
+			contentType : 'application/json',
+			data : JSON.stringify(obj),
+			dataType : 'json',
+			success : onData,
+			error : onError,
+			processData : false,
+			type : 'POST',
+			url : '/jsonrpc/'
+		});
+		return false;
+	}
+</script>
+<style type="text/css">
+.img {
+	-webkit-transform: scale(0.6);
+	-moz-transform: scale(0.6);
+	-o-transform: scale(0.6);
+	float: left;
+	margin-left: -50px;
+	margin-right: -50px;
+	margin-top: -10px;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-duration: 0.5s;
+	-o-transition-duration: 0.5s;
+}
+
+.img img {
+	padding: 10px;
+	border: 1px solid #fff;
+}
+
+.img:hover {
+	-webkit-transform: scale(0.8);
+	-webkit-box-shadow: 0px 0px 30px #ccc;
+	-moz-transform: scale(0.8);
+	-moz-box-shadow: 0px 0px 30px #ccc;
+	-o-transform: scale(0.8);
+	-o-box-shadow: 0px 0px 30px #ccc;
+}
+
+.img .mask {
+	width: 100%;
+	background-color: rgb(0, 0, 0);
+	position: absolute;
+	height: 100%;
+	opacity: 0.6;
+	cursor: pointer;
+	-webkit-transition-duration: 0.5s;
+	-moz-transition-duration: 0.5s;
+	-o-transition-duration: 0.5s;
+}
+
+#img-1:hover .mask {
+	height: 0%;
+}
+
+#img-2:hover .mask {
+	height: 0%;
+	margin-top: 130px;
+}
+
+#img-4:hover .mask {
+	margin-left: 219px;
+	margin-top: 135px;
+	height: 0%;
+	width: 0%;
+}
+
+#img-3 #mask-1 {
+	width: 50%;
+}
+
+#img-3 #mask-2 {
+	width: 50%;
+	margin-left: 211px;
+}
+
+#img-3:hover #mask-1 {
+	width: 0%;
+}
+
+#img-3:hover #mask-2 {
+	margin-left: 430px;
+	width: 0%;
+}
+
+#img-5:hover .mask {
+	margin-left: 219px;
+	margin-top: 135px;
+	height: 0%;
+	width: 0%;
+	-webkit-transform: rotateX(360deg);
+	-moz-transform: rotate(360deg);
+	-o-transform: rotate(-360deg);
+}
+
+#img-6:hover .mask {
+	margin-left: 219px;
+	margin-top: 135px;
+	height: 0%;
+	width: 0%;
+	-webkit-transform: rotateZ(750deg);
+	-moz-transform: rotateZ(750deg);
+	-o-transform: rotat(750deg);
+}
+html {
+	background-color:#000000;
+	height: 100%; 
+	width: 100%;
+}
+</style>
+
+
+
+</head>
+<body style="background-color: #000000; height: 100%; width: 100%;">
+	<div class="topbar" data-scrollspy="scrollspy">
+		<div class="topbar" data-dropdown="dropdown">
+			<div class="topbar-inner">
+				<div class="container">
+					<h3>
+						<a href="#">Site name</a>
+					</h3>
+					<ul class="nav">
+						<li class="active"><a href="#">Главная</a></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle">Новости</a>
+							<ul class="dropdown-menu">
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Первая новость</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Вторая новость</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Тертья новость</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Четвертая новость</a></li>
+							</ul></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle">Деятельность</a>
+							<ul class="dropdown-menu">
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Первая статья</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Вторая статья</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Тертья статья</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Четвертая статья</a></li>
+							</ul></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle">Галлерея</a>
+							<ul class="dropdown-menu">
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Первый альбом</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Второй альбом</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Третий альбом</a></li>
+								<li><a href="" data-controls-modal="modal-from-dom"
+									data-backdrop="true" data-keyboard="true">Четвертый альбом</a></li>
+							</ul></li>
+					</ul>
+					<form class="pull-left" action="">
+						<input placeholder="Search" type="text">
+					</form>
+					<ul class="nav secondary-nav">
+						<li><a href="" data-controls-modal="modal-from-dom"
+							data-backdrop="true" data-keyboard="true">Контакты</a></li>
+						<li><a href="" data-controls-modal="modal-from-dom"
+							data-backdrop="true" data-keyboard="true">Написать нам</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- /topbar-inner -->
+		</div>
+		<!-- /topbar -->
+	</div>
+	<!-- /topbar-wrapper -->
+
+	<script>
+		function onData(data) {
+			console.log("device control succeeded");
+		}
+		function onError() {
+			console.log("Device control failed");
+		}
+		function test() {
+			jsonRPC({
+				"method" : "mobile.locate",
+				"params" : [ "фыв", "фыв", "werовадпо" ],
+				"id" : "id value (optional)"
+			}, onData, onError);
+		}
+	</script>
+	<br /> <br />
+	<div id="content">
+		
+		<!-- a href="" onclick="return test();"> send</a-->
+		<br/>
+
+		<button onClick="tableClick()" class="btn danger">Launch
+			Modal</button>
+		<hr style="color: #cccccc; background-color: #cccccc; height: 2px;" />
+		<center>
+			<div id="container" style="width: 800px;">
+				<div class='img' id='img-1'>
+					<div class='mask'></div>
+					<img src='http://www.nikesh.me/image/01.jpg' />
+				</div>
+				<div class='img' id='img-2'>
+					<div class='mask'></div>
+					<img src='http://www.nikesh.me/image/07.jpg' />
+					<div id="usertable"
+						style="display: none; background-color: #ffffff;">
+						<table class="zebra-striped" id="sortTableExample">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th class="yellow">First Name</th>
+									<th class="blue">Last Name</th>
+									<th class="green">Language</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>1</td>
+									<td>Your</td>
+									<td>One</td>
+
+									<td>English</td>
+								</tr>
+								<tr>
+									<td>2</td>
+									<td>Joe</td>
+									<td>Sixpack</td>
+									<td>English</td>
+
+								</tr>
+								<tr>
+									<td>3</td>
+									<td>Stu</td>
+									<td>Dent</td>
+									<td>Code</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class='img' id='img-3'>
+					<div class='mask' id='mask-1'></div>
+					<div class='mask' id='mask-2'></div>
+					<img src='http://www.nikesh.me/image/05.jpg' />
+				</div>
+				<div class='img' id='img-4'>
+
+					<div class='mask'></div>
+					<img src='http://www.nikesh.me/image/04.jpg' />
+				</div>
+				<div class='img' id='img-5'>
+					<div class='mask'></div>
+					<img src='http://www.nikesh.me/image/06.jpg' />
+				</div>
+				<div class='img' id='img-6'>
+					<div class='mask'></div>
+					<img src='http://www.nikesh.me/image/08.jpg' />
+				</div>
+			</div>
+		</center>
+	</div>
+
+	<script>
+		function hideModal() {
+			$('#modal-from-dom').modal('hide');
+			return false;
+		}
+	</script>
+	<!-- sample modal content -->
+	<div id="modal-from-dom" class="modal hide fade">
+		<div class="modal-header">
+			<a href="#" class="close">&times;</a>
+			<h3>Всплывающее окно</h3>
+		</div>
+		<div class="modal-body">
+
+			<p>
+				Тестовое окно для отображения контента…<br /> реагирует на кнопку
+				ESC
+			</p>
+		</div>
+		<div class="modal-footer">
+			<a href="" class="btn primary" onClick="hideModal(); return false;">Primary</a>
+			<a href="" class="btn secondary" onClick="hideModal(); return false;">Secondary</a>
+		</div>
+	</div>
+	<script>
+		function tableClick() {
+			$('#usertable').toggle('fast');
+			onResize();
+			/*if ($('#usertable').is(":visible"))
+				$('#usertable').fadeOut(300);
+			else
+				$('#usertable').fadeIn(300);*/
+		}
+	</script>
+	<script>
+		$(function() {
+			$("table#sortTableExample").tablesorter({
+				sortList : [ [ 1, 0 ] ]
+			});
+		});
+	</script>
+</body>
+</html>

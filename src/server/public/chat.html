@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+
+<meta http-equiv="content-type"
+	content="text/html; charset=windows-1251">
+<title></title>
+<link href="css/bootstrap.css" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+	<div id="chat-window" class="rounded shadowed chat-window bordered">
+		<img class="bgimage" src="/img/bg.jpg" />
+		<div title="Example uncommon two-column layout"
+			class="row boxsizingBorder" style="padding-left: 20px;">
+			<div style="float: left; position: absolute; right: 160px; left: 0px; bottom: 10px; top:0px;">
+				<span id="labelMainChannel" class="label" style="padding:4px;"><a href="#" style="margin-right:4px; cursor: pointer;" onclick="getMainMessages">Main Channel</a><span id="newCountMainChannel" class="label important" style="display:none;"></span></span>
+				<span id="labelChannel" class="label" style="padding:4px;"><a href="#" style="margin-right:4px; cursor: pointer;" onclick="getChannelMessages">Channels</a><span id="newCountChannel" class="label important" style="display:none;"></span></span>
+				<span id="labelMessages" class="label" style="padding:4px;"><a href="#" style="margin-right:4px; cursor: pointer;" onclick="getUserMessages">Messages</a><span id="newCountMessages" class="label important" style="display:none;"></span></span>
+				<ul id="cmessages" class="boxsizingBorder"
+					style="width: 100%; height: 120px; bottom: 0px; overflow-y: auto; margin-left: 2px; padding-left: 2px; border: 1px solid #CCCCCC;">
+				</ul>
+				<div style="margin-right: 0px;">
+					<input id="cmessage" style="position: absolute; width: 150px; bottom: -10px; overflow-y: auto; left: 2px; right: 10px; min-height: 30px;" onkeypress="chatSend"/>
+				</div>
+			</div>
+			<div style="float: right; margin-left: 10px; width: 150px;">
+				<span id="labelUsers" class="label" style="padding:4px;"><a href="#" style="margin-right:4px; cursor: pointer;" onclick="getChannelUsers">Users</a><span id="newCountUsers" class="label important" style="display:none;"></span></span>
+				<span id="labelChallenge" class="label" style="padding:4px;"><a href="#" style="margin-right:4px; cursor: pointer;" onclick="getChallenge">Challenge</a><span id="newCountChallenge" class="label important" style="display:none;"></span></span>
+				<select id="citems" name="multiSelect"	size="9" class="large" style="min-height: 160px; width: 100%;" onclick="opponent">
+				</select>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

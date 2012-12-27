@@ -1,0 +1,20 @@
+[
+{"id":9,"gid":3,"title":"Дубинка","image":"art\/club.png","buycost":2000,"sellcost":2000,"unit":0, "desc":"бла бла бла"},
+{"id":10,"gid":3,"title":"Кинжал","image":"art\/dagger.png","buycost":5000,"sellcost":5000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":3, "desc":"Кузница 3 уровня"}},
+{"id":11,"gid":3,"title":"Короткий меч","image":"art\/sword.png","buycost":10000,"sellcost":10000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":5, "desc":"Кузница 5 уровня"}},
+{"id":12,"gid":3,"title":"Длиный меч","image":"art\/longsword.png","buycost":15000,"sellcost":15000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":7, "desc":"Кузница 7 уровня"}},
+{"id":13,"gid":3,"title":"Копьё","image":"art\/spear.png","buycost":25000,"sellcost":25000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":9, "desc":"Кузница 9 уровня"}},
+{"id":14,"gid":3,"title":"Топор","image":"art\/hatchet.png","buycost":45000,"sellcost":45000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":11, "desc":"Кузница 11 уровня"}},
+{"id":15,"gid":3,"title":"Секира","image":"art\/poleaxe.png","buycost":0.15,"sellcost":0.15,"unit":1, "desc":"бла бла бла"},
+{"id":16,"gid":4,"title":"Старый деревянный щит","image":"art\/oldshield.png","buycost":2000,"sellcost":2000,"unit":0, "desc":"бла бла бла"},
+{"id":17,"gid":4,"title":"Выпуклый деревянный щит","image":"art\/woodshield.png","buycost":5000,"sellcost":5000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":4, "desc":"Кузница 4 уровня"}},
+{"id":18,"gid":4,"title":"Крепкий деревянный щит","image":"art\/colorshield.png","buycost":10000,"sellcost":10000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":6, "desc":"Кузница 6 уровня"}},
+{"id":19,"gid":4,"title":"Щит с металлическими вставками","image":"art\/metalshield.png","buycost":15000,"sellcost":15000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":8, "desc":"Кузница 8 уровня"}},
+{"id":20,"gid":4,"title":"Железный щит","image":"art\/ironshield.png","buycost":25000,"sellcost":25000,"unit":0, "desc":"бла бла бла", "req":{"smithylvl":10, "desc":"Кузница 10 уровня"}},
+{"id":21,"gid":4,"title":"Стальной щит","image":"art\/supershield.png","buycost":0.15,"sellcost":0.15,"unit":1, "desc":"бла бла бла"},
+{"id":22,"gid":5,"title":"Удобрение","image":"art\/fertilizer.png","buycost":0.1,"sellcost":0.1,"unit":1, "desc":"бла бла бла"},
+{"id":23,"gid":5,"title":"Мухоморы","image":"art\/mushrooms.png","buycost":0.5,"sellcost":0.5,"unit":1, "desc":"бла бла бла"},
+{"id":24,"gid":5,"title":"Молот тора","image":"art\/torhammer.png","buycost":1,"sellcost":1,"unit":1, "desc":"бла бла бла"},
+{"id":25,"gid":5,"title":"Руна ловкости","image":"art\/runa.png","buycost":3,"sellcost":3,"unit":1, "desc":"бла бла бла"},
+{"id":26,"gid":5,"title":"Магические силки","image":"art\/silki.png","buycost":5,"sellcost":5,"unit":1, "desc":"бла бла бла"}
+]

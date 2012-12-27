@@ -1,0 +1,287 @@
+<script id="questViewTemplate" type="text/x-jquery-tmpl">
+	<div style="padding: 5px;">
+		<div class="title">Title:</div>
+		<div><input data-getfrom="[text]" data-to="[text]"/></div>
+		<hr/>
+		<div class="title">Triggers:
+			<ul class="buttons">
+				<li><a href="" id="addTriggerBtn">Add</a>
+				</li>
+			</ul>
+		</div>
+		<div>
+			{{#each triggers}}
+				<img src="/exclamation.png" />
+				<input class="showTrigger" data-getfrom="[text]" data-to="[text]"/> <img class="closeTrigger" src="/css/close.png" /><br/>
+			{{/each}}
+		</div>
+		<hr/>
+		<div class="title">Instructions:
+			<ul class="buttons">
+				<li><a href="" id="addInstructionBtn">Add</a>
+				</li>
+			</ul>
+		</div>
+		<div>
+			{{#each instructions}}
+				<img src="/exclamation.png" />
+				<input class="showInstruction" data-getfrom="[text]" data-to="[text]"/> <img class="closeInstruction" src="/css/close.png" /><br/>
+			{{/each}}
+		</div>
+		<hr/>
+		<ul class="buttons">
+				<li><a href="" id="backtoQuests">Back</a>
+				</li>
+			</ul>
+	</div>
+</script>
+
+<script id="conditionViewTemplate" type="text/x-jquery-tmpl">
+	<div style="padding: 5px;">
+		<div class="title">Title:</div>
+		<div><input data-getfrom="[text]" data-to="[text]"/></div>
+		<hr/>
+		<div class="title">Conditions:
+			<ul class="buttons">
+				<li><a href="" id="addConditionBtn">Add</a>
+				</li>
+			</ul>
+		</div>
+		<div>
+			{{#each conditions}}
+				<span class="benefit">object: <img class="closeCondition" src="/css/close.png" /></span><input data-getfrom="[object]" data-to="[object]"/><br/>
+				<span class="benefit">cmd:</span><input data-getfrom="[cmd]" data-to="[cmd]"/><br/>
+				<span class="benefit">param:</span><input data-getfrom="[param]" data-to="[param]"/><br/>
+				<span class="benefit">condition:</span><input data-getfrom="[condition]" data-to="[condition]"/><br/>
+				<span class="benefit">val:</span><input data-getfrom="[val]" data-to="[val]"/><br/>
+				<hr/>
+			{{/each}}
+		</div>
+	</div>
+</script>
+
+<script id="instructionViewTemplate" type="text/x-jquery-tmpl">
+	<div style="padding: 5px;">
+		<div class="title">Title:</div>
+		<div><input data-getfrom="[text]" data-to="[text]"/></div>
+		<hr/>
+		<div class="title">Conditions:
+			<ul class="buttons">
+				<li><a href="" id="addConditionBtn">Add</a>
+				</li>
+			</ul>
+		</div>
+		<div>
+			{{#each conditions}}
+				<span class="benefit">object: <img class="closeInstructionCondition" src="/css/close.png" /></span><input data-getfrom="[object]" data-to="[object]"/><br/>
+				<span class="benefit">cmd:</span><input data-getfrom="[cmd]" data-to="[cmd]"/><br/>
+				<span class="benefit">param:</span><input data-getfrom="[param]" data-to="[param]"/><br/>
+				<span class="benefit">condition:</span><input data-getfrom="[condition]" data-to="[condition]"/><br/>
+				<span class="benefit">val:</span><input data-getfrom="[val]" data-to="[val]"/><br/>
+				<hr/>
+			{{/each}}
+		</div>
+		<div class="title">Steps:
+			<ul class="buttons">
+				<li><a href="" id="addInstructionBtn">Add</a>
+				</li>
+			</ul>
+		</div>
+			{{#each steps}}
+				<span class="benefit">object: <img class="closeInstruction" src="/css/close.png" /></span><input data-getfrom="[object]" data-to="[object]"/><br/>
+				<span class="benefit">cmd:</span><input data-getfrom="[cmd]" data-to="[cmd]"/><br/>
+				<span class="benefit">param:</span><input data-getfrom="[param]" data-to="[param]"/><br/>
+				<span class="benefit">val:</span><input data-getfrom="[val]" data-to="[val]"/><br/>
+				<span class="benefit">client cmd:</span><input data-getfrom="[client_cmd]" data-to="[client_cmd]"/><br/>
+				<span class="benefit">client param:</span><input data-getfrom="[client_param]" data-to="[client_param]"/><br/>
+				<hr/>
+			{{/each}}
+		</div>
+	</div>
+</script>
+<script id="itemTemplate" type="text/x-jquery-tmpl">
+	<li>
+		<a href="#" data-getfrom="[text]"></a>
+	</li>
+</script>
+	<canvas id="canvas" tabindex="0" contentEditable="true"></canvas>
+	<div
+		style="position: absolute; left: 0px; top: 0px; width: 310px; height: 100%; background-color: #CCCCCC; filter: alpha(opacity =       60); -moz-opacity: 0.6; opacity: 0.6;">
+		<div id="quests" style="position: relative; top: 35px; overflow: auto; height: 90%;">
+			<h1 class="fancy">Logic</h1>
+			<div style="padding: 5px;">
+				<ul class="buttons">
+					<li><a href="" onclick="addQuest(); return false;">Add
+							Quests</a></li>
+					<li><a href="" onclick="removeQuest(); return false;">Remove
+							last Quest</a></li>
+					<li><a href="" onclick="storeQuests(); return false;">Store
+							Logic</a></li>
+				</ul>
+
+				<hr />
+			</div>
+			<ul id="questList" style="list-style-image: url('/exclamation.png')"></ul>
+		</div>
+		<div id="quest" style="display: none; overflow: auto; height: 90%;">
+			<div style="position: relative; top: 35px; ">
+			<h1 class="fancy">Quest</h1>
+			<div style="padding: 5px;" id="questDetail"></div>
+			</div>
+		</div>
+	</div>
+
+	<div id="properties"
+		style="position: absolute; right: 0px; top: 0px; width: 310px; height: 100%; background-color: #CCCCCC; filter: alpha(opacity =       60); -moz-opacity: 0.6; opacity: 0.6;">
+		<div style="position: relative; top: 35px; ">
+		<h1 class="fancy">Properties</h1>
+		<div id="itemDetail" style="overflow: auto; height: 90%;"></div>
+		</div>
+	</div>
+
+	<div id="divContext" class="contextmenu">
+		<ul class="cmenu">
+			<li><a id="aContextNav" href="" onclick="console.log('tesst'); return false;">connect</a></li>
+			<li><a id="aAddWebmark" href="" onclick="console.log('tesst'); return false;">Add to WebMark</a></li>
+			<li class="topSep"><a id="aDisable" href="" >disable this
+					menu</a></li>
+		</ul>
+	</div>
+
+	<script type="text/javascript">
+		var _divContext = document.getElementById('divContext'); // makes my life easier
+		//window.onload = main; // Call the main() function when the window has been loaded
+
+		// JsRender: Render the template with the items data and insert
+		// the rendered HTML under the "questList" element
+		$("#itemTemplate").template("itemTemplate");
+
+		//	// Render the template with the items data, as data-linked content
+		//	// of an HTML container element
+		$("#questList").link(items, "itemTemplate").delegate("li", "click",
+				function() {
+					select($.view(this));
+					$("#quests").hide();
+					$("#quest").show();
+					updateElements();
+					return false;
+				});
+
+		$("#questDetail")
+				.delegate("#addTriggerBtn", "click", addTriggerHandler)
+				.delegate("#addInstructionBtn", "click", addInstructionHandler)
+				.delegate("#backtoQuests", "click", function() {
+					$("#quests").show();
+					$("#quest").hide();
+					elements = {};
+					draw();
+					return false;
+				}).delegate(".showTrigger", "click", function() {
+					selectCondition($.view(this));
+					return false;
+				}).delegate(".showInstruction", "click", function() {
+					selectInstruction($.view(this));
+					return false;
+				}).delegate(
+						".closeTrigger",
+						"click",
+						function() {
+							$.observable(app.selectedItem.data.triggers)
+									.remove($.view(this).index, 1);
+							updateElements();
+							return false;
+						}).delegate(
+						".closeInstruction",
+						"click",
+						function() {
+							$.observable(app.selectedItem.data.instructions)
+									.remove($.view(this).index, 1);
+							updateElements();
+							return false;
+						});
+
+		$("#itemDetail").delegate("#addConditionBtn", "click", function() {
+			var conditions = $.view(this).data.conditions;
+			if (!conditions)
+				conditions = $.view(this).data.conditions = [];
+			$.observable(conditions).insert(conditions.length, {
+				object : "",
+				cmd : "",
+				param : "",
+				condition : "",
+				val : "",
+			});
+			return false;
+		}).delegate("#addInstructionBtn", "click", function() {
+			var steps = $.view(this).data.steps;
+			if (!steps)
+				steps = $.view(this).data.steps = [];
+			$.observable(steps).insert(steps.length, {
+				object : "",
+				cmd : "",
+				param : "",
+				val : "",
+				client_cmd : "",
+				client_param : "",
+			});
+			return false;
+		}).delegate(
+				".closeCondition",
+				"click",
+				function() {
+					$.observable($.view(this).parent.parent.data.conditions)
+						.remove($.view(this).index, 1);
+					//$.observable(condition.selectedItem.data.conditions)
+						//	.remove($.view(this).index, 1);
+					return false;
+				}).delegate(
+				".closeInstructionCondition",
+				"click",
+				function() {
+					$.observable($.view(this).parent.parent.data.conditions)
+						.remove($.view(this).index, 1);
+					//$.observable(instruction.selectedItem.data.conditions)
+						//	.remove($.view(this).index, 1);
+					return false;
+				}).delegate(
+				".closeInstruction",
+				"click",
+				function() {
+					//$.observable(instruction.selectedItem.data.steps).remove(
+						//	$.view(this).index, 1);
+					$.observable($.view(this).parent.parent.data.steps)
+					.remove($.view(this).index, 1);
+					return false;
+				});
+
+		$(app).bind(
+				"propertyChange",
+				function(event, args) {
+					if (args.path === "selectedItem") {
+						$("#questDetail").link(
+								(args.value ? args.value : []).data,
+								"#questViewTemplate");
+					}
+				});
+
+		$(condition).bind(
+				"propertyChange",
+				function(event, args) {
+					if (args.path === "selectedItem") {
+						$("#itemDetail").link(
+								(args.value ? args.value : []).data,
+								"#conditionViewTemplate");
+					}
+				});
+
+		$(instruction).bind(
+				"propertyChange",
+				function(event, args) {
+					if (args.path === "selectedItem") {
+						$("#itemDetail").link(
+								(args.value ? args.value : []).data,
+								"#instructionViewTemplate");
+					}
+				});
+		main();
+	</script>

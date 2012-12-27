@@ -1,0 +1,501 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" href="/css/style.css" />
+<script src="/js/jquery-1.6.js"></script>
+<script type="text/javascript" src="UILib.js"></script>
+<script type="text/javascript" src="sprite.js"></script>
+<script type="text/javascript">
+	var waitId = null;
+
+	var sex = [ 'male', 'female' ];
+	var race = [ 'angels', 'daemons' ];
+	var angels = [ {
+		"sex" : 1,
+		"type" : "avanturist"
+	}, {
+		"sex" : 1,
+		"type" : "razgeldiay"
+	}, {
+		"sex" : 1,
+		"type" : "rebel"
+	}, {
+		"sex" : 1,
+		"type" : "school"
+	}, {
+		"sex" : 0,
+		"type" : "avanturist"
+	}, {
+		"sex" : 0,
+		"type" : "razgeldiay"
+	}, {
+		"sex" : 0,
+		"type" : "rebel"
+	}, {
+		"sex" : 0,
+		"type" : "school"
+	} ];
+	var daemons = [ {
+		"sex" : 1,
+		"type" : "avanturist"
+	}, {
+		"sex" : 1,
+		"type" : "carier"
+	}, {
+		"sex" : 1,
+		"type" : "creative"
+	}, {
+		"sex" : 1,
+		"type" : "school"
+	}, {
+		"sex" : 0,
+		"type" : "avanturist"
+	}, {
+		"sex" : 0,
+		"type" : "carier"
+	}, {
+		"sex" : 0,
+		"type" : "creative"
+	}, {
+		"sex" : 0,
+		"type" : "razgeldiay"
+	}, {
+		"sex" : 0,
+		"type" : "rebel"
+	}, {
+		"sex" : 0,
+		"type" : "school"
+	} ];
+
+	function setShadow(context, color, ox, oy, blur) {
+		context.shadowColor = color;
+		context.shadowOffsetX = ox;
+		context.shadowOffsetY = oy;
+		context.shadowBlur = blur;
+		return [ color, ox, oy, blur ].join(", ");
+	}
+
+	function clearShadow(context) {
+		context.shadowColor = 0;
+		context.shadowOffsetX = 0;
+		context.shadowOffsetY = 0;
+		context.shadowBlur = 0;
+		return;
+	}
+
+	var personages = [];
+	for ( var idx = 0; idx < angels.length; idx++) {
+		var obj = new Sprite('/img/' + race[0] + '/' + sex[angels[idx].sex]
+				+ '_' + angels[idx].type + '.png');
+		personages.push(obj);
+	}
+	for ( var idx = 0; idx < daemons.length; idx++) {
+		var obj = new Sprite('/img/' + race[1] + '/' + sex[daemons[idx].sex]
+				+ '_' + daemons[idx].type + '.png');
+		personages.push(obj);
+	}
+
+	var buffer = null;
+	var buffer_ctx = null;
+	
+	function initGraphics() {
+		window.scrollTo(0, 1);
+		canvas = document.getElementById('canvas');	
+		canvas.focus()
+		// set the canvas height to the window height and width
+		//canvas.width = window.innerWidth;
+		//canvas.height = window.innerHeight;
+		context = canvas.getContext('2d');
+		
+		buffer = document.createElement('canvas');
+		// set the canvas height to the window height and width
+		//buffer.width = window.innerWidth;
+		//buffer.height = window.innerHeight;
+		buffer_ctx = this.buffer.getContext('2d');
+		
+		onResize();
+		//window.onkeyup = onKeyUp;
+		window.onkeypress = onKeyPress;
+		window.onresize = onResize;
+		window.onmousemove = mouseMove;
+		window.onmouseup = mouseUp;
+		window.onmousedown = mouseDown;
+		
+		//prepare();
+		setInterval(rotate, 80);
+	}
+
+	var wnd = new UIWindow('Войти в мир', 260, 210);
+	
+	var lbl = new UILabel('Логин');
+	lbl.x = 105;
+	lbl.y = 35;
+	wnd.addChild(lbl);
+	
+	var iLogin = new UIInput('Логин', 153);
+	iLogin.x = 55;
+	iLogin.y = 60;
+	wnd.addChild(iLogin);
+	
+	var lbl = new UILabel('Пароль');
+	lbl.x = 100;
+	lbl.y = 95;
+	wnd.addChild(lbl);
+	
+	var iPassword = new UIInput('Пароль', 153);
+	iPassword.x = 55;
+	iPassword.y = 120;
+	iPassword.isPassword = true;
+	wnd.addChild(iPassword);
+	
+	var loginBtn = new UIButton('Войти');
+	loginBtn.x = 170;
+	loginBtn.y = 160;
+	loginBtn.onMouseDown = function(obj){
+		//console.log(obj.text)
+	};
+	
+	loginBtn.onMouseUp = function(obj){
+		//console.log(obj.text);
+		jsonRPC({
+			"method" : "ad.serve",
+			"params" : [ {"cmd" : "login", "login" : iLogin.text, "password" : iPassword.text}/*, 
+			             {"cmd" : "login1", "login" : iLogin.text, "password" : iPassword.text}*/],
+			"id" : "id value (optional)"
+		}, onData, onError);
+	};
+	wnd.addChild(loginBtn);
+	
+	var registerBtn = new UIButton('Регистрация');
+	registerBtn.x = 15;
+	registerBtn.y = 160;
+	registerBtn.prepare1 = function(sx, sy)
+	{
+		if (this.visible) {
+			var ctx = null;
+			var dx = 2; // (sx)?this.x + sx:this.x;
+			var dy = 2; // (sy)?this.y + sy:this.y;
+			
+			if (this.parent)
+				this.buffer = this.parent.buffer;
+			if (!this.buffer) {
+				this.buffer = document.createElement('canvas');
+				ctx = this.buffer.getContext('2d');
+				var img = new Image();
+				img.src = '/img/login-button.png';
+				var self = this;
+				img.onload = function()
+				{
+					self.buffer.width = this.width + 4;
+					self.buffer.height = this.height + 4;
+					self.width = img.width;
+					self.height = img.height;
+					ctx.drawImage(img, dx, dy);
+				}
+				
+			} else {
+				ctx = this.buffer.getContext('2d');
+				dx = this.x;
+				dy = this.y;
+				var img = new Image();
+				img.src = '/img/login-button.png';
+				img.onload = function()
+				{
+					this.width = img.width;
+					this.height = img.height;
+					ctx.drawImage(img, dx, dy);
+				}
+			}
+		}
+	};
+	
+	wnd.addChild(registerBtn);
+	
+	registerBtn.onMouseDown = function(obj){
+		console.log(obj.text)
+	};
+	
+	registerBtn.onMouseUp = function(obj){
+		console.log(obj.text)
+	};
+	
+	function prepare()
+	{
+		buffer_ctx.save();
+		// clear the drawing surface
+		buffer_ctx.clearRect(0, 0, canvas.width, canvas.height);
+		setShadow(buffer_ctx, "white", 0, 0, 20);
+
+		var dx = 0;
+		var allDone = true;
+		for ( var idx = 0; idx < personages.length; idx++) {
+			if (!personages[idx].draw(buffer_ctx, dx, 0))
+				allDone = false;
+			dx += personages[idx].width * personages[idx].scaleFactor;
+		}
+
+		clearShadow(buffer_ctx);
+		buffer_ctx.restore();
+		//if (allDone)
+			//clearInterval(waitId);
+	}
+	
+	function carousel(angle) {
+		var delta = Math.PI/personages.length*2;
+		for ( var idx = 0; idx < personages.length; idx++) {
+			personages[idx].angle = idx+angle; 
+			personages[idx].flag = Math.sin(delta*(idx+angle));
+		}
+		var newArray = personages.slice();
+		function sortfunction(a, b){
+		//Compare "a" and "b" in some fashion, and return -1, 0, or 1
+			return a.flag - b.flag;
+		}
+		newArray.sort(sortfunction);
+		for ( var idx = 0; idx < newArray.length; idx++) {
+			var obj = newArray[idx];
+			var sx = 1;
+			if (idx == newArray.length-1)
+				setShadow(context, "#FFFF88", 0, 0, 15);
+				obj.draw(context, Math.cos(delta*(obj.angle))*500+canvas.width/2-100, -Math.sin(delta*(obj.angle))*20+200, obj.scaleFactor*0.4+Math.sin(delta*(obj.angle))/10);
+			if (idx == newArray.length -1)
+				clearShadow(context);
+		}
+	}
+	var angle = 20;
+	function rotate(){
+		if (context)
+		{
+			angle +=0.05;
+			draw();
+		}
+	}
+	
+	function draw() {
+		context.save();
+		// clear the drawing surface
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		carousel(angle);
+		//context.drawImage(buffer, 0, 0);
+		context.setTransform(1, 0, 0, 1, 0, 1);
+		wnd.draw();
+		context.restore();
+		var allDone = true;
+		if (allDone)
+			clearInterval(waitId);
+	}
+
+	var drag = false;
+	var obj = null;
+	var offsetX = 0;
+	var offsetY = 0;
+
+	function mouseDown(event) {
+		event = event || window.event;
+
+		var canvas = document.getElementById('canvas'), x = event.pageX
+				- canvas.offsetLeft, y = event.pageY - canvas.offsetTop;
+		obj = wnd.checkArea(x, y);
+		if (obj) {
+			if (obj.type == 'WINDOW') {
+				drag = true;
+				offsetX = x - obj.x;
+				offsetY = y - obj.y;
+			}
+			else
+				obj.onMouseDown(obj);
+		}
+	}
+	
+	// Движение мыши
+	function mouseMove(event) {
+		var mouseY = event.pageY;
+		var mouseX = event.pageX;
+		if (drag) {
+			// Изменение координат фигуры
+			obj.x = mouseX - offsetX;
+			obj.y = mouseY - offsetY;
+			draw();
+		}
+	}
+	// Если отпущина кнопка мыши, то переменная drag принимает ложное значение
+	function mouseUp(event) {
+		drag = false;
+		var x = event.pageX - canvas.offsetLeft, y = event.pageY - canvas.offsetTop;
+		obj = wnd.checkArea(x, y);
+		if (obj) {
+			if (obj.type != 'WINDOW') {
+				obj.onMouseUp(obj);
+				if (obj.type == 'INPUT')
+					draw();
+			}
+		}
+	}
+
+	function onKeyPress(event) {
+		if (focused)
+		{
+			switch (event.keyCode)
+			{
+			case 8:
+				//Backspace
+				focused.text = focused.text.substr(0, focused.text.length-1);
+				if (focused.pos>0)
+					focused.pos--;
+				focused.prepare();
+				draw();
+				break;
+			case 46:
+				// Delete
+				//focused.text = focused.text.substr(0, focused.text.length-1);
+				break;
+			case 45:
+				// insert
+				break;
+			case 35:
+				// end
+				break;
+			case 36:
+				// home
+				break;
+			case 33:
+				// pgup
+				break;
+			case 34:
+				// pgdn
+				break;
+			case 37:
+				// left
+				break;
+			case 38:
+				// up
+				break;
+			case 39:
+				// right
+				break;
+			case 40:
+				// down
+				break;
+			case 13:
+				//Enter
+				console.log(focused.text);
+				break;
+			case 144:
+				//Enter
+				break;
+			case 0:
+				if (event.charCode !=0)
+				{
+					focused.text +=String.fromCharCode(event.charCode);
+					if (focused.text.length > focused.chars)
+						focused.pos++;
+					focused.prepare();
+					draw();
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		else
+			console.log(event);
+	}
+	// Main program starts here. The above functions are alphabetical order
+	function main() {
+		initGraphics();
+		waitId = setInterval(draw, 20);
+	} // main
+	
+	function onResize() {
+		if (window.innerWidth>800)
+			canvas.width = window.innerWidth;
+		else
+			canvas.width = 800;
+		if (window.innerHeight>800)
+			canvas.height = window.innerHeight;
+		else
+			canvas.height = 800;
+		
+		if (buffer)
+		{
+			buffer.width = window.innerWidth;
+			buffer.height = window.innerHeight;
+		}
+		for ( var idx = 0; idx < personages.length; idx++) {
+			personages[idx].rescale();
+		}
+		wnd.x = (window.innerWidth - 250)/2;
+		if ((window.innerHeight + 210)/2+210 > window.innerHeight)
+			wnd.y = window.innerHeight - 220;
+		else
+			wnd.y = (window.innerHeight + 210)/2;
+		prepare();
+		draw();
+	}
+	
+	window.onload = main; // Call the main() function when the window has been loaded
+
+	function jsonRPC(obj, onData, onError) {
+		$.ajax({
+			contentType : 'application/json',
+			data : JSON.stringify(obj),
+			dataType : 'json',
+			success : onData,
+			error : onError,
+			processData : false,
+			type : 'POST',
+			url : '/jsonrpc/'
+		});
+		return false;
+	}
+	var components = {};
+	function component()
+	{
+		var name = 'hideWindow';
+		components[name] = this;
+		this.exec = function(resp, params){
+			console.log('HIDE WINDOW:');
+			//console.log(params);
+			wnd.visible=false;
+			resp.push({"cmd" : "login1", "login" : iLogin.text, "password" : iPassword.text});
+		};
+	};
+	new component();
+	
+	function onData(data) {
+		var resp = [];
+		var params = data.result.params;
+		for (var idx = 0; idx<params.length; idx++)
+		{
+			if (components[params[idx].cmd])
+				components[params[idx].cmd].exec(resp, params[idx]);
+		}
+		//Next Step
+		if (resp.length > 0)
+		{
+			jsonRPC({
+				"method" : "ad.serve",
+				"params" : resp,
+				"id" : "id value (optional)"
+			}, onData, onError);
+		}
+	}
+	
+	function onError() {
+		console.log("Device control failed");
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////
+</script>
+<style type="text/css">
+.style1 {
+	font-family: "Courier New", Courier, monospace;
+}
+</style>
+</head>
+<body bgcolor="#000000">
+	<canvas id="canvas" tabindex="0" contentEditable="true"></canvas>
+</body>
+</html>
+

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<script src="../rpg-beta-2.js"></script> 
+	<script>
+		var rpg;
+		RPGJS.loadPath = "../rpgjs/core/";
+		RPGJS.load(function() {
+			rpg = new Rpg("canvas_rpg");
+			rpg.loadMap('MAP001', {
+				tileset: '021-SnowTown01.png',
+				autotiles: ['029-Sn_Shadow01.png', '029-Sn_Shadow01.png', '030-Sn_Ground01.png', '029-Sn_Shadow01.png', '031-Sn_Undulation01.png'],
+				events: ['EV003', 'EV004', 'EV005', 'EV006', 'EV009', 'EV012', 'EV013', 'EV014', 'EV015', 'EV016'],
+				player:  {
+					x: 19, 
+					y: 20,
+					direction: 'up',
+					filename: '001-Fighter01.png'
+				}
+			}, function () { 
+				rpg.setScreenIn("Player"); 
+				rpg.bind("eventCall_save", function() {
+					rpg.save(1);
+				});
+				rpg.bind("eventCall_load", function() {
+					rpg.load(1);
+				});
+			});
+ 
+			Input.lock(rpg.canvas, true);
+		});
+ 
+	</script>	
+ </head>
+  <body style="margin: 0; overflow: hidden; background-color: #000;">
+		<canvas id="canvas_rpg" width="640px" height="480px"></canvas> 
+  </body>
+</html>
+
