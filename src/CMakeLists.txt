@@ -21,14 +21,7 @@ INCLUDE_DIRECTORIES(
 SET (LIBRARY ngx)
 
 SET(LIBRARY_SRCS
-    AppSurfing.cpp
-    debug.cpp
-    jazz.cpp
-    Response.cpp
-    Session.cpp
-    Url.cpp
-    User.cpp
-    Variant.cpp
+    Engine.cpp
     )
 
 #set (INTERNAL_LIBRARIES ${INTERNAL_LIBRARIES}
@@ -38,15 +31,9 @@ SET(LIBRARY_SRCS
 #    )
 
 SET(LIBRARY_HEADERS
-    include/AppSurfing.h
-    include/debug.h
-    include/Response.h
-    include/Session.h
-    include/Url.h
-    include/User.h
-    include/Variant.h
+    include/Engine.h
     )
-ADD_LIBRARY(${LIBRARY} ${LIBRARY_SRCS} ${LIBRARY_HEADERS})
+ADD_LIBRARY(${LIBRARY} SHARED ${LIBRARY_SRCS} ${LIBRARY_HEADERS})
 
 TARGET_LINK_LIBRARIES(${LIBRARY}
     ${INTERNAL_LIBRARIES}
