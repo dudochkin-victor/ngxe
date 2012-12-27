@@ -1,0 +1,36 @@
+
+<-> Window Created!
+
+<-> Font created successfully.
+<-> EXT_texture_env_combine supported!
+<-> EXT_draw_range_elements supported!
+<-> EXT_multi_draw_arrays supported!
+<-> Loading textures/gothic_block/blocks15.tga in LoadCompressedTGA()
+<-> Loaded textures/gothic_block/blocks15.tga correctly.
+<-> Loading textures/gothic_light/skulllight01.tga in LoadCompressedTGA()
+<-> Loaded textures/gothic_light/skulllight01.tga correctly.
+<-> Loading textures/gothic_ceiling/ceilingtechplain.tga in LoadCompressedTGA()
+<-> Loaded textures/gothic_ceiling/ceilingtechplain.tga correctly.
+<-> noshader.tga does not exist
+<-> Loading noshader.jpg in LoadJPG()
+<-> noshader.jpg does not exist.
+<-> Loading textures/gothic_floor/largerblock3b3dim.tga in LoadCompressedTGA()
+<-> Loaded textures/gothic_floor/largerblock3b3dim.tga correctly.
+<-> Loading models/mapobjects/storch/storch_tall.tga in LoadCompressedTGA()
+<-> Loaded models/mapobjects/storch/storch_tall.tga correctly.
+<-> textures/sfx/flame1side.tga does not exist
+<-> Loading textures/sfx/flame1side.jpg in LoadJPG()
+<-> textures/sfx/flame1side.jpg does not exist.
+<-> Loading models/mapobjects/storch/storch.tga in LoadCompressedTGA()
+<-> Loaded models/mapobjects/storch/storch.tga correctly.
+<-> Loading textures/sfx/flame2.tga in LoadCompressedTGA()
+<-> Loaded textures/sfx/flame2.tga correctly.
+<-> Loading models/mapobjects/gratelamp/gratetorch2.tga in LoadCompressedTGA()
+<-> Loaded models/mapobjects/gratelamp/gratetorch2.tga correctly.
+<-> Loading models/mapobjects/gratelamp/gratetorch2b.tga in LoadUncompressedTGA()
+<-> Loaded models/mapobjects/gratelamp/gratetorch2b.tga correctly.
+<-> test1.bsp Loaded successfully
+<-> Demo Initiation Successful
+<-> OpenGL Initiation Successful
+
+<-> Exiting...

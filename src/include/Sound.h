@@ -16,8 +16,12 @@
 class Sound {
 public:
 	Sound();
+	Sound(int* pargc, char** argv);
 	virtual ~Sound();
 	virtual void init();
+private:
+	int* pargc;
+	char** argv;
 };
 
 #endif /* SOUND_H_ */

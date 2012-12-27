@@ -20,6 +20,7 @@ Dependency
 ==
 - SDL (must be removed)
 - GLUT
+- GLEW
 - OpenAL
 - FreeAlut
 - FreeType

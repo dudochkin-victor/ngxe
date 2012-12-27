@@ -1,0 +1,4 @@
+Map: test1.bsp
+Curve Tesselation: 8
+Camera Position: (0.0 0.875 0.0)
+Camera Orientation: 0.0 0.0

@@ -19,6 +19,7 @@
 #include "FractalMtn.h"
 #include "RotationalObj.h"
 #include "Ocean.h"
+#include "View.h"
 
 // Forward declaration of functions
 void Initialize();
@@ -49,23 +50,24 @@ COcean g_Ocean;
 // Main entry point for the program
 int main(int argc, char* argv[])
 {
-	// Glut window initialization
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(640, 480);
-	glutCreateWindow("CS458 - Assignment 5");
+	// window initialization
+	View * v = new View(&argc, argv);
+	//glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+
+	// Open a window
+	v->createWindow("CS458 - Assignment 5", 640, 480);
 
 	// Initialize OpenGL and objects
 	Initialize();
 
 	// Setup callback functions
-	glutIdleFunc(OnIdle);
-	glutMouseFunc(OnMouseButton);
-	glutDisplayFunc(RenderScene);
-	glutReshapeFunc(OnResize);
+	v->onIdle(OnIdle);
+	v->onMouse(OnMouseButton);
+	v->onDraw(RenderScene);
+	v->onResize(OnResize);
 
 	// Start Glut window
-	glutMainLoop();
+	v->start();
 	return 0;
 }
 

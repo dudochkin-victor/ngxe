@@ -13,12 +13,11 @@ View::View() :
 	// TODO Auto-generated constructor stub
 }
 
-View::View(int width, int height) :
+View::View(int* pargc, char** argv) :
 		id(0), width(300), height(300), options(
 				GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH) {
 	// TODO Auto-generated constructor stub
-	this->width = width;
-	this->height = height;
+	glutInit(pargc, argv);
 }
 
 View::~View() {
@@ -35,8 +34,9 @@ void View::setOptions(unsigned int opts) {
 /**
  * Create window
  */
-void View::createWindow(const char * title) {
-	glutInit(0, NULL);
+void View::createWindow(const char * title, int width, int height) {
+	this->width = width;
+	this->height = height;
 	// To see OpenGL drawing, take out the GLUT_DOUBLE request.
 	glutInitDisplayMode(this->options);
 	glutInitWindowSize(this->width, this->height);
@@ -48,7 +48,7 @@ void View::createWindow(const char * title) {
 /**
  * set display handler
  */
-void View::setDisplayHandler(void (*callback)(void)) {
+void View::onDraw(void (*callback)(void)) {
 	// Register the callback function to do the drawing.
 	glutDisplayFunc(callback);
 }
@@ -56,7 +56,7 @@ void View::setDisplayHandler(void (*callback)(void)) {
 /**
  * set idle handler
  */
-void View::setIdleHandler(void (*callback)(void)) {
+void View::onIdle(void (*callback)(void)) {
 	// If there's nothing to do, draw.
 	glutIdleFunc(callback);
 }
@@ -64,7 +64,7 @@ void View::setIdleHandler(void (*callback)(void)) {
 /**
  * set resize handler
  */
-void View::setReshapeHandler(void (*callback)(int, int)) {
+void View::onResize(void (*callback)(int, int)) {
 	// It's a good idea to know when our window's resized.
 	glutReshapeFunc(callback);
 }
@@ -72,9 +72,17 @@ void View::setReshapeHandler(void (*callback)(int, int)) {
 /**
  * set keyboard input handler
  */
-void View::setKeyboardHandler(void (*callback)(unsigned char, int, int)) {
+void View::onKeyboard(void (*callback)(unsigned char, int, int)) {
 	// And let's get some keyboard input.
 	glutKeyboardFunc(callback);
+}
+
+/**
+ * set mouse input handler
+ */
+void View::onMouse(void (* callback)( int, int, int, int )) {
+	// And let's get some keyboard input.
+	glutMouseFunc(callback);
 }
 
 /**
@@ -92,4 +100,8 @@ void View::start() {
 	// Pass off control to OpenGL.
 	// Above functions are called as appropriate.
 	glutMainLoop();
+}
+
+int View::getWindowId(){
+	return this->id;
 }
