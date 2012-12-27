@@ -3,9 +3,10 @@ ngx
 
 First goals
 ===
-- The engine should be able to create a window
-- The engine should be able to show the video for the intro
-- The engine should ba able to play sound
+- The engine should be able to create a window.
+- The engine should be able to show the video for the intro.
+- The engine should be able to play sound.
+- The engine should be able to load textures. (Must have Texture Manager)
 
 This should be easy to do
 
