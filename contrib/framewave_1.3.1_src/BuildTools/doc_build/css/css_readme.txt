@@ -1,0 +1,1 @@
+Different css for the frames and no-frames versions of the html.

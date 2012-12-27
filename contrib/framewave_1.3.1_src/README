@@ -1,0 +1,144 @@
+Copyright (c) 2007-2009, The Framewave Group. All Rights Reserved.
+
+Framewave Version FW_1.3.1
+=================================================
+
+OVERVIEW :
+
+Framewave(TM) is a collection of low-level software routines for x86 processors.
+Framewave (FW) is designed to aid and accelerate application development, debugging,
+and optimization. Framewave function capabilities extend from simple arithmetic
+operations to rich, complex domain specific tasks, such as image, video, and
+signal processing.
+
+=================================================
+
+DIRECTORY HIERARCHY :
+
+FRAMEWAVE_1.3.1_SRC
+    |
+    |
+    |----------BuildTools
+    |       		|
+    |       		|-buildscripts - contains all the build scripts used to build FW.
+    |       
+    |----------Framewave        
+    |       |
+    |       |-build -|
+    |       |        |-bin - contains binaries. 
+    |       |        |
+    |       |        |-include - contains .h files.
+    |       |        |
+    |       |        |-tmp - contains the temporary files.
+    |       |   
+    |       |-doc - contains 
+    |       |            |- contains .h files to help generate Manual
+    |       |
+    |       |-domain-|
+    |       |        |-common-|
+    |       |        |        |-src - contains cpp files common to all the domains. 
+    |       |        |        |
+    |       |        |        |-include - contains .h files common to all the domains.
+    |       |        |       
+    |       |        |       
+    |       |        |-fwBase----|
+    |       |        |           |-src - contains cpp files defining core functions.
+    |       |        |           |
+    |       |        |           |-include - contains .h files defining data types, data structures, enumerations, and declarations for         
+    |       |        |             core functions. 
+    |       |        |       
+    |       |        |  
+    |       |        |- fwImage--|
+    |       |        |           |-src- contains cpp files defining functions for image processing.
+    |       |        |           |
+    |       |        |           |-include - contains .h files declaring functions for image processing.
+    |       |        |       
+    |       |        |
+    |       |        |- fwSignal-|
+    |       |        |           |-src- contains cpp files defining functions for signal processing.
+    |       |        |           |
+    |       |        |           |-include - contains .h files declaring functions for signal processing.
+    |       |        |
+    |       |        |
+    |       |        |- fwVideo--|
+    |       |        |           |-src- contains cpp files defining functions for video processing.
+    |       |        |           |
+    |       |        |           |-include - contains .h files declaring functions for video processing.
+    |       |        |
+    |       |        |
+    |       |        |- fwJPEG-- |
+    |       |        |           |-src- contains cpp files defining functions for jpeg image processing.
+    |       |        |           |
+    |       |        |           |-include - contains .h files declaring functions for jpeg image processing.   
+    |       |
+    |       |
+    |       |-sdk----|
+    |       |        |-boost_1_34_0- contains Boost thread library and its dependencies, which is a subset of Boost C++ library distribution from www.boost.org
+    |       |        |
+    |       |        |-cbl---------- contains core Framewave helper API's.
+    |       |        |
+    |       |        |-SSEPlus------ SSEPlus is a SIMD function library(http://sourceforge.net/projects/sseplus/).
+    |       |
+    |       |-SampleConvert - sample applicatiion using fwImage, refer README present in this directory for detials.
+    |       |
+    |       |
+    |       |-UnitTest - to test the FW API, refer README present in this directory for details.
+    |       |
+    
+==================================================
+
+BUILDING Framewave FROM SOURCE
+
+Framewave can be build from the source on Microsoft(R) Windows(R), Linux(R), Sun(R) Solaris(R), and Apple(R) Mac OS(R) platforms.
+
+a)build and tested on following Compilers.
+  Note: Build system is extendible and can be used to compile on other compiler version if needed.
+
+    Microsoft(R) Windows(R)- Visual Studio 2008
+
+    Linux(R)- GCC version 4.3
+
+    Sun(R) Solaris(R)- Sun Studio 12: c 5.9, Patch 124868-01
+          
+    Apple(R) Mac OS(R)- GCC version 4.0.1
+
+b) Command to build Framewave from command line
+    
+    scons [toolset=gcc/cc] [variant=debug/release bitness=32/64 libtype=shared/static]
+
+For detailed explaination on building Framewave refer http://framewave.sourceforge.net
+
+=================================================
+WEB RESOURCES
+
+The FW home page URL is:
+
+        http://framewave.sourceforge.net/
+
+        Please visit this URL for news, code samples, documentation, FAQ, and more. 
+        Updates are posted periodically.
+
+The FW online documentation URL is:
+
+        http://framewave.sourceforge.net/Manual/aa_000_frames.html
+
+The FW online forum URL is:
+                You can go to the forum from the home page: http://framewave.sourceforge.net/
+                To directly access the forum use the following url: http://sourceforge.net/forum/?group_id=212624
+
+    * Developers forum - This forum will be useful for all who develop or enhance the Framewave APIs.
+
+    * Open Discussion forum - This forum will useful for all who use or consume the Framewave library.
+
+
+=================================================
+Framewave is a trademark of The Framewave Group.
+Microsoft and Windows are registered trademarks of Microsoft Corporation.
+Sun and Solaris are registered trademarks of Sun Microsystems, Inc.
+Linux is a registered trademark of Linus Torvalds.
+Apple and Mac OS are registered trademarks of Apple, Inc.
+
+For Framewave licensing and code copyright information, see the LICENSE file in the same directory as this file.
+Framewave software is subject to the Apache v2.0 License.
+
+

@@ -7,12 +7,89 @@
 
 #include "View.h"
 
-View::View() {
+View::View() :
+		id(0), width(300), height(300), options(
+				GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH) {
 	// TODO Auto-generated constructor stub
+}
 
+View::View(int width, int height) :
+		id(0), width(300), height(300), options(
+				GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH) {
+	// TODO Auto-generated constructor stub
+	this->width = width;
+	this->height = height;
 }
 
 View::~View() {
 	// TODO Auto-generated destructor stub
 }
 
+/**
+ * set context options
+ */
+void View::setOptions(unsigned int opts) {
+	this->options = opts;
+}
+
+/**
+ * Create window
+ */
+void View::createWindow(const char * title) {
+	glutInit(0, NULL);
+	// To see OpenGL drawing, take out the GLUT_DOUBLE request.
+	glutInitDisplayMode(this->options);
+	glutInitWindowSize(this->width, this->height);
+
+	// Open a window
+	this->id = glutCreateWindow(title);
+}
+
+/**
+ * set display handler
+ */
+void View::setDisplayHandler(void (*callback)(void)) {
+	// Register the callback function to do the drawing.
+	glutDisplayFunc(callback);
+}
+
+/**
+ * set idle handler
+ */
+void View::setIdleHandler(void (*callback)(void)) {
+	// If there's nothing to do, draw.
+	glutIdleFunc(callback);
+}
+
+/**
+ * set resize handler
+ */
+void View::setReshapeHandler(void (*callback)(int, int)) {
+	// It's a good idea to know when our window's resized.
+	glutReshapeFunc(callback);
+}
+
+/**
+ * set keyboard input handler
+ */
+void View::setKeyboardHandler(void (*callback)(unsigned char, int, int)) {
+	// And let's get some keyboard input.
+	glutKeyboardFunc(callback);
+}
+
+/**
+ * set special input handler
+ */
+void View::setSpecialHandler(void (*callback)(int, int, int)) {
+	// And let's get some keyboard input.
+	glutSpecialFunc(callback);
+}
+
+/**
+ * start engine
+ */
+void View::start() {
+	// Pass off control to OpenGL.
+	// Above functions are called as appropriate.
+	glutMainLoop();
+}

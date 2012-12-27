@@ -1,0 +1,42 @@
+#
+# Copyright (c) 2006-2009 Advanced Micro Devices, Inc. All Rights Reserved.
+# This software is subject to the Apache v2.0 License.
+#
+
+Import( '*' )
+
+# fwBase library
+# Project SCons script
+import sys
+from os.path import *
+
+sys.path = lstSysPath
+# import our modules here
+from fwbuild import *
+
+# Setup the path to the constatnts source file
+pthConstCPP  = join(oRoot.dctFwVars['pthProjectRoot'], 'common', 'src', 'Constants.cpp')
+
+if oRoot.dctFwVars['thread'] == 'pthread' :
+	pthBoostBase = join(oRoot.dctFwVars['pthProjectRoot'], '..', 'sdk', 'boost_1_34_0', 'libs', 'thread', 'src')
+	lstExtraBaseCPPs = [     pthConstCPP ,
+		join(pthBoostBase,'barrier.cpp'),       \
+		join(pthBoostBase,'condition.cpp'),     \
+		join(pthBoostBase,'exceptions.cpp'),    \
+		join(pthBoostBase,'mutex.cpp'),         \
+		join(pthBoostBase,'once.cpp'),          \
+		join(pthBoostBase,'thread.cpp'),        \
+		join(pthBoostBase,'tss_dll.cpp'),       \
+		join(pthBoostBase,'tss_hooks.cpp'),     \
+		join(pthBoostBase,'tss_pe.cpp'),        \
+		join(pthBoostBase,'xtime.cpp')          ]
+else:
+	lstExtraBaseCPPs = [ pthConstCPP ]
+
+# Project script essentially starts here
+fwBase      = fwProject(oRoot, 'fwBase')
+
+setupIncludePaths(fwBase.oEnv, join('sdk', 'boost_1_34_0'), dontRecurse=1)
+oLib_fwBase = fwBase.initBuildObjects(lstExtraCPPs=lstExtraBaseCPPs)
+
+Return("oLib_fwBase")

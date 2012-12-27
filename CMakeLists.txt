@@ -17,7 +17,7 @@ SET(DATA_DIR ${PKG_DATADIR}/data)
 #install (FILES "${CMAKE_SOURCE_DIR}/data/markov.txt" "${CMAKE_SOURCE_DIR}/data/words.txt"        
 #         DESTINATION ${DATA_DIR})
 
-ADD_SUBDIRECTORY(contrib)         
+#ADD_SUBDIRECTORY(contrib)         
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(examples)
 ADD_SUBDIRECTORY(tools)
