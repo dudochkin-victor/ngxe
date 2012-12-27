@@ -134,7 +134,7 @@ int loadBMP(char *filename, textureImage *texture)
     /* calculate the size of the image in bytes */
     biSizeImage = texture->width * texture->height * 3;
     printf("Size of the image data: %ld\n", biSizeImage);
-    texture->data = malloc(biSizeImage);
+    texture->data = (unsigned char*)malloc(biSizeImage);
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);
     if (!fread(texture->data, biSizeImage, 1, file))
@@ -158,8 +158,8 @@ Bool loadGLTextures()   /* Load Bitmaps And Convert To Textures */
     textureImage *texti;
     
     status = False;
-    texti = malloc(sizeof(textureImage));
-    if (loadBMP("Data/tim.bmp", texti))
+    texti = (textureImage*)malloc(sizeof(textureImage));
+    if (loadBMP((char*)"Data/tim.bmp", texti))
     {
         status = True;
         glGenTextures(1, &texture[0]);   /* create the texture */
@@ -195,7 +195,7 @@ void resizeGLScene(unsigned int width, unsigned int height)
 }
 
 /* general OpenGL initialization function */
-int initGL(GLvoid)
+int initGL()
 {
     int x, y;
     if (!loadGLTextures())
@@ -231,7 +231,7 @@ int initGL(GLvoid)
 }
 
 /* Here goes our drawing code */
-int drawGLScene(GLvoid)
+int drawGLScene()
 {
     int x, y;
     /* used to break our flag into tiny quads */
@@ -290,7 +290,7 @@ int drawGLScene(GLvoid)
 }
 
 /* function to release/destroy our resources and restoring the old desktop */
-GLvoid killGLWindow(GLvoid)
+GLvoid killGLWindow()
 {
     if (GLWin.ctx)
     {
@@ -435,7 +435,7 @@ void keyPressed(KeySym key)
         case XK_F1:
             killGLWindow();
             GLWin.fs = !GLWin.fs;
-            createGLWindow("NeHe's Flag Effect Tutorial",
+            createGLWindow((char*)"NeHe's Flag Effect Tutorial",
                 640, 480, 24, GLWin.fs);
             break;
     }
@@ -448,7 +448,7 @@ int main(int argc, char **argv)
     done = False;
     /* default to fullscreen */
     GLWin.fs = True;
-    if (!createGLWindow("NeHe's Flag Effect Tutorial", 640, 480, 24,
+    if (!createGLWindow((char*)"NeHe's Flag Effect Tutorial", 640, 480, 24,
         GLWin.fs))
     {
         done = True;

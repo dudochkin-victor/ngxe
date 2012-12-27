@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
+#include <string.h>
 #include <GL/glx.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -56,7 +57,7 @@ GLuint base;    /* base display list of our font set */
 GLfloat counter1;   /* first counter for movement and coloring */
 GLfloat counter2;   /* second counter for movement and coloring */
 
-GLvoid buildFont(GLvoid)
+GLvoid buildFont()
 {
     XFontStruct *font;
     
@@ -71,7 +72,7 @@ GLvoid buildFont(GLvoid)
         if (font == NULL)
         {
             printf("Problems loading fonts :-(\n");
-            exit(1);
+            return;
         }
     }
     /* build 96 display lists out of our font starting at char 32 */
@@ -80,7 +81,7 @@ GLvoid buildFont(GLvoid)
     XFreeFont(GLWin.dpy, font);
 }
 
-GLvoid deleteFont(GLvoid)
+GLvoid deleteFont()
 {
     glDeleteLists(base, 96);
 }
@@ -116,7 +117,7 @@ void resizeGLScene(unsigned int width, unsigned int height)
 }
 
 /* general OpenGL initialization function */
-int initGL(GLvoid)
+int initGL()
 {
     glShadeModel(GL_SMOOTH);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -132,7 +133,7 @@ int initGL(GLvoid)
 }
 
 /* Here goes our drawing code */
-int drawGLScene(GLvoid)
+int drawGLScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -148,7 +149,7 @@ int drawGLScene(GLvoid)
 }
 
 /* function to release/destroy our resources and restoring the old desktop */
-GLvoid killGLWindow(GLvoid)
+GLvoid killGLWindow()
 {
     if (GLWin.ctx)
     {
@@ -291,7 +292,7 @@ void keyPressed(KeySym key)
         case XK_F1:
             killGLWindow();
             GLWin.fs = !GLWin.fs;
-            createGLWindow("NeHe's Text Tutorial", 640, 480, 24, GLWin.fs);
+            createGLWindow((char*)"NeHe's Text Tutorial", 640, 480, 24, GLWin.fs);
             break;
     }
 }
@@ -304,7 +305,7 @@ int main(int argc, char **argv)
     done = False;
     /* default to fullscreen */
     GLWin.fs = True;
-    createGLWindow("NeHe's Text Tutorial", 640, 480, 24, GLWin.fs);
+    createGLWindow((char*)"NeHe's Text Tutorial", 640, 480, 24, GLWin.fs);
 
     /* wait for events*/ 
     while (!done)

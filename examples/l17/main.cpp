@@ -42,7 +42,7 @@ GLfloat cnt2;                  /* Counter Used To Move Text & For Coloring */
 
 
 /* function to recover memory form our list of characters */
-GLvoid KillFont( GLvoid )
+GLvoid KillFont()
 {
     glDeleteLists( base, 256 ); /* Delete All 256 Display Lists */
 
@@ -123,7 +123,7 @@ int LoadGLTextures( )
 }
 
 /* function to build our font list */
-GLvoid BuildFont( GLvoid )
+GLvoid BuildFont()
 {
     GLuint loop; /* Loop variable               */
     float cx;    /* Holds Our X Character Coord */
@@ -248,7 +248,7 @@ void handleKeyPress( SDL_keysym *keysym )
 }
 
 /* general OpenGL initialization function */
-int initGL( GLvoid )
+int initGL()
 {
 
     /* Load in the textures */
@@ -333,7 +333,7 @@ GLvoid glPrint( GLint x, GLint y, char *string, int set )
 
 
 /* Here goes our drawing code */
-int drawGLScene( GLvoid )
+int drawGLScene()
 {
     /* These are to calculate our fps */
     static GLint T0     = 0;
@@ -393,25 +393,25 @@ int drawGLScene( GLvoid )
 	       1.0f - 0.5f * ( float )cos( cnt1 + cnt2 ) );
     glPrint( ( int )( 280 + 250 * cos( cnt1 ) ),
 	     ( int )( 235 + 200 * sin( cnt2 ) ),
-	     "NeHe", 0 );
+	     (char*)"NeHe", 0 );
     glColor3f( 1.0f * ( float )sin( cnt2 ),
 	       1.0f - 0.5f * ( float )cos( cnt1 + cnt2 ),
 	       1.0f * ( float )cos( cnt1 ) );
     glPrint( ( int )( 280 + 230 * cos( cnt2 ) ),
 	     ( int )( 235 + 200 * sin( cnt1 ) ),
-	     "OpenGL", 1 );
+	     (char*)"OpenGL", 1 );
 
     /* Set Color to Red */
     glColor3f( 0.0f, 0.0f, 1.0f );
     /* Draw Text To The Screen */
     glPrint( ( int )( 240 + 200 * cos( ( cnt2 + cnt1 ) / 5 ) ), 2,
-	     "Giuseppe D'Agata", 0 );
+    		(char*)"Giuseppe D'Agata", 0 );
 
     /* Set Color To White */
     glColor3f( 1.0f, 1.0f, 1.0f );
     /* Draw Offset Text To The Screen */
     glPrint( ( int )( 242 + 200 * cos( ( cnt2 + cnt1 ) / 5 ) ), 2,
-	     "Giuseppe D'Agata", 0 );
+    		(char*)"Giuseppe D'Agata", 0 );
 
     cnt1 += 0.01f;   /* Increase The First Counter  */
     cnt2 += 0.0081f; /* Increase The Second Counter */

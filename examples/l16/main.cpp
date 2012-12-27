@@ -141,7 +141,7 @@ int loadBMP(char *filename, textureImage *texture)
     /* calculate the size of the image in bytes */
     biSizeImage = texture->width * texture->height * 3;
     printf("Size of the image data: %d\n", biSizeImage);
-    texture->data = malloc(biSizeImage);
+    texture->data = (unsigned char*)malloc(biSizeImage);
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);
     if (!fread(texture->data, biSizeImage, 1, file))
@@ -165,8 +165,8 @@ Bool loadGLTextures()   /* Load Bitmaps And Convert To Textures */
     textureImage *texti;
     
     status = False;
-    texti = malloc(sizeof(textureImage));
-    if (loadBMP("Data/crate.bmp", texti))
+    texti = (textureImage*)malloc(sizeof(textureImage));
+    if (loadBMP((char*)"Data/crate.bmp", texti))
     {
         status = True;
         glGenTextures(3, &texture[0]);   /* create three textures */
@@ -217,7 +217,7 @@ void resizeGLScene(unsigned int width, unsigned int height)
 }
 
 /* general OpenGL initialization function */
-int initGL(GLvoid)
+int initGL()
 {
     if (!loadGLTextures())
     {
@@ -252,7 +252,7 @@ int initGL(GLvoid)
 }
 
 /* Here goes our drawing code */
-int drawGLScene(GLvoid)
+int drawGLScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -331,7 +331,7 @@ int drawGLScene(GLvoid)
 }
 
 /* function to release/destroy our resources and restoring the old desktop */
-GLvoid killGLWindow(GLvoid)
+GLvoid killGLWindow()
 {
     if (GLWin.ctx)
     {
@@ -477,7 +477,7 @@ void keyPressed(KeySym key)
         case XK_F1:
             killGLWindow();
             GLWin.fs = !GLWin.fs;
-            createGLWindow("NeHe's Cool Looking Fog Tutorial",
+            createGLWindow((char*)"NeHe's Cool Looking Fog Tutorial",
                 640, 480, 24, GLWin.fs);
             break;
         case XK_f:
@@ -532,7 +532,7 @@ int main(int argc, char **argv)
     light = False;
     /* default to fullscreen */
     GLWin.fs = True;
-    if (!createGLWindow("NeHe's Cool Looking Fog Tutorial",
+    if (!createGLWindow((char*)"NeHe's Cool Looking Fog Tutorial",
         640, 480, 24, GLWin.fs))
     {
         done = True;

@@ -137,7 +137,7 @@ int loadBMP(char *filename, textureImage *texture)
     /* calculate the size of the image in bytes */
     biSizeImage = texture->width * texture->height * 3;
     printf("Size of the image data: %ld\n", biSizeImage);
-    texture->data = malloc(biSizeImage);
+    texture->data = (unsigned char*)malloc(biSizeImage);
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);
     if (!fread(texture->data, biSizeImage, 1, file))
@@ -161,12 +161,12 @@ Bool loadGLTextures()   /* Load Bitmaps And Convert To Textures */
     textureImage *texti;
     
     status = False;
-    texti = malloc(sizeof(textureImage) * 5);
-    if (loadBMP("Data/logo.bmp", &texti[0]) &&
-        loadBMP("Data/mask1.bmp", &texti[1]) &&
-        loadBMP("Data/image1.bmp", &texti[2]) &&
-        loadBMP("Data/mask2.bmp", &texti[3]) &&
-        loadBMP("Data/image2.bmp", &texti[4]))
+    texti = (textureImage*)malloc(sizeof(textureImage) * 5);
+    if (loadBMP((char*)"Data/logo.bmp", &texti[0]) &&
+        loadBMP((char*)"Data/mask1.bmp", &texti[1]) &&
+        loadBMP((char*)"Data/image1.bmp", &texti[2]) &&
+        loadBMP((char*)"Data/mask2.bmp", &texti[3]) &&
+        loadBMP((char*)"Data/image2.bmp", &texti[4]))
     {
         status = True;
         glGenTextures(5, &texture[0]);   /* create five textures */
@@ -209,7 +209,7 @@ void resizeGLScene(unsigned int width, unsigned int height)
 }
 
 /* general OpenGL initialization function */
-int initGL(GLvoid)
+int initGL()
 {
     if (!loadGLTextures())
     {
@@ -227,7 +227,7 @@ int initGL(GLvoid)
 }
 
 /* Here goes our drawing code */
-int drawGLScene(GLvoid)
+int drawGLScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -319,7 +319,7 @@ int drawGLScene(GLvoid)
 }
 
 /* function to release/destroy our resources and restoring the old desktop */
-GLvoid killGLWindow(GLvoid)
+GLvoid killGLWindow()
 {
     if (GLWin.ctx)
     {
@@ -341,7 +341,7 @@ GLvoid killGLWindow(GLvoid)
 
 /* this function creates our window and sets it up properly */
 /* FIXME: bits is currently unused */
-Bool createGLWindow(char* title, int width, int height, int bits,
+Bool createGLWindow(const char* title, int width, int height, int bits,
                     Bool fullscreenflag)
 {
     XVisualInfo *vi;
