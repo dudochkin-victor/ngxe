@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<map>
+    <tiles width="8" height="34">
+	<defaultTile>
+	    <image>Media/default.bmp</image>
+	</defaultTile>
+
+	<tile x="0" y="3">
+	    <image>Media/icon.bmp</image>
+	</tile>
+
+
+    </tiles>
+    <units>
+	<unit player="1" x="2" y="4">
+	    <image>Media/icon2.bmp</image>
+	    <position>
+	    	<x>2</x>
+	    	<y>2</y>
+		</position>
+	</unit>    
+    </units>
+</map>

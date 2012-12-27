@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<map>
+    <tiles>
+        <tile x="0" y="3">
+            <image>Media/icon.bmp</image>
+        </tile>
+    </tiles>
+    <units>
+        <unit player="1">
+            <image>Media/icon2.bmp</image>
+            <position>
+                <x>2</x>
+                <y>2</y>
+            </position>
+        </unit>
+    </units>
+</map>
