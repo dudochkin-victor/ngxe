@@ -240,7 +240,7 @@ void handleKeyPress( SDL_keysym *keysym )
 }
 
 /* general OpenGL initialization function */
-int initGL( GLvoid )
+int initGL()
 {
 
     /* Load in the texture */
@@ -295,7 +295,7 @@ int initGL( GLvoid )
     return( TRUE );
 }
 
-GLvoid drawGLCube( GLvoid )
+GLvoid drawGLCube()
 {
     /* Start Drawing Quads */
     glBegin( GL_QUADS );
@@ -346,7 +346,7 @@ GLvoid drawGLCube( GLvoid )
 }
 
 /* Here goes our drawing code */
-int drawGLScene( GLvoid )
+int drawGLScene()
 {
     /* These are to calculate our fps */
     static GLint T0     = 0;

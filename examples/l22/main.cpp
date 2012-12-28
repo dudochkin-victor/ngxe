@@ -25,9 +25,9 @@
 #define SCREEN_BPP     16
 
 /* Set up some booleans */
-#define TRUE  1
-#define FALSE 0
-typedef unsigned int bool;
+//#define true  1
+//#define false 0
+//typedef unsigned int bool;
 
 /* Maximum Emboss-Translate. Increase To Get Higher Immersion */
 #define MAX_EMBOSS ( GLfloat )0.01f
@@ -49,8 +49,8 @@ GLuint invbump[3]; /* Inverted Bumpmaps                    */
 GLuint glLogo;     /* Handle For OpenGL-Logo               */
 GLuint multiLogo;  /* Handle For Multitexture-Enabled-Logo */
 
-bool emboss = FALSE;
-bool bumps = TRUE;
+bool emboss = false;
+bool bumps = true;
 
 /* Our Lights */
 /* Ambient Light Is 20% White */
@@ -97,7 +97,7 @@ GLfloat data[]= {
 
 /* Prepare for GL_ARB_multitexture */
 /* Used To Disable ARB Extensions Entirely */
-#define __ARB_ENABLE TRUE
+#define __ARB_ENABLE true
 
 /* Uncomment To See Your Extensions At Start-Up? */
 #define EXT_INFO
@@ -108,9 +108,9 @@ GLfloat data[]= {
 #define MAX_EXTENSION_LENGTH 256
 
 /* Flag Indicating Whether Multitexturing Is Supported */
-bool multitextureSupported = FALSE;
+bool multitextureSupported = false;
 /* Use It If It Is Supported? */
-bool useMultitexture = TRUE;
+bool useMultitexture = true;
 
 /* Number Of Texel-Pipelines. This Is At Least 1. */
 GLint maxTexelUnits = 1;
@@ -138,13 +138,13 @@ bool isInString( char *string, const char *search ) {
 			if ( string[i] == search[pos] )
 			    pos++; /* Next Position */
 			if ( ( pos > maxpos ) && string[i + 1] == '\n' )
-			    return TRUE; /* We Have A Winner! */
+			    return true; /* We Have A Winner! */
 			i++;
 		    }
 	    }
     }
 
-    return FALSE; /* Sorry, Not Found! */
+    return false; /* Sorry, Not Found! */
 }
 
 /* function to determine if ARB_multitexture is available */
@@ -176,13 +176,13 @@ bool initMultitexture( void ) {
 	    printf ( "The GL_ARB_multitexture extension will be used.\n" );
 #endif
 
-	    return TRUE;
+	    return true;
         }
 
     /* We Can't Use It If It Isn't Supported! */
-    useMultitexture = FALSE;
+    useMultitexture = false;
 
-    return FALSE;
+    return false;
 }
 
 /* function to release/destroy our resources and restoring the old desktop */
@@ -199,7 +199,7 @@ void Quit( int returnCode )
 int LoadGLTextures( )
 {
     /* Status indicator */
-    int Status = FALSE;
+    int Status = false;
 
     /* Create storage space for the texture */
     SDL_Surface *TextureImage;
@@ -211,7 +211,7 @@ int LoadGLTextures( )
     if ( ( TextureImage = SDL_LoadBMP( "data/base.bmp" ) ) )
         {
 	    /* Set the status to true */
-	    Status = TRUE;
+	    Status = true;
 
 	    /* Create The Texture */
 	    glGenTextures( 3, &texture[0] );
@@ -352,7 +352,7 @@ int LoadGLTextures( )
 	    tempData = NULL;
         }
         else
-	    Status = FALSE;
+	    Status = false;
 
         if ( TextureImage )
 	    SDL_FreeSurface( TextureImage );
@@ -377,7 +377,7 @@ int LoadGLTextures( )
 		    SDL_FreeSurface( TextureImage );
 
                 if ( !( TextureImage = SDL_LoadBMP( "data/opengl.bmp" ) ) )
-		    Status = FALSE;
+		    Status = false;
 
 		tempData = ( unsigned char* )TextureImage->pixels;
 
@@ -408,7 +408,7 @@ int LoadGLTextures( )
                 free( alpha );
 	    }
         else
-	    Status = FALSE;
+	    Status = false;
 
         if ( TextureImage )
 	    SDL_FreeSurface( TextureImage );
@@ -420,7 +420,7 @@ int LoadGLTextures( )
 		unsigned char *tempData;
 
 		/* Create Memory For RGBA8-Texture */
-		alpha = ( char* )malloc( 4 * TextureImage->w *
+		alpha = ( unsigned char* )malloc( 4 * TextureImage->w *
 					 TextureImage->h * sizeof( char ) );
 		tempData = ( unsigned char* )TextureImage->pixels;
 
@@ -433,7 +433,7 @@ int LoadGLTextures( )
 		    SDL_FreeSurface( TextureImage );
 
                 if ( !( TextureImage = SDL_LoadBMP( "data/multi_on.bmp" ) ) )
-		    Status = FALSE;
+		    Status = false;
 
 		tempData = ( unsigned char* )TextureImage->pixels;
 
@@ -464,7 +464,7 @@ int LoadGLTextures( )
 		tempData = NULL;
 	    }
         else
-	    Status = FALSE;
+	    Status = false;
 
         if ( TextureImage )
 	    SDL_FreeSurface( TextureImage );
@@ -503,7 +503,7 @@ int resizeWindow( int width, int height )
     /* Reset The View */
     glLoadIdentity( );
 
-    return( TRUE );
+    return( true );
 }
 
 /* function to draw a cube */
@@ -648,14 +648,14 @@ void initLights( void )
 }
 
 /* general OpenGL initialization function */
-int initGL( GLvoid )
+int initGL()
 {
 
     multitextureSupported = initMultitexture( );
 
     /* Load in the texture */
     if ( !LoadGLTextures( ) )
-	return FALSE;
+	return false;
 
     /* Enable Texture Mapping */
     glEnable( GL_TEXTURE_2D );
@@ -680,7 +680,7 @@ int initGL( GLvoid )
 
     initLights( );
 
-    return( TRUE );
+    return( true );
 }
 
 /* Calculates v=vM, M Is 4x4 In Column-Major,
@@ -955,7 +955,7 @@ bool doMesh1TexelUnits( void )
     /* LAST PASS: Do The Logos! */
     doLogo( );
 
-    return TRUE;
+    return true;
 }
 
 /* same as doMesh1TexelUnits except in 2 passes using 2 texel units */
@@ -1216,7 +1216,7 @@ bool doMesh2TexelUnits( void )
     /* LAST PASS: Do The Logos! */
     doLogo( );
 
-    return TRUE;
+    return true;
 }
 
 /* function to draw cube without bump mapping */
@@ -1258,11 +1258,11 @@ bool doMeshNoBumps( void )
     /* LAST PASS: Do The Logos! */
     doLogo( );
 
-    return TRUE;
+    return true;
 }
 
 /* Here goes our drawing code */
-int drawGLScene( GLvoid )
+int drawGLScene()
 {
     /* These are to calculate our fps */
     static GLint T0     = 0;
@@ -1273,13 +1273,13 @@ int drawGLScene( GLvoid )
 	    if ( useMultitexture && maxTexelUnits > 1 )
 		{
 		    if ( !( doMesh2TexelUnits( ) ) )
-			return FALSE;
+			return false;
 		}
 	    else if ( !( doMesh1TexelUnits( ) ) )
-		return FALSE;
+		return false;
 	}
     else if ( !( doMeshNoBumps( ) ) )
-	return FALSE;
+	return false;
 
     /* Draw it to the screen */
     SDL_GL_SwapBuffers( );
@@ -1301,7 +1301,7 @@ int drawGLScene( GLvoid )
     yrot += 0.2f; /* Y Axis Rotation */
     zrot += 0.4f; /* Z Axis Rotation */
 
-    return( TRUE );
+    return( true );
 }
 
 int main( int argc, char **argv )
@@ -1309,13 +1309,13 @@ int main( int argc, char **argv )
     /* Flags to pass to SDL_SetVideoMode */
     int videoFlags;
     /* main loop variable */
-    int done = FALSE;
+    int done = false;
     /* used to collect events */
     SDL_Event event;
     /* this holds some info about our display */
     const SDL_VideoInfo *videoInfo;
     /* whether or not the window is active */
-    int isActive = TRUE;
+    int isActive = true;
 
     /* initialize SDL */
     if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
@@ -1386,9 +1386,9 @@ int main( int argc, char **argv )
 			     * shouldn't draw the screen
 			     */
 			    if ( event.active.gain == 0 )
-				isActive = FALSE;
+				isActive = false;
 			    else
-				isActive = TRUE;
+				isActive = true;
 			    break;			    
 			case SDL_VIDEORESIZE:
 			    /* handle resize event */
@@ -1408,7 +1408,7 @@ int main( int argc, char **argv )
 			    break;
 			case SDL_QUIT:
 			    /* handle quit requests */
-			    done = TRUE;
+			    done = true;
 			    break;
 			default:
 			    break;

@@ -65,7 +65,7 @@ GLuint EmptyTexture()											/* Create An Empty Texture */
 	unsigned int* data;											/* Stored Data */
 
 	/* Create Storage Space For Texture Data (128x128x4) */
-	data = malloc(sizeof(unsigned int) * 4 * 128 * 128);
+	data = (unsigned int*)malloc(sizeof(unsigned int) * 4 * 128 * 128);
 
 	/* Check for successful allocation,exit if failed */
 	if(NULL == data)

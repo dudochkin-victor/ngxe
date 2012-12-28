@@ -3,7 +3,7 @@
  * Jeff Molofee ( NeHe ).  1997-2000.  If You Find This Code
  * Useful, Please Let Me Know.
  * 
- * Original Code & Tutorial Text By Andreas Löffler
+ * Original Code & Tutorial Text By Andreas Lï¿½ffler
  * Excellent Job Andreas!
  * 
  * Code Heavily Modified By Rob Fletcher ( rpf1@york.ac.uk )
@@ -129,7 +129,7 @@ void DeallocateTexture( P_TEXTURE_IMAGE t )
 
 /*  Read A .RAW File In To The Allocated Image Buffer Using Data In The Image Structure Header. */
 /*  Flip The Image Top To Bottom.  Returns 0 For Failure Of Read, Or Number Of Bytes Read. */
-int ReadTextureData ( char *filename, P_TEXTURE_IMAGE buffer)
+int ReadTextureData ( const char *filename, P_TEXTURE_IMAGE buffer)
 {
 	FILE *f;
 	int i,j,k,done=0;
@@ -224,7 +224,7 @@ GLvoid ResizeGLScene(GLsizei width, GLsizei height)/*  Resize And Initialize The
 	glLoadIdentity();			/*  Reset The Modelview Matrix */
 }
 
-int InitGL(GLvoid)	/*  This Will Be Called Right After The GL Window Is Created */
+int InitGL()	/*  This Will Be Called Right After The GL Window Is Created */
 {
     t1 = AllocateTextureBuffer( 256, 256, 4 );		/*  Get An Image Structure */
     if (ReadTextureData("Data/Monitor.raw",t1)==0)	/*  Fill The Image Structure With Data */
@@ -261,7 +261,7 @@ int InitGL(GLvoid)	/*  This Will Be Called Right After The GL Window Is Created 
     return True;
 }
 
-GLvoid DrawGLScene(GLvoid)
+GLvoid DrawGLScene()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		/*  Clear The Screen And The Depth Buffer */
 	glLoadIdentity();										/*  Reset The View */
@@ -320,7 +320,7 @@ GLvoid DrawGLScene(GLvoid)
 }
 
 /* function to release/destroy our resources and restoring the old desktop */
-GLvoid KillGLWindow(GLvoid)
+GLvoid KillGLWindow()
 {
     if (GLWin.ctx)
     {
@@ -342,7 +342,7 @@ GLvoid KillGLWindow(GLvoid)
 
 /* this function creates our window and sets it up properly */
 /* FIXME: bits is currently unused */
-Bool CreateGLWindow(char* title, int width, int height, int bits,
+Bool CreateGLWindow(const char* title, int width, int height, int bits,
                     Bool fullscreenflag)
 {
     XVisualInfo *vi;

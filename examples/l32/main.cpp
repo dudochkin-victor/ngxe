@@ -290,7 +290,7 @@ void Draw(void)													// Draw Our Scene
 	glFlush();													// Flush The GL Rendering Pipeline
 }
 
-bool LoadTGA(TextureImage *texture, char *filename)				// Loads A TGA File Into Memory
+bool LoadTGA(TextureImage *texture, const char *filename)				// Loads A TGA File Into Memory
 {
 	GLubyte		TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};		// Uncompressed TGA Header
 	GLubyte		TGAcompare[12];									// Used To Compare TGA Header
@@ -370,7 +370,7 @@ bool LoadTGA(TextureImage *texture, char *filename)				// Loads A TGA File Into 
 	return true;													// Texture Building Went Ok, Return True
 }
 
-GLvoid BuildFont(GLvoid)										// Build Our Font Display List
+GLvoid BuildFont()										// Build Our Font Display List
 {
 	base=glGenLists(95);										// Creating 95 Display Lists
 	glBindTexture(GL_TEXTURE_2D, textures[9].texID);			// Bind Our Font Texture
@@ -618,7 +618,7 @@ void handleKeyPress( SDL_keysym *keysym )
 }
 
 /* general OpenGL initialization function */
-bool initGL( GLvoid )
+bool initGL()
 {
 	srand( (unsigned)time( NULL ) );							// Randomize Things
 	
@@ -659,7 +659,7 @@ bool initGL( GLvoid )
 }
 
 /* Here goes our drawing code */
-bool drawGLScene( GLvoid )
+bool drawGLScene()
 {
 	Uint32 tickCount = SDL_GetTicks();				// Get The Tick Count
 	Update (tickCount - lastTickCount);				// Update The Counter

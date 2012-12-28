@@ -208,7 +208,7 @@ GLvoid ReSizeGLScene(GLsizei width, GLsizei height)// Resize And Initialize The 
 	glLoadIdentity();		// Reset The Modelview Matrix
 }
 
-int InitGL(GLvoid)			// All Setup For OpenGL Goes Here
+int InitGL()			// All Setup For OpenGL Goes Here
 {
 	pModel->reloadTextures();	// Loads Model Textures
 
@@ -227,7 +227,7 @@ int InitGL(GLvoid)			// All Setup For OpenGL Goes Here
 	return True;			// Initialization Went OK
 }
 
-int DrawGLScene(GLvoid)		// Here's Where We Do All The Drawing
+int DrawGLScene()		// Here's Where We Do All The Drawing
 {
 				// Clear The Screen And The Depth Buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -248,7 +248,7 @@ int DrawGLScene(GLvoid)		// Here's Where We Do All The Drawing
 }
 
 /* function to release/destroy our resources and restoring the old desktop */
-GLvoid KillGLWindow(GLvoid)
+GLvoid KillGLWindow()
 {
     if (GLWin.ctx)
     {
@@ -270,7 +270,7 @@ GLvoid KillGLWindow(GLvoid)
 
 /* this function creates our window and sets it up properly */
 /* FIXME: bits is currently unused */
-Bool CreateGLWindow(char* title, int width, int height, int bits,
+Bool CreateGLWindow(const char* title, int width, int height, int bits,
                     Bool fullscreenflag)
 {
     XVisualInfo *vi;

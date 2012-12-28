@@ -1,7 +1,7 @@
 #ifndef tray_h
 #define tray_h
 
-#include <iostream.h>
+#include <iostream>
 #include "mathex.h"
 #include "tvector.h"
 
@@ -16,8 +16,8 @@ class TRay
 		TVector _V; // Direction of the line
 
 		// Input and output
-		ostream &write(ostream &out) const;
-		istream &read(istream &in);
+		std::ostream &write(ostream &out) const;
+		std::istream &read(istream &in);
 
       // Close
 
@@ -45,7 +45,7 @@ class TRay
 		double dist(const TVector &point) const;
 
 		// Streaming
-		friend ostream &operator<<(ostream &out, const TRay &o) { return o.write(out); }
-		friend istream &operator>>(istream &in, TRay &o) { return o.read(in); }
+		friend std::ostream &operator<<(ostream &out, const TRay &o) { return o.write(out); }
+		friend std::istream &operator>>(istream &in, TRay &o) { return o.read(in); }
 };
 #endif

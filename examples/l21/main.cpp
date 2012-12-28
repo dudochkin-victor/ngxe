@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdarg.h>
 #include <GL/glx.h>
 #include <GL/gl.h>
@@ -110,7 +111,7 @@ static int attrListDbl[] = { GLX_RGBA, GLX_DOUBLEBUFFER,
 
 
 GLWindow GLWin;
-char* title = "NeHe's Line Tutorial";
+const char* title = "NeHe's Line Tutorial";
 Bool done;
 Bool keys[256];
 int keyCodes[20];        /* array to hold our fetched keycodes */
@@ -170,7 +171,7 @@ unsigned int getMilliSeconds()
 }
 
 /* simple loader for 24bit bitmaps (data is in rgb-format) */
-int loadBmp(char* filename, textureImage* texture)
+int loadBmp(const char* filename, textureImage* texture)
 {
     FILE* file;
     unsigned short int bfType;
@@ -230,7 +231,7 @@ int loadBmp(char* filename, textureImage* texture)
     /* calculate the size of the image in bytes */
     biSizeImage = texture->width * texture->height * 3;
     printf("Size of the image data: %ld\n", biSizeImage);
-    texture->data = malloc(biSizeImage);
+    texture->data = (unsigned char*)malloc(biSizeImage);
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);
     if (!fread(texture->data, biSizeImage, 1, file)) {
@@ -247,11 +248,11 @@ int loadBmp(char* filename, textureImage* texture)
 }
 
 #ifdef WITH_SOUND
-int loadWave(char* filename, waveFile* waveFile)
+int loadWave(const char* filename, waveFile* waveFile)
 {
     FILE* file;
     /* allocate space for the wave header */
-    waveFile->header = malloc(sizeof(waveHeader));
+    waveFile->header = (waveHeader*)malloc(sizeof(waveHeader));
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename, "rb")) == NULL) {
         printf("File not found : %s\n", filename);
@@ -280,7 +281,7 @@ int loadWave(char* filename, waveFile* waveFile)
         printf("Soundfile has more than 2 channels!\n");
         return 0;
     }
-    waveFile->sampleData = malloc(waveFile->header->subChunk2Size);
+    waveFile->sampleData = (unsigned char*)malloc(waveFile->header->subChunk2Size);
     fseek(file, sizeof(waveHeader), SEEK_SET);
     if (!fread(waveFile->sampleData, waveFile->header->subChunk2Size, 1,
         file)) {
@@ -344,9 +345,9 @@ Bool loadGLTextures()
     textureImage* texti;
 
     status = False;
-    texti = malloc(sizeof(textureImage) * 2);
-    if (loadBmp("Data/font.bmp", &texti[0]) &&
-        loadBmp("Data/image.bmp", &texti[1])) {
+    texti = (textureImage*)malloc(sizeof(textureImage) * 2);
+    if (loadBmp("../data/texture/font.bmp", &texti[0]) &&
+        loadBmp("../data/texture/image.bmp", &texti[1])) {
         status = True;
         glGenTextures(2, &texture[0]);	/* create two textures */
             for (loop1 = 0; loop1 < 2; loop1++) {
@@ -433,7 +434,7 @@ void resizeGLScene(unsigned int width, unsigned int height)
 }
 
 /* general OpenGL initialization function */
-int initGL(GLvoid)
+int initGL()
 {
     if (!loadGLTextures()) {
         return False;
@@ -452,7 +453,7 @@ int initGL(GLvoid)
 }
 
 /* Here goes our drawing code */
-int drawGLScene(GLvoid)
+int drawGLScene()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBindTexture(GL_TEXTURE_2D, texture[0]);
@@ -618,7 +619,7 @@ int drawGLScene(GLvoid)
 }
 
 /* function to release/destroy our resources and restoring the old desktop */
-GLvoid killGLWindow(GLvoid)
+GLvoid killGLWindow()
 {
     if (GLWin.ctx) {
     if (!glXMakeCurrent(GLWin.dpy, None, NULL)) {
@@ -638,7 +639,7 @@ GLvoid killGLWindow(GLvoid)
 
 /* this function creates our window and sets it up properly */
 /* FIXME: bits is currently unused */
-Bool createGLWindow(char *title, int width, int height, int bits,
+Bool createGLWindow(const char *title, int width, int height, int bits,
                Bool fullscreenflag)
 {
     XVisualInfo *vi;
@@ -794,14 +795,14 @@ int main(int argc, char **argv)
     initKeys();
     resetObjects();
 #ifdef WITH_SOUND
-    dieWave = malloc(sizeof(waveFile));
-    loadWave("Data/die.wav", dieWave);
-    freezeWave = malloc(sizeof(waveFile));
-    loadWave("Data/freeze.wav", freezeWave);
-    completeWave = malloc(sizeof(waveFile));
-    loadWave("Data/complete.wav", completeWave);
-    hourglassWave = malloc(sizeof(waveFile));
-    loadWave("Data/hourglass.wav", hourglassWave);
+    dieWave = (waveFile*)malloc(sizeof(waveFile));
+    loadWave("../data/sound/die.wav", dieWave);
+    freezeWave = (waveFile*)malloc(sizeof(waveFile));
+    loadWave("../data/sound/freeze.wav", freezeWave);
+    completeWave = (waveFile*)malloc(sizeof(waveFile));
+    loadWave("../data/sound/complete.wav", completeWave);
+    hourglassWave = (waveFile*)malloc(sizeof(waveFile));
+    loadWave("../data/sound/hourglass.wav", hourglassWave);
     /* we setup the sound device according to the format of our wave-file */
     initSound(dieWave->header->bitsPerSample,
         dieWave->header->numberOfChannels,

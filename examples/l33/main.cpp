@@ -49,7 +49,7 @@ int LoadGLTextures(void)										/* Load Bitmaps And Convert To Textures */
 }
 
 
-int drawGLScene(GLvoid)											/* Here's Where We Do All The Drawing */
+int drawGLScene()											/* Here's Where We Do All The Drawing */
 {
 	int loop;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			/* Clear The Screen And The Depth Buffer */

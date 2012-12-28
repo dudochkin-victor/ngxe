@@ -20,9 +20,4 @@ void RenderFrame();
 
 void DemoShutdown();
 
-int WINAPI WinMain(HINSTANCE	hInstance,
-				   HINSTANCE	hPervInstance,
-				   LPSTR		lpCmdLine,
-				   int			nCmdShow);					//main entry point
-
 #endif	//MAIN_H

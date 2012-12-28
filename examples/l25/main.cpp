@@ -40,7 +40,7 @@ OBJECT		morph1,morph2,morph3,morph4,				/* Our 4 Morphable Objects (morph1,2,3 &
 
 void objallocate(OBJECT *k,int n)						/* Allocate Memory For Each Object */
 {														/* And Defines points */
-	k->points = malloc(sizeof(VERTEX)*n);				/* Sets points Equal To VERTEX * Number Of Vertices */
+	k->points = (VERTEX*)malloc(sizeof(VERTEX)*n);				/* Sets points Equal To VERTEX * Number Of Vertices */
 }														/* (3 Points For Each Vertice) */
 
 void objfree(OBJECT *k)									/* Frees The Object (Releasing The Memory) */
@@ -100,7 +100,7 @@ VERTEX calculate(int i)									/* Calculates Movement Of Points During Morphing
 	return a;											/* Return The Results */
 }
 
-int Initialize(GLvoid)									/* All Setup For OpenGL Goes Here */
+int Initialize()									/* All Setup For OpenGL Goes Here */
 {
 	int 	i;											/* Loop index */
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE);					/* Set The Blending Function For Translucency */

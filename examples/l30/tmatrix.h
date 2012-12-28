@@ -1,7 +1,7 @@
 #ifndef matrix_h
 #define matrix_h
 
-#include <iostream.h>
+#include <iostream>
 #include "mathex.h"
 
 class TVector;
@@ -12,8 +12,8 @@ class TMatrix33
 		double _Mx[3][3];
 
 		// Input output
-		ostream &write(ostream &out) const;
-		istream &read(istream &in);
+		std::ostream &write(ostream &out) const;
+		std::istream &read(istream &in);
 
 	public:
 		// Constructors
@@ -58,7 +58,7 @@ class TMatrix33
 		TMatrix33 inverse() const { TMatrix33 tm; return inverse(*this, tm); }
 
 		// Stream
-		friend ostream &operator<<(ostream &out, const TMatrix33 &o) { return o.write(out); }
-		friend istream &operator>>(istream &in, TMatrix33 &o) { return o.read(in); }
+		friend std::ostream &operator<<(ostream &out, const TMatrix33 &o) { return o.write(out); }
+		friend std::istream &operator>>(istream &in, TMatrix33 &o) { return o.read(in); }
 };
 #endif

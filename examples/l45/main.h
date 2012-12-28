@@ -68,7 +68,7 @@ int main(int, char **);
 
 bool InitErrorLog(void);
 void CloseErrorLog(void);
-int  Log(char *, ...);
+int  Log(const char *, ...);
 
 bool InitTimers(Uint32 *);
 bool InitGL(SDL_Surface *);

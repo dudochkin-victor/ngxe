@@ -16,7 +16,7 @@
 #include <GL/gl.h>		// Header File For The OpenGL32 Library
 #include "MilkshapeModel.h"
 
-#include <fstream.h>
+#include <fstream>
 
 MilkshapeModel::MilkshapeModel()
 {
@@ -114,13 +114,13 @@ struct MS3DKeyframe
 
 bool MilkshapeModel::loadModelData( const char *filename )
 {
-	ifstream inputFile( filename, ios::in | ios::binary | ios::nocreate );
+	std::ifstream inputFile( filename, std::ios::in | std::ios::binary | std::ios::nocreate );
 	if ( inputFile.fail())
 		return false;	// "Couldn't open the model file."
 
-	inputFile.seekg( 0, ios::end );
+	inputFile.seekg( 0, std::ios::end );
 	long fileSize = inputFile.tellg();
-	inputFile.seekg( 0, ios::beg );
+	inputFile.seekg( 0, std::ios::beg );
 
 	byte *pBuffer = new byte[fileSize];
 	inputFile.read( pBuffer, fileSize );

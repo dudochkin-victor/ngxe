@@ -11,6 +11,7 @@
 #include <stdio.h>												// Header File For Standard Input/Output
 #include <string.h>
 #endif
+#include <GL/glew.h>												// Header File For The OpenGL32 Library
 #include <GL/gl.h>												// Header File For The OpenGL32 Library
 #include <GL/glu.h>												// Header File For The GLu32 Library
 
@@ -39,16 +40,16 @@
 #define GL_ARRAY_BUFFER_ARB 0x8892
 #define GL_STATIC_DRAW_ARB 0x88E4
 
-typedef void (APIENTRY * PFNGLBINDBUFFERARBPROC) (GLenum target, GLuint buffer);
-typedef void (APIENTRY * PFNGLDELETEBUFFERSARBPROC) (GLsizei n, const GLuint *buffers);
-typedef void (APIENTRY * PFNGLGENBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
-typedef void (APIENTRY * PFNGLBUFFERDATAARBPROC) (GLenum target, int size, const GLvoid *data, GLenum usage);
+//typedef void (APIENTRY * PFNGLBINDBUFFERARBPROC) (GLenum target, GLuint buffer);
+//typedef void (APIENTRY * PFNGLDELETEBUFFERSARBPROC) (GLsizei n, const GLuint *buffers);
+//typedef void (APIENTRY * PFNGLGENBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
+//typedef void (APIENTRY * PFNGLBUFFERDATAARBPROC) (GLenum target, int size, const GLvoid *data, GLenum usage);
 
 // VBO Extension Function Pointers
-PFNGLGENBUFFERSARBPROC glGenBuffersARB = NULL;					// VBO Name Generation Procedure
-PFNGLBINDBUFFERARBPROC glBindBufferARB = NULL;					// VBO Bind Procedure
-PFNGLBUFFERDATAARBPROC glBufferDataARB = NULL;					// VBO Data Loading Procedure
-PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB = NULL;			// VBO Deletion Procedure
+//PFNGLGENBUFFERSARBPROC glGenBuffersARB = NULL;					// VBO Name Generation Procedure
+//PFNGLBINDBUFFERARBPROC glBindBufferARB = NULL;					// VBO Bind Procedure
+//PFNGLBUFFERDATAARBPROC glBufferDataARB = NULL;					// VBO Data Loading Procedure
+//PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB = NULL;			// VBO Deletion Procedure
 
 extern S_AppStatus AppStatus;	
 
@@ -89,7 +90,7 @@ public:
 	~CMesh();													// Mesh Deconstructor
 
 	// Heightmap Loader
-	bool LoadHeightmap( char* szPath, float flHeightScale, float flResolution );
+	bool LoadHeightmap( const char* szPath, float flHeightScale, float flResolution );
 	// Single Point Height
 	float PtHeight( int nX, int nY );
 	// VBO Build Function
@@ -304,7 +305,7 @@ CMesh :: ~CMesh()
    	    glDeleteBuffersARB( 1, &m_nVBOVertices);
 }
 
-bool CMesh :: LoadHeightmap( char* szPath, float flHeightScale, float flResolution )
+bool CMesh :: LoadHeightmap(const char* szPath, float flHeightScale, float flResolution )
 {
    SDL_Surface *surface;				//Surface For image pixelformat conversion
     Uint32 rmask, gmask, bmask, amask;			//Masks for conversion

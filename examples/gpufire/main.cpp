@@ -8,14 +8,12 @@
 //	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
-#include <windows.h>
-#include <time.h>
-#include <GL\gl.h>
-#include <GL\glu.h>
-#include <GL\glext.h>
-#include <GL\wglext.h>
-#include "LOG.h"
-#include "WINDOW.h"
+#include "View.h"
+#include <sys/time.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+#include "Util.h"
 #include "extensions/ARB_multitexture_extension.h"
 #include "extensions/ARB_texture_border_clamp_extension.h"
 #include "extensions/EXT_blend_minmax_extension.h"
@@ -29,15 +27,9 @@
 #include "Maths/Maths.h"
 #include "PBUFFER.h"
 #include "main.h"
-
-//link to libraries
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
-#pragma comment(lib, "winmm.lib")
+#include <string.h>
 
 //errorLog MUST be kept - it is used by other files
-LOG errorLog;
-WINDOW window;
 FPS_COUNTER fpsCounter;
 TIMER timer;
 
@@ -67,9 +59,6 @@ static GLubyte * fuel;
 //Set up variables
 bool DemoInit()
 {
-	if(!window.Init("GPU Fire", 320, 240, 32, 24, 8, WINDOWED_SCREEN))
-		return 0;											//quit if not created
-
 	//Set up extensions
 	if(	!SetUpARB_multitexture()			|| !SetUpEXT_blend_minmax()			||
 		!SetUpEXT_blend_subtract()			|| !SetUpARB_texture_border_clamp()	||
@@ -80,7 +69,7 @@ bool DemoInit()
 	glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &maxTextureUnits);
 	if(maxTextureUnits<4)
 	{
-		errorLog.OutputError("I require at least 4 texture units");
+		Util::log("I require at least 4 texture units");
 		return false;
 	}
 	
@@ -88,17 +77,17 @@ bool DemoInit()
 	glGetIntegerv(GL_MAX_GENERAL_COMBINERS_NV, &maxGeneralCombiners);
 	if(maxGeneralCombiners<3)
 	{
-		errorLog.OutputError("I require at least 3 general register combiners");
+		Util::log("I require at least 3 general register combiners");
 		return false;
 	}
 
 	//Get the WGL extensions string
-	const char * wglExtensions;
-	wglExtensions=wglGetExtensionsStringARB(window.hDC);
-
-	//Set up wgl extensions
-	if(!SetUpWGL_ARB_pbuffer(wglExtensions) || !SetUpWGL_ARB_pixel_format(wglExtensions))
-		return false;
+//	const char * wglExtensions;
+//	wglExtensions=wglGetExtensionsStringARB(window.hDC);
+//
+//	//Set up wgl extensions
+//	if(!SetUpWGL_ARB_pbuffer(wglExtensions) || !SetUpWGL_ARB_pixel_format(wglExtensions))
+//		return false;
 
 
 	//Init the pbuffer
@@ -108,7 +97,7 @@ bool DemoInit()
 		return false;
 	
 	//Share display lists and textures between the window and the pbuffer
-	wglShareLists(window.hRC, pbuffer.hRC);
+//	wglShareLists(window.hRC, pbuffer.hRC);
 
 
 
@@ -124,7 +113,7 @@ bool DemoInit()
 	GLubyte * initialData=new GLubyte[pbufferWidth*pbufferHeight];
 	if(!initialData)
 	{
-		errorLog.OutputError("Unable to create space for initial texture data");
+		Util::log("Unable to create space for initial texture data");
 		return false;
 	}
 	memset(initialData, 0, pbufferWidth*pbufferHeight*sizeof(GLubyte));
@@ -145,7 +134,7 @@ bool DemoInit()
 	GLubyte * coolingData=new GLubyte[pbufferWidth*pbufferHeight];
 	if(!coolingData)
 	{
-		errorLog.OutputError("Unable to create space for cooling texture data");
+		Util::log("Unable to create space for cooling texture data");
 		return false;
 	}
 
@@ -182,12 +171,12 @@ bool DemoInit()
 	fuel=new GLubyte[pbufferWidth];
 	if(!fuel)
 	{
-		errorLog.OutputError("Unable to allocate memory for fuel");
+		Util::log("Unable to allocate memory for fuel");
 		return false;
 	}
 
 	//seed random number generator
-	srand( (unsigned)time( NULL ) );
+//	srand( (unsigned)time( NULL ) );
 
 	//reset timer for start
 	timer.Reset();
@@ -281,16 +270,13 @@ bool GLInit()
 
 
 	//Set up for window
-	window.MakeCurrent();
+//	window.MakeCurrent();
 
 	//set viewport
-	int height;
-	if (window.height==0)
-		height=1;
-	else
-		height=window.height;
+	int height = 480;
+	int width = 640;
 	
-	glViewport(0, 0, window.width, height);					//reset viewport
+	glViewport(0, 0, width, height);					//reset viewport
 
 	//set up projection matrix
 	glMatrixMode(GL_PROJECTION);							//select projection matrix
@@ -366,16 +352,16 @@ bool GLInit()
 }
 
 //Perform per frame updates
-void UpdateFrame()
+void UpdateFrame(unsigned char key, int x, int y)
 {
-	window.Update();
-
-	//Pause/unpause
-	if(window.isKeyPressed('P'))
-		timer.Pause();
-
-	if(window.isKeyPressed('U'))
-		timer.Unpause();
+//	window.Update();
+//
+//	//Pause/unpause
+//	if(window.isKeyPressed('P'))
+//		timer.Pause();
+//
+//	if(window.isKeyPressed('U'))
+//		timer.Unpause();
 }
 
 //draw a frame
@@ -495,7 +481,7 @@ void RenderFrame()
 
 
 	//Draw to window
-	window.MakeCurrent();
+//	window.MakeCurrent();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
 
@@ -531,71 +517,67 @@ void RenderFrame()
 
 	fpsCounter.Update();											//update frames per second counter
 	glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-	window.StartTextMode();
-	window.Print(0, 28, "FPS: %.2f", fpsCounter.GetFps());			//print the fps
-	window.EndTextMode();
+//	window.StartTextMode();
+//	window.Print(0, 28, "FPS: %.2f", fpsCounter.GetFps());			//print the fps
+//	window.EndTextMode();
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
-	if(window.isKeyPressed(VK_F1))
-	{
-		window.SaveScreenshot();
-		window.SetKeyReleased(VK_F1);
-	}
+//	if(window.isKeyPressed(VK_F1))
+//	{
+//		window.SaveScreenshot();
+//		window.SetKeyReleased(VK_F1);
+//	}
 
-	window.SwapBuffers();									//swap buffers
+	glutSwapBuffers();									//swap buffers
 
-	//check for any opengl errors
-	window.CheckGLError();
-
-	//quit if necessary
-	if(window.isKeyPressed(VK_ESCAPE))
-		PostQuitMessage(0);
+//	//check for any opengl errors
+//	window.CheckGLError();
+//
+//	//quit if necessary
+//	if(window.isKeyPressed(VK_ESCAPE))
+//		PostQuitMessage(0);
 }
 
 void DemoShutdown()
 {
 	pbuffer.Shutdown();
 
-	window.Shutdown();										//Shutdown window
+//	window.Shutdown();										//Shutdown window
 }
 
-//ENTRY POINT FOR APPLICATION
-//CALL WINDOW CREATION ROUTINE, DEAL WITH MESSAGES, WATCH FOR INTERACTION
-int WINAPI WinMain(	HINSTANCE	hInstance,				//instance
-					HINSTANCE	hPrevInstance,			//Previous Instance
-					LPSTR		lpCmdLine,				//command line parameters
-					int			nCmdShow)				//Window show state
-{
-	//Initiation
-	errorLog.Init("Error Log.txt");
+int main(int argc, char **argv) {
+	Util::log("%s" , "TEST");
+	View * v = new View(&argc, argv);
+
+	// Open a window
+	v->createWindow("gpu fire", 640, 480);
 
 	//init variables etc, then GL
 	if(!DemoInit())
 	{
-		errorLog.OutputError("Demo Initiation failed");
+		Util::log("Demo Initiation failed");
 		return 0;
 	}
 	else
-		errorLog.OutputSuccess("Demo Initiation Successful");
+		Util::log("Demo Initiation Successful");
 
 	if(!GLInit())
 	{
-		errorLog.OutputError("OpenGL Initiation failed");
+		Util::log("OpenGL Initiation failed");
 		return 0;
 	}
 	else
-		errorLog.OutputSuccess("OpenGL Initiation Successful");
+		Util::log("OpenGL Initiation Successful");
 
-	//Main Loop
-	for(;;)
-	{
-		if(!(window.HandleMessages())) break;//handle windows messages, quit if returns false
-		UpdateFrame();
-		RenderFrame();
-	}
+	// Register the callback function to do the drawing.
+	v->onDraw(&RenderFrame);
+	// And let's get some keyboard input.
+	v->onKeyboard(&UpdateFrame);
+	v->start();
+
 
 	DemoShutdown();
 	
-	errorLog.OutputSuccess("Exiting...");
-	return (window.msg.wParam);								//Exit The Program
+	Util::log("Exiting...");
+	return 0;								//Exit The Program
 }

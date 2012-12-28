@@ -14,8 +14,8 @@ INCLUDE_DIRECTORIES(
 SET (PROGRAMS fog)
 
 SET(PROGRAM_SRCS
-    fog.c
-    glm.c
+    fog.cpp
+    glm.cpp
     )
 
 ADD_EXECUTABLE(${PROGRAMS} ${PROGRAM_SRCS})
@@ -31,8 +31,8 @@ TARGET_LINK_LIBRARIES(${PROGRAMS}
 SET (PROGRAMS1 lightmaterial)
 
 SET(PROGRAM1_SRCS
-    lightmaterial.c
-    glm.c
+    lightmaterial.cpp
+    glm.cpp
     )
 
 ADD_EXECUTABLE(${PROGRAMS1} ${PROGRAM1_SRCS})
@@ -47,8 +47,8 @@ TARGET_LINK_LIBRARIES(${PROGRAMS1}
 SET (PROGRAMS2 lightposition)
 
 SET(PROGRAM2_SRCS
-    lightposition.c
-    glm.c
+    lightposition.cpp
+    glm.cpp
     )
 
 ADD_EXECUTABLE(${PROGRAMS2} ${PROGRAM2_SRCS})
@@ -63,8 +63,8 @@ TARGET_LINK_LIBRARIES(${PROGRAMS2}
 SET (PROGRAMS3 projection)
 
 SET(PROGRAM3_SRCS
-    projection.c
-    glm.c
+    projection.cpp
+    glm.cpp
     )
 
 ADD_EXECUTABLE(${PROGRAMS3} ${PROGRAM3_SRCS})
@@ -79,8 +79,8 @@ TARGET_LINK_LIBRARIES(${PROGRAMS3}
 SET (PROGRAMS4 shapes)
 
 SET(PROGRAM4_SRCS
-    shapes.c
-    glm.c
+    shapes.cpp
+    glm.cpp
     )
 
 ADD_EXECUTABLE(${PROGRAMS4} ${PROGRAM4_SRCS})
@@ -96,8 +96,8 @@ TARGET_LINK_LIBRARIES(${PROGRAMS4}
 SET (PROGRAMS5 texture)
 
 SET(PROGRAM5_SRCS
-    texture.c
-    glm.c
+    texture.cpp
+    glm.cpp
     )
 
 ADD_EXECUTABLE(${PROGRAMS5} ${PROGRAM5_SRCS})
@@ -112,8 +112,8 @@ TARGET_LINK_LIBRARIES(${PROGRAMS5}
 SET (PROGRAMS6 transformation)
 
 SET(PROGRAM6_SRCS
-    transformation.c
-    glm.c
+    transformation.cpp
+    glm.cpp
     )
 
 ADD_EXECUTABLE(${PROGRAMS6} ${PROGRAM6_SRCS})

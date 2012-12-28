@@ -583,9 +583,11 @@ void ourInit(int Width, int Height) {
 int main(int argc, char **argv) {
 	Util::log("%s" , "TEST");
 	View * v = new View(&argc, argv);
-	f= new FontManager();
+
 	// Open a window
 	v->createWindow(PROGRAM_TITLE, 640, 480);
+
+	f= new FontManager();
 
 	// get window id
 	Window_ID = v->getWindowId();

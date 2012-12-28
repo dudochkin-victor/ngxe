@@ -199,7 +199,7 @@ typedef struct {
 } textureImage;
 
 /* simple loader for 24bit bitmaps (data is in rgb-format) */
-int loadBMP(char *filename, textureImage *texture)
+int loadBMP(const char *filename, textureImage *texture)
 {
     FILE *file;
     unsigned short int bfType;
@@ -284,7 +284,7 @@ int loadBMP(char *filename, textureImage *texture)
     return 1;
 }
 
-Bool LoadGLTexture(GLuint *texPntr, char* name)
+Bool LoadGLTexture(GLuint *texPntr, const char* name)
 {
     Bool status;
     textureImage *texti;
@@ -337,7 +337,7 @@ GLvoid resizeGLScene(GLsizei width, GLsizei height)		/*  Resize And Initialize T
 
 /************************************************************************************/
 
-int initGL(GLvoid)						/*  All Setup For OpenGL Goes Here */
+int initGL()						/*  All Setup For OpenGL Goes Here */
 {
 	glEnable(GL_TEXTURE_2D);				/*  Enable Texture Mapping */
 	glShadeModel(GL_SMOOTH);				/*  Enable Smooth Shading */
@@ -359,7 +359,7 @@ int initGL(GLvoid)						/*  All Setup For OpenGL Goes Here */
 
 /************************************************************************************/
 
-int drawGLScene(GLvoid)	{					/*  Here's Where We Do All The Drawing */
+int drawGLScene()	{					/*  Here's Where We Do All The Drawing */
 	int i, j;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/*  Clear Screen And Depth Buffer */
 	glLoadIdentity();					/*  Reset The Current Modelview Matrix */
@@ -397,7 +397,7 @@ int drawGLScene(GLvoid)	{					/*  Here's Where We Do All The Drawing */
 /************************************************************************************/
 
 /* function to release/destroy our resources and restoring the old desktop */
-GLvoid killGLWindow(GLvoid)
+GLvoid killGLWindow()
 {
     if (GLWin.ctx)
     {
@@ -422,7 +422,7 @@ GLvoid killGLWindow(GLvoid)
 
 /* this function creates our window and sets it up properly */
 /* FIXME: bits is currently unused */
-Bool createGLWindow(char* title, int width, int height, int bits,
+Bool createGLWindow(const char* title, int width, int height, int bits,
                     Bool fullscreenflag)
 {
     XVisualInfo *vi;

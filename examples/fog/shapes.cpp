@@ -22,8 +22,8 @@ typedef struct _cell {
     float min, max;
     float value;
     float step;
-    char* info;
-    char* format;
+    const  char* info;
+    const char* format;
 } cell;
 
 
@@ -596,7 +596,7 @@ setfont(char* name, int size)
 }
 
 void 
-drawstr(GLuint x, GLuint y, char* format, ...)
+drawstr(GLuint x, GLuint y, const char* format, ...)
 {
     va_list args;
     char buffer[255], *s;

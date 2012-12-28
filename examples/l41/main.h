@@ -47,7 +47,7 @@
 
 #define LOG_FILE	"log.txt"
 
-typedef unsigned char	bool;
+//typedef unsigned char	bool;
 
 #ifndef true
 #define true	1
@@ -67,7 +67,7 @@ int main(int, char **);
 
 bool InitErrorLog(void);
 void CloseErrorLog(void);
-int  Log(char *, ...);
+int  Log(const char *, ...);
 
 bool InitTimers(Uint32 *);
 bool InitGL(SDL_Surface *);

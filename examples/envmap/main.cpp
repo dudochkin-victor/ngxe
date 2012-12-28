@@ -1,7 +1,9 @@
-#include "glwindow.h"
 #include <math.h>
+#include "View.h"
+#include "Util.h"
 #include <GL/glu.h>
-#include <GL/glaux.h>
+//#include <GL/glaux.h>
+
 
 CGLWindow window;
 GLuint tex;
@@ -110,57 +112,18 @@ void Render()
 	
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch(uMsg)
-	{
-	case WM_KEYDOWN:
-		switch(wParam)
-		{
-		case VK_ESCAPE:
-			PostQuitMessage(0);
-			break;
-		default:
-			break;
-		}
-		break;
-		case WM_DESTROY:
-		case WM_CLOSE:
-			PostQuitMessage(0);
-			break;
-		case WM_SIZE:
-			window.Resize(LOWORD(lParam), HIWORD(lParam));
-			break;
-	}
-	return DefWindowProc(hWnd, uMsg, wParam, lParam);
-}
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int iCmdShow)
-{
-	MSG msg;
-	bool done = false;
+int main(int argc, char **argv) {
+	Util::log("%s" , "TEST");
+	View * v = new View(&argc, argv);
 	
-	window.Initialize(800, 600, 32, false);
-	
+	// Open a window
+	v->createWindow(PROGRAM_TITLE, 640, 480);
+
 	Initialize();
 	
-	while(!done){
-		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
-			if(msg.message==WM_QUIT){
-				done = true;
-			}
-			else{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-		else{
-			Render();
-			window.Swap();
-		}
-	}
+	v->onDraw(&Render);
+	v->start();
 	
-	window.Terminate();
-	
-	return msg.wParam;
+	return 0;
 }

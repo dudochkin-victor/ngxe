@@ -178,7 +178,7 @@ void RenderHeightMap(unsigned char pHeightMap[])		/* This Renders The Height Map
 	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);					/*Reset The Color */
 }
 
-int drawGLScene(GLvoid)									/* Here's Where We Do All The Drawing */
+int drawGLScene()									/* Here's Where We Do All The Drawing */
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/* Clear The Screen And The Depth Buffer */
 	glLoadIdentity();									/* Reset The Matrix */

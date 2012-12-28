@@ -144,7 +144,7 @@ void
 drawmodel(void)
 {
     if (!pmodel) {
-        pmodel = glmReadOBJ("../data/f-16.obj");
+        pmodel = glmReadOBJ("../data/models/f-16.obj");
         if (!pmodel) exit(0);
         glmUnitize(pmodel);
         glmFacetNormals(pmodel);
@@ -311,25 +311,25 @@ screen_menu(int value)
     
     switch (value) {
     case 'a':
-        name = "../data/al.obj";
+        name = "../data/models/al.obj";
         break;
     case 's':
-        name = "../data/soccerball.obj";
+        name = "../data/models/soccerball.obj";
         break;
     case 'd':
-        name = "../data/dolphins.obj";
+        name = "../data/models/dolphins.obj";
         break;
     case 'f':
-        name = "../data/flowers.obj";
+        name = "../data/models/flowers.obj";
         break;
     case 'j':
-        name = "../data/f-16.obj";
+        name = "../data/models/f-16.obj";
         break;
     case 'p':
-        name = "../data/porsche.obj";
+        name = "../data/models/porsche.obj";
         break;
     case 'r':
-        name = "../data/rose+vase.obj";
+        name = "../data/models/rose+vase.obj";
         break;
     }
     

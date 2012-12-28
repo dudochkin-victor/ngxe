@@ -17,6 +17,7 @@
 #include <string.h>												// And The Standard Lib (for exit())
 #endif															// Then...
 
+#include <GL/glew.h>												// And Obviously The OpenGL Header
 #include <math.h>												// We Require The Math Lib For Sin and Cos
 #include <GL/gl.h>												// And Obviously The OpenGL Header
 #include <GL/glu.h>												// And The GLu Heander
@@ -49,7 +50,7 @@ GLuint	texture[1];														// One Texture (For The Walls)
 /*
  * Bitmap loading code from lesson06 - Ti Leggett
  */
-int BuildTexture( char *filename, int texid )
+int BuildTexture(const char *filename, int texid )
 {
     /* Status indicator */
     int Status = false;

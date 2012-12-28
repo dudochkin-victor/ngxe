@@ -5,7 +5,7 @@
 
 #define EPSILON 1.0e-8
 #define ZERO EPSILON
-#define M_PI 3.1415926535
+//#define M_PI 3.1415926535
 
 #define VC 1
 #if VC

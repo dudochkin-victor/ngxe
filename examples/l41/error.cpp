@@ -61,7 +61,7 @@ void CloseErrorLog(void)							// Closes Error Logging
 	return;											// And Return, Quite Plain Huh? :)
 }
 
-int Log(char *szFormat, ...)						// Add A Line To The Log
+int Log(const char *szFormat, ...)						// Add A Line To The Log
 {
 	va_list Arg;									// We're Using The Same As The printf() Family, A va_list
 													// To Substitute The Tokens Like %s With Their Value In The Output

@@ -40,7 +40,7 @@ typedef struct												// Create A Structure
 
 TextureImage textures[1];									// Storage For One Texture
 
-bool LoadTGA(TextureImage *texture, char *filename)			// Loads A TGA File Into Memory
+bool LoadTGA(TextureImage *texture, const char *filename)			// Loads A TGA File Into Memory
 {    
 	GLubyte		TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};	// Uncompressed TGA Header
 	GLubyte		TGAcompare[12];								// Used To Compare TGA Header
@@ -119,7 +119,7 @@ bool LoadTGA(TextureImage *texture, char *filename)			// Loads A TGA File Into M
 	return true;											// Texture Building Went Ok, Return True
 }
 
-GLvoid BuildFont(GLvoid)									// Build Our Font Display List
+GLvoid BuildFont()									// Build Our Font Display List
 {
 	base=glGenLists(256);									// Creating 256 Display Lists
 	glBindTexture(GL_TEXTURE_2D, textures[0].texID);		// Select Our Font Texture
@@ -144,7 +144,7 @@ GLvoid BuildFont(GLvoid)									// Build Our Font Display List
 	}														// Loop Until All 256 Are Built
 }
 
-GLvoid KillFont(GLvoid)										// Delete The Font From Memory
+GLvoid KillFont()										// Delete The Font From Memory
 {
 	glDeleteLists(base,256);								// Delete All 256 Display Lists
 }
