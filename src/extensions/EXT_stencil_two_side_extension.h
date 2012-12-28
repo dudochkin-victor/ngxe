@@ -13,8 +13,5 @@
 #define EXT_STENCIL_TWO_SIDE_EXTENSION_H
 
 bool SetUpEXT_stencil_two_side();
-extern bool EXT_stencil_two_side_supported;
-
-extern PFNGLACTIVESTENCILFACEEXTPROC				glActiveStencilFaceEXT;
 
 #endif	//EXT_STENCIL_TWO_SIDE_EXTENSION_H

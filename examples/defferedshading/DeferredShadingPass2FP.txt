@@ -1,0 +1,55 @@
+!!FP1.0
+
+#Fragment program for deferred shading - lighting pass
+#
+#Parameters:
+#	p[0]	- Light color
+#	p[1]	- 1/(Light radius)^2
+#	p[2]	- Light position
+#
+#Per fragment inputs:
+#	f[WPOS] - fragment window position
+#
+#Outputs:
+#	o[COLR] - lighting equation result
+
+
+#Sample the buffer data at the window position of this fragment
+TEX		R0, f[WPOS], TEX0, RECT;
+
+
+#Unpack the world space position into R1
+UP2H	R1.xy, R0.x;
+UP2H	R1.zw, R0.y;
+
+
+#Unpack the normal into R2
+UP4B	R2, R0.z;
+
+
+#Calculate the light vector
+SUB		R3, p[2], R1;
+
+
+#Normalise the light vector
+DP3		R4.w, R3, R3;
+RSQ		R4.w, R4.w;
+MUL		R4.xyz, R4.w, R3;
+
+
+#Calculate L dot N
+DP3		R5, R4, R2;
+
+
+#Calculate 1-(d^2/r^2) attenuation factor
+DP3		R6, R3, R3;
+MUL		R6, R6, p[1];
+SUB_SAT	R6, 1.0, R6;
+
+
+#Modulate L dot N by the attenuation factor, then by the light's color
+MUL		R7, R5, R6;
+MUL		o[COLR], R7, p[0];
+
+
+END

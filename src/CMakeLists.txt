@@ -5,6 +5,7 @@ FIND_PACKAGE(LibXml2 REQUIRED)
 FIND_PACKAGE(LibEvent REQUIRED)
 FIND_PACKAGE( Boost 1.36.0 COMPONENTS regex )
 FIND_PACKAGE(FREEALUT REQUIRED)
+FIND_PACKAGE(GLEW REQUIRED)
 
 #ADD_SUBDIRECTORY(service)
 
@@ -28,12 +29,39 @@ SET(LIBRARY_SRCS
     Sound.cpp
     Input.cpp
     Util.cpp
+    IMAGE.cpp
     Maths/COLOR.cpp
     Maths/PLANE.cpp
     Maths/MATRIX4X4.cpp
     Maths/VECTOR2D.cpp
     Maths/VECTOR3D.cpp
     Maths/VECTOR4D.cpp
+    extensions/ARB_multitexture_extension.cpp
+    extensions/ARB_texture_border_clamp_extension.cpp
+    extensions/ARB_texture_cube_map_extension.cpp
+    extensions/ARB_texture_env_combine_extension.cpp
+    extensions/ARB_texture_env_dot3_extension.cpp
+    extensions/ARB_vertex_program_extension.cpp
+    extensions/EXT_blend_minmax_extension.cpp
+    extensions/EXT_blend_subtract_extension.cpp
+    extensions/EXT_compiled_vertex_array_extension.cpp
+    extensions/EXT_stencil_two_side_extension.cpp
+    extensions/EXT_stencil_wrap_extension.cpp
+    extensions/EXT_texture3D_extension.cpp
+    extensions/EXT_texture_edge_clamp_extension.cpp
+    extensions/EXT_texture_env_combine_extension.cpp
+    extensions/EXT_texture_filter_anisotropic_extension.cpp
+    extensions/NV_register_combiners2_extension.cpp
+    extensions/NV_register_combiners_extension.cpp
+    extensions/NV_texture_shader_extension.cpp
+    extensions/NV_vertex_program_extension.cpp
+    extensions/SGIS_generate_mipmap_extension.cpp
+    extensions/SGIX_depth_texture_extension.cpp
+    extensions/SGIX_shadow_extension.cpp
+    extensions/WGL_ARB_extensions_string_extension.cpp
+    extensions/WGL_ARB_pbuffer_extension.cpp
+    extensions/WGL_ARB_pixel_format_extension.cpp
+    extensions/WGL_ARB_render_texture_extension.cpp
     )
 
 #set (INTERNAL_LIBRARIES ${INTERNAL_LIBRARIES}
@@ -58,6 +86,7 @@ TARGET_LINK_LIBRARIES(${LIBRARY}
     ${Boost_LIBRARIES}
     ${OPENAL_LIBRARIES}
     ${FREEALUT_LIBRARY}
+    ${GLEW_LIBRARY}
     ${EXTRA_LIBRARIES})
 
 #INSTALL(TARGETS jazzd RUNTIME DESTINATION ${PKG_BINDIR})

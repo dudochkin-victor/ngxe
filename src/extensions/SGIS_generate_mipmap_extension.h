@@ -13,6 +13,5 @@
 #define SGIS_GENERATE_MIPMAP_H
 
 bool SetUpSGIS_generate_mipmap();
-extern bool SGIS_generate_mipmap_supported;
 
 #endif	//SGIS_GENERATE_MIPMAP_H

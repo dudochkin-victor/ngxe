@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--
+==============================================================================
+AUTHOR:		JeGX - jegx@ozone3d.net
+DATE:		27.03.2006
+PURPOSE:	GLSL Texturing.
+TUTORIAL:	http://www.ozone3d.net/tutorials/glsl_texturing.php
+
+====================================
+ \==:: http://www.oZone3D.Net ::==/
+  ================================
+==============================================================================
+-->
+
+
+<hyperion version_major="1" version_minor="3">
+
+
+<scene name="GLSL_Texturing_Demo"  display_fps="TRUE" vsync="TRUE" show_ref_grid="TRUE" display_hyperion_logo="FALSE" >
+	<window_size width="1024" height="768" />
+	<background_color r="0.0" g="0.0" b="0.0" />
+	<check_hardware_caps glsl="TRUE" />
+
+	<background_image image="data/delilah_darklotus_sig.jpg" />
+</scene>
+
+
+
+
+<camera name="Main_Camera" fov="90.0" navigation_mode="EXAMINE" display_position="FALSE" display_view_direction="FALSE" >
+	<position x="0.0" y="100.0" z="350.0" />
+	<lookat x="0.0" y="0.0" z="0.0" w="1.0" />
+	<orientation pitch="20.0" yaw="90.0" />
+</camera>
+
+
+
+<texture name="color_tex" filename="data/cement.dds" filtering_mode="LINEAR" />
+
+<!--
+http://www.delilah.tk/
+-->
+<texture name="env_tex" filename="data/delilah_darklotus_spheremap.jpg" filtering_mode="LINEAR" />
+
+
+
+
+<material name="torus_mat" shader_program_name="SphereMappingShader" />
+
+<mesh name="mesh_torus" shape_type="TORUS" lighting="FALSE" texturing="TRUE" polygon_mode="SOLID" use_vbo="TRUE"
+      remove_seam="TRUE" auto_spin="TRUE" >
+
+	<torus radius="150.0" vertex_density="40.0" section_radius="50" />
+	
+	<attach_material name="torus_mat" />
+	
+	<texture material_name="torus_mat" texture_name="color_tex" texture_unit="0" />
+	<texture material_name="torus_mat" texture_name="env_tex" texture_unit="1" />
+	
+	<position x="0.0" y="0.0" z="0.0" />
+	<orientation pitch="0.0" />
+	<spin_values x="50.0" y="50.0" z="50.0" />
+</mesh>
+
+
+
+<shader_program name="SphereMappingShader"  >
+	<constant_1i name="colorMap" value="0" />
+	<constant_1i name="envMap" value="1" />
+	
+	<raw_data><![CDATA[	 
+		[Vertex_Shader]
+
+		void main()
+		{	
+			gl_Position = ftransform();		
+			
+			gl_TexCoord[0] = gl_MultiTexCoord0;
+			
+			vec3 u = normalize( vec3(gl_ModelViewMatrix * gl_Vertex) );
+			vec3 n = normalize( gl_NormalMatrix * gl_Normal );
+			vec3 r = reflect( u, n );
+			float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
+			
+			gl_TexCoord[1].s = r.x/m + 0.5;
+			gl_TexCoord[1].t = r.y/m + 0.5;
+		}
+
+		[Pixel_Shader]
+		
+		uniform sampler2D colorMap;
+		uniform sampler2D envMap;
+		
+		void main (void)
+		{
+			vec4 color = texture2D( colorMap, gl_TexCoord[0].st);
+			vec4 env = texture2D( envMap, gl_TexCoord[1].st);
+
+			gl_FragColor = color + env*0.4;
+		}
+	   	]]></raw_data>
+
+</shader_program>
+
+
+
+</hyperion>

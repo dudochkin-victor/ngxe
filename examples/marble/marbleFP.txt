@@ -1,0 +1,307 @@
+!!ARBfp1.0
+
+#Fragment program for marble
+
+#Parameters
+PARAM	lightDirection	= program.local[0];		#World space direction of light (normalised)
+
+#Per fragment inputs
+ATTRIB	iTexCoords		= fragment.texcoord[0];		#3d tex coords
+ATTRIB	iWorldSpaceNormal = fragment.texcoord[1];	#world space normal
+ATTRIB	iWorldSpaceView	= fragment.texcoord[2];		#world space view vector
+
+#Textures
+#texture[0], 3D		- Noise gradient texture
+#texture[1], 3D		- Weighting factor lookup texture
+#texture[2], 1D		- Color lookup texture
+
+#Temporaries
+TEMP	normalisedNormal;						#Normalised world space normal
+TEMP	normalisedView;							#Normalised world space view vector
+TEMP	reflection;								#Light vector reflected about normal
+TEMP	lighting;								#Lighting contributions
+
+TEMP	gridCorner;								#Noise grid corner position
+TEMP	gradient;								#Gradient value at this point
+TEMP	cornerVector;							#Vector from grid corner
+TEMP	absCornerVector;						#Absolute value of cornerVector
+TEMP	gradientDotCornerVector;				#Dot product of gradient value & vector to corner
+TEMP	weighting;								#Weighting factor of this dot product on the noise
+TEMP	noise;									#Noise result
+TEMP	tempTexCoords;							#iTexCoords*factor, as used for second octave
+TEMP	noise2;									#Result of second octave noise
+
+#Outputs
+OUTPUT	oCol			= result.color;			#Fragment color output
+
+
+
+#LIGHTING CALCULATIONS
+
+#Normalise the normal
+DP3		normalisedNormal.w, iWorldSpaceNormal, iWorldSpaceNormal;
+RSQ		normalisedNormal.w, normalisedNormal.w;
+MUL		normalisedNormal.xyz, normalisedNormal.w, iWorldSpaceNormal;
+
+
+#Normalise the view vector
+DP3		normalisedView.w, iWorldSpaceView, iWorldSpaceView;
+RSQ		normalisedView.w, normalisedView.w;
+MUL		normalisedView.xyz, normalisedView.w, iWorldSpaceView;
+
+
+#Calculate L dot N (world space)
+DP3		lighting.x, lightDirection, normalisedNormal;
+
+
+#Calculate the reflection vector, R=2(L.N)N-L
+MUL		reflection, lighting.x, normalisedNormal;
+MUL		reflection, 2.0, reflection;
+SUB		reflection, reflection, lightDirection;
+
+
+#Calculate R dot V (world space)
+DP3		lighting.y, reflection, normalisedView;
+
+
+#Calculate the lighting contributions
+MOV		lighting.w, 12.0;
+LIT		lighting, lighting;
+
+
+#Add ambient to diffuse
+ADD		lighting.y, lighting.y, 0.1;
+
+
+
+#TEXTURE CALCULATIONS
+
+#Calculate the position of one grid corner of the cube
+MUL		gridCorner, iTexCoords, 64.0;
+FLR		gridCorner, gridCorner;
+MUL		gridCorner, gridCorner, 0.015625;
+
+
+#Sample the gradient texture at this point
+TEX		gradient, gridCorner, texture[0], 3D;
+
+
+#Expand the gradient to [-1, 1]
+MAD		gradient, gradient, 2, -1;
+
+
+#Calculate the vector from the grid corner
+SUB		cornerVector, iTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+
+
+#Dot the vector with the gradient
+DP3		gradientDotCornerVector, cornerVector, gradient;
+
+
+#Look up the weighting factor this corner will have on the result
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+
+
+#Bias the dot product by the weighting factor and save in noise
+MUL		noise, gradientDotCornerVector, weighting;
+
+
+#Repeat for the other 7 grid corners, adding the results to noise
+ADD		gridCorner, gridCorner, {0.015625, 0.0, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, iTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise, gradientDotCornerVector, weighting, noise;
+
+
+ADD		gridCorner, gridCorner, {0.0, 0.015625, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, iTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise, gradientDotCornerVector, weighting, noise;
+
+
+ADD		gridCorner, gridCorner, {-0.015625, 0.0, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, iTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise, gradientDotCornerVector, weighting, noise;
+
+
+ADD		gridCorner, gridCorner, {0.0,-0.015625, 0.015625, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, iTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise, gradientDotCornerVector, weighting, noise;
+
+
+ADD		gridCorner, gridCorner, {0.015625, 0.0, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, iTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise, gradientDotCornerVector, weighting, noise;
+
+
+ADD		gridCorner, gridCorner, {0.0, 0.015625, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, iTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise, gradientDotCornerVector, weighting, noise;
+
+
+ADD		gridCorner, gridCorner, {-0.015625, 0.0, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, iTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise, gradientDotCornerVector, weighting, noise;
+
+
+
+#Now repeat for the second octave, using iTexCoords*2 and saving the result in noise2
+MUL		tempTexCoords, iTexCoords, 2;
+
+MUL		gridCorner, tempTexCoords, 64.0;
+FLR		gridCorner, gridCorner;
+MUL		gridCorner, gridCorner, 0.015625;
+
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, tempTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MUL		noise2, gradientDotCornerVector, weighting;
+
+
+ADD		gridCorner, gridCorner, {0.015625, 0.0, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, tempTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise2, gradientDotCornerVector, weighting, noise2;
+
+
+ADD		gridCorner, gridCorner, {0.0, 0.015625, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, tempTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise2, gradientDotCornerVector, weighting, noise2;
+
+
+ADD		gridCorner, gridCorner, {-0.015625, 0.0, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, tempTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise2, gradientDotCornerVector, weighting, noise2;
+
+
+ADD		gridCorner, gridCorner, {0.0,-0.015625, 0.015625, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, tempTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise2, gradientDotCornerVector, weighting, noise2;
+
+
+ADD		gridCorner, gridCorner, {0.015625, 0.0, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, tempTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise2, gradientDotCornerVector, weighting, noise2;
+
+
+ADD		gridCorner, gridCorner, {0.0, 0.015625, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, tempTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise2, gradientDotCornerVector, weighting, noise2;
+
+
+ADD		gridCorner, gridCorner, {-0.015625, 0.0, 0.0, 0.0};
+TEX		gradient, gridCorner, texture[0], 3D;
+MAD		gradient, gradient, 2, -1;
+SUB		cornerVector, tempTexCoords, gridCorner;
+MUL		cornerVector, cornerVector, 64;
+DP3		gradientDotCornerVector, cornerVector, gradient;
+ABS		absCornerVector, cornerVector;
+TEX		weighting, absCornerVector, texture[1], 3D;
+MAD		noise2, gradientDotCornerVector, weighting, noise2;
+
+
+#Final noise value=noise+(noise2/2)
+MAD		noise, noise2, 0.5, noise;
+
+
+#Calculate sin(120*(iTexCoords.x+iTexCoords.z)+3*noise) to get marble effect
+MUL		noise, noise, 3;
+MAD		noise, 120, iTexCoords.x, noise;
+MAD		noise, 120, iTexCoords.z, noise;
+SIN		noise, noise.x;
+
+
+#Scale and bias the texture coordinate from [-1, 1] to [0, 1]
+MAD		noise, noise, 0.5, 0.5;
+
+
+#Look up color in 1d texture
+TEX		noise, noise, texture[2], 1D;
+
+
+#Modulate the result by the diffuse lighting and add specular
+MAD		oCol, lighting.y, noise, lighting.z;
+
+
+END

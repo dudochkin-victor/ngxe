@@ -18,7 +18,6 @@
 #include "extensions/EXT_multi_draw_arrays_extension.h"
 #include "extensions/EXT_texture_env_combine_extension.h"
 #include "FPS_COUNTER.h"
-#include "TIMER.h"
 #include "Maths/Maths.h"
 #include "main.h"
 #include "BSP.h"
@@ -29,7 +28,6 @@
 
 //errorLog MUST be kept - it is used by other files
 FPS_COUNTER fpsCounter;
-TIMER timer;
 
 COLOR backgroundColor(0.5f, 0.5f, 0.5f, 0.0f);
 
@@ -269,7 +267,7 @@ bool DemoInit() {
 	camera.Init(4.0f, cameraPosition, angleYaw, anglePitch);
 
 	//reset timer for start
-	timer.Reset();
+//	timer.Reset();
 
 	return true;
 }
@@ -497,12 +495,6 @@ void DemoShutdown() {
 int main(int argc, char **argv) {
 	View * v = new View(&argc, argv);
 	v->createWindow("q3bsp", 640, 480);
-
-	if (glewInit() != GLEW_OK) {
-		printf("Error in glewInit\n");
-
-		return 1;
-	}
 
 	//init variables etc, then GL
 	if (!DemoInit()) {

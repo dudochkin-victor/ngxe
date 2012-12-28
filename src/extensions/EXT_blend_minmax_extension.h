@@ -13,8 +13,5 @@
 #define EXT_BLEND_MINMAX_EXTENSION_H
 
 bool SetUpEXT_blend_minmax();
-extern bool EXT_blend_minmax_supported;
-
-extern PFNGLBLENDEQUATIONEXTPROC					glBlendEquationEXT;
 
 #endif	//EXT_BLEND_MINMAX_EXTENSION_H

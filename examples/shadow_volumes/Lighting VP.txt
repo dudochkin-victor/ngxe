@@ -1,0 +1,131 @@
+!!ARBvp1.0
+# Vertex Program for simple lighting
+
+# Parameters
+PARAM mvp[4]		= { state.matrix.mvp };		#modelview projection matrix
+PARAM modelview[4]	= { state.matrix.modelview };			#modelview matrix
+PARAM iTModelview[4]= { state.matrix.modelview.invtrans };	#inverse transpose modelview matrix
+
+PARAM globalAmbient = state.lightmodel.ambient;	#global ambient level
+PARAM lightAmbient	= state.light[1].ambient;	#light ambient color
+PARAM lightDiffuse	= state.light[1].diffuse;	#light diffuse color
+PARAM lightSpecular	= state.light[1].specular;	#light specular color
+PARAM lightPosition = state.light[1].position;	#light position
+
+PARAM shininess		= state.material.shininess;	#shininess
+PARAM materialSpecular=state.material.specular;	#material specular color
+
+# Per vertex inputs
+ATTRIB iPos			= vertex.position;			#position
+ATTRIB iNorm		= vertex.normal;			#normal
+ATTRIB iCol0		= vertex.color;				#primary color
+
+# Temporaries
+TEMP eyeSpacePosition;	#eye space vertex position
+
+TEMP lightVector;		#light vector(eye space)
+TEMP normLightVector;	#Normalized light vector(eye space)
+TEMP eyeVector;			#eye space eye vector
+TEMP normEyeVector;		#Normalized eye vector(eye space)
+TEMP halfVector;		#half vector(eye space)
+TEMP normHalfVector;	#Normalized half vector(eye space)
+TEMP eyeSpaceNormal;	#eye space normal
+
+TEMP dots;				#dot products for lighting
+TEMP tempColor;			#Used to calculate final color
+TEMP tempSpecular;		#Used to calculate specular color
+
+# Outputs
+OUTPUT oPos			= result.position;			#position
+OUTPUT oCol0		= result.color;				#primary color
+
+
+
+
+# project to clip coords
+DP4 oPos.x, mvp[0], iPos;
+DP4 oPos.y, mvp[1], iPos;
+DP4 oPos.z, mvp[2], iPos;
+DP4 oPos.w, mvp[3], iPos;
+
+
+
+#Convert position to eye space
+DP4 eyeSpacePosition.x, modelview[0], iPos;
+DP4 eyeSpacePosition.y, modelview[1], iPos;
+DP4 eyeSpacePosition.z, modelview[2], iPos;
+DP4 eyeSpacePosition.w, modelview[3], iPos;
+
+#Calculate eye vector (-eye space position)
+MOV eyeVector, -eyeSpacePosition;
+
+#Normalize eye vector
+DP3 normEyeVector.w, eyeVector, eyeVector;
+RSQ normEyeVector.w, normEyeVector.w;
+MUL normEyeVector.xyz, normEyeVector.w, eyeVector;
+
+
+
+
+
+#Calculate light vector
+SUB lightVector, lightPosition, eyeSpacePosition;
+
+#Normalize light vector
+DP3 normLightVector.w, lightVector, lightVector;
+RSQ normLightVector.w, normLightVector.w;
+MUL normLightVector.xyz, normLightVector.w, lightVector;
+
+
+
+
+
+#Calculate half vector
+ADD halfVector, normLightVector, normEyeVector;
+
+#Normalize half vector
+DP3 normHalfVector.w, halfVector, halfVector;
+RSQ normHalfVector.w, normHalfVector.w;
+MUL normHalfVector.xyz, normHalfVector.w, halfVector;
+
+
+
+
+
+#Convert normal to eye space
+DP3 eyeSpaceNormal.x, iTModelview[0], iNorm;
+DP3 eyeSpaceNormal.y, iTModelview[1], iNorm;
+DP3 eyeSpaceNormal.z, iTModelview[2], iNorm;
+
+
+#Fill in light dot products
+#dots.x=l dot n
+DP3 dots.x, normLightVector, eyeSpaceNormal;
+
+#dots.y=h dot n
+DP3 dots.y, normHalfVector, eyeSpaceNormal;
+
+#dots.w=shininess
+MOV dots.w, shininess.x;
+
+#Calculate lighting coefficients
+LIT dots, dots;
+
+
+#Accumulate final color
+#tempColor=col0*(lDotN*diffuse+ambient+globalAmbient)
+MAD tempColor, dots.y, lightDiffuse, lightAmbient;
+ADD tempColor, tempColor, globalAmbient;
+MUL tempColor, tempColor, iCol0;
+
+#tempSpecular=lDotH*lightSpecular*materialSpecular
+MUL tempSpecular, dots.z, lightSpecular;
+MUL tempSpecular, tempSpecular, materialSpecular;
+
+#tempColor+=tempSpecular
+ADD tempColor, tempColor, tempSpecular;
+
+#Output as color
+MOV oCol0, tempColor;
+
+END

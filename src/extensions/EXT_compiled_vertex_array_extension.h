@@ -13,9 +13,5 @@
 #define EXT_COMPILED_VERTEX_ARRAY_EXTENSION_H
 
 bool SetUpEXT_compiled_vertex_array();
-extern bool EXT_compiled_vertex_array_supported;
-
-extern PFNGLLOCKARRAYSEXTPROC				glLockArraysEXT;
-extern PFNGLUNLOCKARRAYSEXTPROC				glUnlockArraysEXT;
 
 #endif	//EXT_COMPILED_VERTEX_ARRAY_EXTENSION_H

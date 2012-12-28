@@ -13,25 +13,5 @@
 #define NV_REGISTER_COMBINERS_EXTENSION_H
 
 bool SetUpNV_register_combiners();
-extern bool NV_register_combiners_supported;
-
-extern PFNGLCOMBINERPARAMETERFVNVPROC				glCombinerParameterfvNV;
-extern PFNGLCOMBINERPARAMETERIVNVPROC				glCombinerParameterivNV;
-extern PFNGLCOMBINERPARAMETERFNVPROC				glCombinerParameterfNV;
-extern PFNGLCOMBINERPARAMETERINVPROC				glCombinerParameteriNV;
-
-extern PFNGLCOMBINERINPUTNVPROC						glCombinerInputNV;
-extern PFNGLCOMBINEROUTPUTNVPROC					glCombinerOutputNV;
-
-extern PFNGLFINALCOMBINERINPUTNVPROC				glFinalCombinerInputNV;
-
-extern PFNGLGETCOMBINERINPUTPARAMETERFVNVPROC		glGetCombinerInputParameterfvNV;
-extern PFNGLGETCOMBINERINPUTPARAMETERIVNVPROC		glGetCombinerInputParameterivNV;
-
-extern PFNGLGETCOMBINEROUTPUTPARAMETERFVNVPROC		glGetCombinerOutputParameterfvNV;
-extern PFNGLGETCOMBINEROUTPUTPARAMETERIVNVPROC		glGetCombinerOutputParameterivNV;
-
-extern PFNGLGETFINALCOMBINERINPUTPARAMETERFVNVPROC	glGetFinalCombinerInputParameterfvNV;
-extern PFNGLGETFINALCOMBINERINPUTPARAMETERIVNVPROC	glGetFinalCombinerInputParameterivNV;
 
 #endif	//NV_REGISTER_COMBINERS_EXTENSION_H

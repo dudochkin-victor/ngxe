@@ -13,6 +13,5 @@
 #define ARB_TEXTURE_BORDER_CLAMP_EXTENSION_H
 
 bool SetUpARB_texture_border_clamp();
-extern bool ARB_texture_border_clamp_supported;
 
 #endif	//ARB_TEXTURE_BORDER_CLAMP_EXTENSION_H

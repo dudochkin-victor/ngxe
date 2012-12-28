@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--
+==============================================================================
+AUTHOR:		JeGX - jegx@ozone3d.net
+DATE:		27.03.2006
+PURPOSE:	GLSL Texturing.
+TUTORIAL:	http://www.ozone3d.net/tutorials/glsl_texturing.php
+
+====================================
+ \==:: http://www.oZone3D.Net ::==/
+  ================================
+==============================================================================
+-->
+
+
+<hyperion version_major="1" version_minor="3">
+
+
+<scene name="GLSL_Texturing_Demo"  display_fps="TRUE" vsync="TRUE" show_ref_grid="TRUE" display_hyperion_logo="FALSE" >
+	<window_size width="1024" height="768" />
+	<global_ambient_light r="0.1" g="0.1" b="0.1" a="1.0" />
+	<background_color r="0.2" g="0.3" b="0.3" />
+	<check_hardware_caps glsl="TRUE" />
+</scene>
+
+
+
+
+<camera name="Main_Camera" navigation_mode="FLY" display_position="FALSE" display_view_direction="FALSE" >
+	<position x="-4.60" y="92.95" z="395.69" />
+	<lookat x="0.01" y="-0.18" z="-0.98" w="0.0" />
+</camera>
+
+
+
+
+<!--
+http://www.delilah.tk/
+
+Night
+Released at Evoke [Germany], 2004
+-->
+<texture name="night_tex" filename="data/night_by_delilah.png" filtering_mode="LINEAR" />
+
+<texture name="red_tex" filename="data/red.jpg" filtering_mode="LINEAR" />
+<texture name="green_tex" filename="data/green.jpg" filtering_mode="LINEAR" />
+<texture name="blue_tex" filename="data/blue.jpg" filtering_mode="LINEAR" />
+
+<material name="plane_mat" shader_program_name="MultiTexturingShader" />
+
+
+<mesh name="mesh_plane" shape_type="PLANE" lighting="FALSE" texturing="TRUE" polygon_mode="SOLID" use_vbo="TRUE" >
+	<plane x_size="400.0" z_size="400.0" num_segs_x="10" num_segs_z="10" />
+	<attach_material name="plane_mat" />
+	
+	<texture material_name="plane_mat" texture_name="night_tex" texture_unit="0" />
+	<texture material_name="plane_mat" texture_name="red_tex" texture_unit="1" />
+	<texture material_name="plane_mat" texture_name="green_tex" texture_unit="2" />
+	<texture material_name="plane_mat" texture_name="blue_tex" texture_unit="3" />
+	
+	<position x="0.0" y="0.0" z="0.0" />
+	<orientation pitch="90.0" />
+</mesh>
+
+
+
+<shader_program name="MultiTexturingShader"  >
+	<constant_1i name="colorMap" value="0" />
+	<constant_1i name="redMap" value="1" />
+	<constant_1i name="greenMap" value="2" />
+	<constant_1i name="blueMap" value="3" />
+	
+	<raw_data><![CDATA[	 
+		[Vertex_Shader]
+
+		void main()
+		{	
+			gl_TexCoord[0] = gl_MultiTexCoord0;
+			gl_Position = ftransform();		
+		}
+
+		[Pixel_Shader]
+		
+		uniform sampler2D colorMap;
+		uniform sampler2D redMap;
+		uniform sampler2D greenMap;
+		uniform sampler2D blueMap;
+		
+		void main (void)
+		{
+			vec4 color_map = texture2D( colorMap, gl_TexCoord[0].xy);
+			vec4 red_map = texture2D( redMap, gl_TexCoord[0].xy);
+			vec4 green_map = texture2D( greenMap, gl_TexCoord[0].xy);
+			vec4 blue_map = texture2D( blueMap, gl_TexCoord[0].xy);
+			
+			gl_FragColor = color_map + 
+			               red_map*0.7 + 
+						   green_map*0.41 + 
+						   blue_map*0.89;
+		}
+	   	]]></raw_data>
+
+</shader_program>
+
+
+
+</hyperion>

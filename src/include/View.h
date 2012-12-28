@@ -8,6 +8,7 @@
 #ifndef VIEW_H_
 #define VIEW_H_
 
+#include <GL/glew.h>   // GLEW extending.
 #include <GL/gl.h>   // OpenGL itself.
 #include <GL/glu.h>  // GLU support library.
 #include <GL/glut.h> // GLUT support library.

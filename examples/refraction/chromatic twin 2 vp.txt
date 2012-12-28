@@ -1,0 +1,102 @@
+!!VP1.0
+# Vertex Program for refraction
+# c[0]-c[3] modelviewProjection matrix
+# c[4]-c[7] modelview matrix
+# c[8]-c[11] inverse transpose modelview matrix
+# c[12]-c[15] inverse modelview matrix
+# c[28] fresnel multiplication factor f (f, f, f, 1)
+# c[32] refractive index n1 - (n1, n1*n1, 0, 1)
+# c[32] refractive index n2 - (n2, n2*n2, 0, 1)
+# c[32] refractive index n3 - (n3, n3*n3, 0, 1)
+# c[64] = (0, 1, 2, 0.5)
+
+# Put eye space normal into R10
+DP3 R10.x, c[8], v[NRML];
+DP3 R10.y, c[9], v[NRML];
+DP3 R10.z, c[10], v[NRML];
+
+# R11 = normalize R10
+DP3 R11.w, R10, R10;
+RSQ R11.w, R11.w;
+MUL R11, R10, R11.w;
+
+# Put eye space position into R9
+DP4 R9.x, c[4], v[OPOS];
+DP4 R9.y, c[5], v[OPOS];
+DP4 R9.z, c[6], v[OPOS];
+DP4 R9.w, c[7], v[OPOS];
+
+# R0 = eye space eye vector
+MOV R0, -R9;
+
+# R8 = normalized eye space eye vector
+DP3 R8.w, R0, R0;
+RSQ R8.w, R8.w;
+MUL R8, R0, R8.w;
+
+
+
+
+# R0.x = N dot L (L is vector to eye)
+DP3 R0.x, R11, R8;
+
+# R1.x = 1-(N dot L)^2
+MAD R1.x, -R0.x, R0.x, c[64].y;
+
+
+
+
+
+
+
+#Third Refraction (red)
+
+# R2.x = k = 1-index*index*R1.x
+MAD R2.x, -R1.x, c[34].y, c[34].w;
+
+# Calculate refracted vector and put in R2
+RSQ R2.x, R2.x;
+RCP R2.x, R2.x;					#R2.x = sqrt(k)
+MAD R2.x, c[34].x, R0.x, -R2.x;	#R2.x = index*(N dot L) - sqrt(k)
+MUL R2, R11, R2.x;				#R2   = (index*(N dot L) - sqrt(k))*normal
+MAD R2, c[34].x, -R8, R2;		#R2   = (index*(N dot L) - sqrt(k))*normal-index*L
+
+# Transform refraction vector by inverse modelview matrix to go to world space (=cube map space)
+# and output as tex0
+DP3 o[TEX0].x, c[12], R2;
+DP3 o[TEX0].y, c[13], R2;
+DP3 o[TEX0].z, c[14], R2;
+
+
+
+#Output fresnel term fresnel*(1-(N.L))^2 as color for interpolation factor
+ADD R0.x, c[64].y, -R0.x;
+MUL R0.x, R0.x, R0.x;
+MUL o[COL0], R0.x, c[28];
+
+
+
+
+# Reflection
+
+# R3 = eye vector reflected about normal
+MUL R0, R11, c[64].z;	#R0 = 2*N
+DP3 R3.w, R11, R8;		#R3.w = N dot E
+MAD R3, R3.w, R0, -R8;	#R3 = 2*N*(N dot E) - E
+
+# Transform reflection vector by inverse modelview matrix to go to world space (=cube map space)
+# and output as tex1
+DP3 o[TEX1].x, c[12], R3;
+DP3 o[TEX1].y, c[13], R3;
+DP3 o[TEX1].z, c[14], R3;
+
+
+
+
+# compute position
+DP4 o[HPOS].x, c[0], v[OPOS];
+DP4 o[HPOS].y, c[1], v[OPOS];
+DP4 o[HPOS].z, c[2], v[OPOS];
+DP4 o[HPOS].w, c[3], v[OPOS];
+
+END

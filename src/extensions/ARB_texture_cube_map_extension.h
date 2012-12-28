@@ -13,6 +13,5 @@
 #define ARB_TEXTURE_CUBE_MAP_H
 
 bool SetUpARB_texture_cube_map();
-extern bool ARB_texture_cube_map_supported;
 
 #endif	//ARB_TEXTURE_CUBE_MAP_H

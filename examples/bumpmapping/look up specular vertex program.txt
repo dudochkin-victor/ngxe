@@ -1,0 +1,44 @@
+!!VP1.0
+# Vertex Program for bump mapping - Apply specular lighting by texture lookup
+# c[0]-c[3] modelviewProjection matrix
+# c[4]		light direction (object space)
+# c[5]		view direction
+# v[TEX0]	Normal map coordinates
+# v[TEX1]	S Tangent
+# v[TEX2]	T Tangent
+
+# Compute position
+DP4 o[HPOS].x, c[0], v[OPOS];
+DP4 o[HPOS].y, c[1], v[OPOS];
+DP4 o[HPOS].z, c[2], v[OPOS];
+DP4 o[HPOS].w, c[3], v[OPOS];
+
+
+
+# Calculate half angle vector
+MOV R1, c[4];
+ADD R1, R1, c[5];
+
+# Convert to tangent space
+DP3 R0.x, R1, v[TEX1];
+DP3 R0.y, R1, v[TEX2];
+DP3 R0.z, R1, v[NRML];
+
+#normalize half angle vector
+DP3 R1.w, R0, R0;
+RSQ R1.w, R1.w;
+MUL R1.xyz, R0, R1.w;
+
+#Pass to units 1 and 2
+MOV o[TEX1], R1;
+MOV o[TEX2], R1;
+
+
+
+#Output normal map texture coordinates to texture units 0,3
+MOV o[TEX0], v[TEX0];
+MOV o[TEX3], v[TEX0];
+
+
+
+END

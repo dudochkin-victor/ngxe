@@ -13,9 +13,5 @@
 #define WGL_ARB_EXTENSIONS_STRING_EXTENSION_H
 
 bool SetUpWGL_ARB_extensions_string();
-extern bool WGL_ARB_extensions_string_supported;
-
-extern PFNWGLGETEXTENSIONSSTRINGARBPROC			wglGetExtensionsStringARB;
-
 
 #endif	// WGL_ARB_EXTENSIONS_STRING_EXTENSION_H

@@ -13,6 +13,5 @@
 #define EXT_STENCIL_WRAP_EXTENSION_H
 
 bool SetUpEXT_stencil_wrap();
-extern bool EXT_stencil_wrap_supported;
 
 #endif	//EXT_STENCIL_WRAP_EXTENSION_H

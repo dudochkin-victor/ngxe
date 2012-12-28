@@ -1,0 +1,23 @@
+<-> Window Class Registered
+<-> Window Created.
+<-> DC Created
+<-> Pixel Format Found.
+<-> Pixel Format set.
+<-> GL Rendering Context Created.
+<-> GL Rendering Context Activated.
+
+<-> Window Size: (640, 480)
+<-> Color Buffer Bits (R, G, B, A): (8, 8, 8, 8)
+<-> Depth Buffer Bits: 24
+<-> Stencil Buffer Bits: 8
+
+<-> Window Created!
+
+<-> Font created successfully.
+<-> ARB_multitexture supported!
+<-> ARB_texture_cube_map supported!
+<-> EXT_texture_edge_clamp supported!
+<!> NV_register_combiners unsupported!
+<!> NV_register_combiners2 unsupported!
+<!> NV_vertex_program unsupported!
+<!> Demo Initiation failed

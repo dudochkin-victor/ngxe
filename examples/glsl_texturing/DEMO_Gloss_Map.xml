@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--
+==============================================================================
+AUTHOR:		JeGX - jegx@ozone3d.net
+DATE:		27.03.2006
+PURPOSE:	GLSL Texturing.
+TUTORIAL:	http://www.ozone3d.net/tutorials/glsl_texturing.php
+
+====================================
+ \==:: http://www.oZone3D.Net ::==/
+  ================================
+==============================================================================
+-->
+
+
+<hyperion version_major="1" version_minor="3">
+
+
+<scene name="GLSL_Texturing_Demo"  display_fps="TRUE" vsync="TRUE" show_ref_grid="TRUE" display_hyperion_logo="FALSE" >
+	<window_size width="1024" height="768" />
+	<background_color r="0.0" g="0.0" b="0.0" />
+	<check_hardware_caps glsl="TRUE" />
+</scene>
+
+
+
+
+<camera name="Main_Camera" fov="70.0" navigation_mode="EXAMINE" display_position="FALSE" display_view_direction="FALSE" >
+	<position x="0.0" y="100.0" z="350.0" />
+	<lookat x="0.0" y="0.0" z="0.0" w="1.0" />
+	<orientation pitch="20.0" yaw="90.0" />
+</camera>
+
+
+
+<skybox name="sky" render="TRUE" >
+		<xpos_face filename="data/opensea_cubemap/opensea_posx.png" />
+		<xneg_face filename="data/opensea_cubemap/opensea_negx.png" />
+		<ypos_face filename="data/opensea_cubemap/opensea_posy.png" />
+		<yneg_face filename="data/opensea_cubemap/opensea_negy.png" uv_map_op="SWAP_V" />
+		<zpos_face filename="data/opensea_cubemap/opensea_posz.png" />
+		<zneg_face filename="data/opensea_cubemap/opensea_negz.png" uv_map_op="SWAP_U" />
+</skybox>
+	
+<texture name="cubeMap_tex" pixel_format="RGB" 
+         filtering_mode="LINEAR" function_type="REPLACE" addressing_mode="CLAMP"
+         type="TEXTURE_CUBE_MAP"  >
+                  
+	<cube_map face="XPOS" filename="data/opensea_cubemap/opensea_posx.png" uv_map_op="SWAP_U" />
+	<cube_map face="XNEG" filename="data/opensea_cubemap/opensea_negx.png" uv_map_op="SWAP_U" />
+	<cube_map face="YPOS" filename="data/opensea_cubemap/opensea_posy.png" uv_map_op="SWAP_U"  />
+	<cube_map face="YNEG" filename="data/opensea_cubemap/opensea_negy.png" />
+	<cube_map face="ZPOS" filename="data/opensea_cubemap/opensea_posz.png" uv_map_op="SWAP_U"  />
+	<cube_map face="ZNEG" filename="data/opensea_cubemap/opensea_negz.png" uv_map_op="SWAP_U"  />
+</texture>
+
+	
+<texture name="baseMap_tex" filename="data/vert_amande.jpg" filtering_mode="LINEAR" />
+
+<texture name="glossMap_tex" filename="data/gloss_map_01.jpg" filtering_mode="LINEAR" />
+
+
+
+<material name="torus_mat" shader_program_name="GlossShader" />
+
+<mesh name="mesh_torus" shape_type="TORUS" lighting="FALSE" texturing="TRUE" polygon_mode="SOLID" use_vbo="TRUE"
+      remove_seam="TRUE" auto_spin="TRUE" >
+
+	<torus radius="150.0" vertex_density="40.0" section_radius="80" />
+	
+	<attach_material name="torus_mat" />
+	
+	<texture material_name="torus_mat" texture_name="baseMap_tex" texture_unit="0" />
+	<texture material_name="torus_mat" texture_name="cubeMap_tex" texture_unit="1" />
+	<texture material_name="torus_mat" texture_name="glossMap_tex" texture_unit="2" />
+	
+	<position x="0.0" y="0.0" z="0.0" />
+	<orientation pitch="0.0" />
+	<spin_values x="50.0" y="50.0" z="50.0" />
+</mesh>
+
+
+
+<shader_program name="GlossShader"  >
+	<constant_1i name="colorMap" value="0" />
+	<constant_1i name="cubeMap" value="1" />
+	<constant_1i name="glossMap" value="2" />
+	<constant_4x4f name="ModelWorld4x4" object_name="mesh_torus" transformation_type="NONE" />
+	<constant_3f name="CameraPos" x="0.0" y="100.0" z="350.0" />
+	
+	<raw_data><![CDATA[	 
+		[Vertex_Shader]
+		
+		uniform mat4 ModelWorld4x4;
+		uniform vec3 CameraPos;
+		
+		mat3 GetLinearPart( mat4 m )
+		{
+			mat3 result;
+			
+			result[0][0] = m[0][0]; 
+			result[0][1] = m[0][1]; 
+			result[0][2] = m[0][2]; 
+
+			result[1][0] = m[1][0]; 
+			result[1][1] = m[1][1]; 
+			result[1][2] = m[1][2]; 
+			
+			result[2][0] = m[2][0]; 
+			result[2][1] = m[2][1]; 
+			result[2][2] = m[2][2]; 
+			
+			return result;
+		}		
+					   
+		void main()
+		{	
+			gl_Position = ftransform();		
+			
+			// Color map texture coordinates. 
+			gl_TexCoord[0] = gl_MultiTexCoord0;
+			
+			mat3 ModelWorld3x3 = GetLinearPart( ModelWorld4x4 );
+			
+			// find world space position.
+			vec4 WorldPos = ModelWorld4x4 *  gl_Vertex;	
+			
+			// find world space normal.
+			vec3 N = normalize( ModelWorld3x3 * gl_Normal ); 
+			
+			// find world space eye vector.
+			vec3 E = normalize( WorldPos.xyz - CameraPos.xyz );	
+			
+			// calculate the reflection vector in world space.
+			gl_TexCoord[1].xyz = reflect( E, N ); 
+		}
+
+		[Pixel_Shader]
+			
+		uniform samplerCube cubeMap;
+		uniform sampler2D colorMap;
+		uniform sampler2D glossMap;
+
+		void main (void)
+		{
+			vec4 output_color;
+			
+			// Perform a simple 2D texture look up.
+			vec4 base_color = texture2D(colorMap, gl_TexCoord[0].xy * 2.0).rgba;
+			
+			// Do a gloss map look up and compute the reflectivity.
+			vec3 gloss_color = texture2D(glossMap, gl_TexCoord[0].xy).rgb;
+			float reflectivity = 0.30*gloss_color.r + 0.59*gloss_color.g + 0.11*gloss_color.b;
+
+			// Perform a cube map look up.
+			vec4 cube_color = textureCube(cubeMap, gl_TexCoord[1].xyz).rgba;
+
+			// Write the final pixel.
+			//gl_FragColor = mix(base_color, cube_color, reflectivity);
+			gl_FragColor = base_color + (cube_color*reflectivity);
+		}
+	   	]]></raw_data>
+
+</shader_program>
+
+
+<script name="init_scene" run_mode="EXECUTE_ONCE" >
+	<raw_data><![CDATA[	 
+	
+	
+	]]></raw_data>
+</script> 
+
+
+<script name="update_scene" run_mode="EXECUTE_EACH_FRAME" >
+	<raw_data><![CDATA[	 
+	
+	x, y, z = HYP_Camera.GetPosition("Main_Camera");
+	HYP_GPUShader.SetConstant_3f( "CEM_Shader", "CameraPos", x, y, z );
+	
+	
+	]]></raw_data>
+</script> 
+
+
+
+
+</hyperion>

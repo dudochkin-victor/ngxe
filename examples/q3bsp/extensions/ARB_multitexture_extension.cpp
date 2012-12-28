@@ -11,10 +11,8 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/wglext.h>
-#include "../LOG.h"
+#include "Util.h"
 #include "ARB_multitexture_extension.h"
-
-extern LOG errorLog;
 
 bool ARB_multitexture_supported=false;
 
@@ -22,11 +20,11 @@ bool SetUpARB_multitexture()
 {
 	if(!GL_ARB_multitexture)
 	{
-		errorLog.OutputError("ARB_multitexture unsupported!");
+		Util::log("ARB_multitexture unsupported!");
 		return false;
 	}
 
-	errorLog.OutputSuccess("ARB_multitexture supported!");
+	Util::log("ARB_multitexture supported!");
 	return true;
 }
 

@@ -8,31 +8,20 @@
 //	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <stdio.h>
-#include <GL/glut.h>
-#include <GL\glext.h>
-#include <GL\wglext.h>
+
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include "Util.h"
 #include "EXT_texture_env_combine_extension.h"
 
-bool EXT_texture_env_combine_supported=false;
+bool SetUpEXT_texture_env_combine() {
 
-bool SetUpEXT_texture_env_combine()
-{
-	//Check for support
-	EXT_texture_env_combine_supported=glutExtensionSupported("GL_EXT_texture_env_combine")!=0;
-	
-	if(!EXT_texture_env_combine_supported)
-	{
-		printf("EXT_texture_env_combine unsupported!\n");
+	if (!GL_EXT_texture_env_combine) {
+		Util::log("GL_EXT_texture_env_combine unsupported!");
 		return false;
 	}
 
-	printf("EXT_texture_env_combine supported!\n");
-
-	//get function pointers
-	//none specified
-
+	Util::log("GL_EXT_texture_env_combine supported!");
 	return true;
 }

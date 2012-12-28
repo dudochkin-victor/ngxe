@@ -1,0 +1,31 @@
+!!VP1.0
+# Vertex Program for Per pixel attenuation
+# c[0]-c[3] modelviewProjection matrix
+# c[4]-c[7] texture matrix 0
+
+# compute position
+DP4 o[HPOS].x, c[0], v[OPOS];
+DP4 o[HPOS].y, c[1], v[OPOS];
+DP4 o[HPOS].z, c[2], v[OPOS];
+DP4 o[HPOS].w, c[3], v[OPOS];
+
+#output color
+MOV o[COL0], v[COL0];
+
+
+
+
+#transform position by texture matrix 0 to get 3d tex coords for attenuation
+#put (s,t,r) -> (s1, t1, s2) for texture atten and (s,t,r)->(s1, t1, r1) for pass through atten
+DP4 o[TEX1].x, c[4], v[OPOS];
+DP4 o[TEX1].y, c[5], v[OPOS];
+DP4 o[TEX2].x, c[6], v[OPOS];
+DP4 o[TEX1].z, c[6], v[OPOS];
+
+
+
+#Pass decal coords to Tex0
+MOV o[TEX0], v[TEX0];
+
+
+END

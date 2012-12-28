@@ -15,9 +15,6 @@
 #include <stdio.h>   // Always a good idea.
 #include <string.h>
 #include <time.h>    // For our FPS stats.
-#include <GL/gl.h>   // OpenGL itself.
-#include <GL/glu.h>  // GLU support library.
-#include <GL/glut.h> // GLUT support library.
 #include "View.h"
 #include "Util.h"
 // Some global variables.

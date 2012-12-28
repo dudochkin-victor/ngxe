@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--
+==============================================================================
+AUTHOR:		JeGX - jegx@ozone3d.net
+DATE:		27.03.2006
+PURPOSE:	GLSL Texturing.
+TUTORIAL:	http://www.ozone3d.net/tutorials/glsl_texturing.php
+
+====================================
+ \==:: http://www.oZone3D.Net ::==/
+  ================================
+==============================================================================
+-->
+
+
+<hyperion version_major="1" version_minor="3">
+
+
+<scene name="GLSL_Texturing_Demo"  display_fps="TRUE" vsync="TRUE" show_ref_grid="TRUE" display_hyperion_logo="FALSE" >
+	<window_size width="1024" height="768" />
+	<background_color r="0.2" g="0.2" b="0.2" />
+	<check_hardware_caps glsl="TRUE" />
+	<global_ambient_light r="0.2" g="0.2" b="0.2" a="1.0" />
+</scene>
+
+
+
+
+<camera name="Main_Camera" fov="90.0" navigation_mode="EXAMINE" display_position="FALSE" display_view_direction="FALSE" >
+	<position x="0.0" y="100.0" z="350.0" />
+	<lookat x="0.0" y="0.0" z="0.0" w="1.0" />
+	<orientation pitch="20.0" yaw="90.0" />
+</camera>
+
+
+
+<light name="Light_01" render="TRUE">
+	<position x="0.0" y="250.0" z="400.0" />
+	<ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+	<diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+	<specular r="0.0" g="0.0" b="0.0" a="1.0" />
+</light>
+
+
+
+
+<texture name="env_tex" filename="data/specular_map.tga" filtering_mode="LINEAR" />
+
+
+<material name="torus_mat" shader_program_name="SphereMappingShader" >
+	<ambient r="0.3" g="0.3" b="0.3" a="1.0" />
+	<diffuse r="0.9" g="0.5" b="0.5" a="1.0" />
+	<specular r="0.0" g="0.0" b="0.0" a="1.0" />
+</material>
+
+
+<mesh name="mesh_torus" shape_type="TORUS" lighting="TRUE" texturing="TRUE" polygon_mode="SOLID" use_vbo="TRUE"
+      remove_seam="TRUE" auto_spin="TRUE" >
+
+	<torus radius="150.0" vertex_density="40.0" section_radius="40" />
+	
+	<attach_material name="torus_mat" />
+	
+	<texture material_name="torus_mat" texture_name="env_tex" texture_unit="0" />
+	
+	<position x="0.0" y="0.0" z="0.0" />
+	<orientation pitch="0.0" />
+	<spin_values x="50.0" y="50.0" z="50.0" />
+</mesh>
+
+
+
+<shader_program name="SphereMappingShader"  >
+	<constant_1i name="envMap" value="0" />
+	
+	<raw_data><![CDATA[	 
+		[Vertex_Shader]
+		
+		varying vec3 normal, lightDir, eyeVec;
+
+		void main()
+		{	
+			gl_Position = ftransform();		
+			
+			vec3 vVertex = vec3(gl_ModelViewMatrix * gl_Vertex);
+			lightDir = vec3(gl_LightSource[0].position.xyz - vVertex);
+			eyeVec = -vVertex;
+			
+			vec3 u = normalize( vVertex );
+			normal = normalize( gl_NormalMatrix * gl_Normal );
+			vec3 r = reflect( u, normal );
+			float m = 2.0 * sqrt( r.x*r.x + r.y*r.y + (r.z+1.0)*(r.z+1.0) );
+			gl_TexCoord[0].s = r.x/m + 0.5;
+			gl_TexCoord[0].t = r.y/m + 0.5;
+		}
+
+		[Pixel_Shader]
+		
+		uniform sampler2D envMap;
+		varying vec3 normal, lightDir, eyeVec;
+		
+		void main (void)
+		{
+			vec4 final_color = (gl_FrontLightModelProduct.sceneColor * gl_FrontMaterial.ambient) + 
+			(gl_LightSource[0].ambient * gl_FrontMaterial.ambient);
+
+			vec3 N = normalize(normal);
+			vec3 L = normalize(lightDir);
+			
+			float lambertTerm = dot(N,L);
+			
+			if(lambertTerm > 0.0)
+			{
+				final_color += gl_LightSource[0].diffuse * gl_FrontMaterial.diffuse * lambertTerm;	
+				
+				final_color += texture2D( envMap, gl_TexCoord[0].st) * lambertTerm;
+			}
+				
+			gl_FragColor = final_color;
+		}
+	   	]]></raw_data>
+
+</shader_program>
+
+
+
+</hyperion>

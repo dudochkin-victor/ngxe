@@ -1,0 +1,34 @@
+<-> Window Class Registered
+<-> Window Created.
+<-> DC Created
+<-> Pixel Format Found.
+<-> Pixel Format set.
+<-> GL Rendering Context Created.
+<-> GL Rendering Context Activated.
+
+<-> Window Size: (512, 512)
+<-> Color Buffer Bits (R, G, B, A): (8, 8, 8, 8)
+<-> Depth Buffer Bits: 24
+<-> Stencil Buffer Bits: 8
+
+<-> Window Created!
+
+<-> Font created successfully.
+<-> ARB_multitexture supported!
+<-> EXT_texture_env_combine supported!
+<!> NV_register_combiners unsupported!
+<!> SGIX_depth_texture unsupported!
+<!> SGIX_shadow unsupported!
+<-> EXT_blend_minmax supported!
+<!> Register Combiner 16bit Shadow Mapping Unsupported
+<!> Hardware Shadow Mapping (SGIX_depth_texture and SGIX_shadow) Unsupported
+<!> or EXT_blend_minmax unsupported
+<-> Demo Initiation Successful
+<-> OpenGL Initiation Successful
+
+<-> DC and RC released.
+<-> Rendering Context Released.
+<-> Device Context Released.
+<-> hWnd released.
+<-> Class unregistered.
+<-> Exiting...

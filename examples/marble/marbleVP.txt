@@ -1,0 +1,48 @@
+!!ARBvp1.0
+
+#Vertex program for marble
+
+#Use position invariant option
+OPTION	ARB_position_invariant;
+
+#Parameters
+PARAM	modelMatrixRow0	= program.local[0];		#Model matrix row 0
+PARAM	modelMatrixRow1	= program.local[1];		#Model matrix row 1
+PARAM	modelMatrixRow2	= program.local[2];		#Model matrix row 2
+PARAM	modelMatrixRow3	= program.local[3];		#Model matrix row 3
+PARAM	cameraPosition	= program.local[4];		#World space camera position
+
+#Per vertex inputs
+ATTRIB	iPos			= vertex.position;		#Position input
+ATTRIB	iNorm			= vertex.normal;		#Normal input
+
+#Temporaries
+TEMP	worldSpacePosition;
+
+#Outputs
+OUTPUT	oTexCoords		= result.texcoord[0];	#3d tex coords
+OUTPUT	oWorldSpaceNormal = result.texcoord[1];	#world space normal
+OUTPUT	oWorldSpaceView	= result.texcoord[2];	#world space view vector
+
+
+
+#Output the 3d texture coords
+MUL		oTexCoords, iPos, 0.025;
+
+
+#Calculate the world space normal
+DP3		oWorldSpaceNormal.x, modelMatrixRow0, iNorm;
+DP3		oWorldSpaceNormal.y, modelMatrixRow1, iNorm;
+DP3		oWorldSpaceNormal.z, modelMatrixRow2, iNorm;
+
+
+#Calculate the world space view vector, world space camera position - world space position
+DP4		worldSpacePosition.x, modelMatrixRow0, iPos;
+DP4		worldSpacePosition.y, modelMatrixRow1, iPos;
+DP4		worldSpacePosition.z, modelMatrixRow2, iPos;
+DP4		worldSpacePosition.w, modelMatrixRow3, iPos;
+
+SUB		oWorldSpaceView, cameraPosition, worldSpacePosition;
+
+
+END

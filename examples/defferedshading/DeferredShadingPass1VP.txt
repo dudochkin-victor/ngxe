@@ -1,0 +1,26 @@
+!!ARBvp1.0
+
+#Vertex program for deferred shading - geometry pass
+
+#Use position invariant option
+OPTION	ARB_position_invariant;
+
+#Per vertex inputs
+ATTRIB	iPos			= vertex.position;		#Position input
+ATTRIB	iNorm			= vertex.normal;		#Normal input
+
+#Outputs
+OUTPUT	oTex0			= result.texcoord[0];	#texture coord set 0 - position
+OUTPUT	oTex1			= result.texcoord[1];	#texture coord set 1 - normal
+
+
+
+#Output the (object space) position in texture coordinate set 0
+MOV		oTex0, iPos;
+
+
+#Output the normal in texture coordinate set 1
+MOV		oTex1, iNorm;
+
+
+END

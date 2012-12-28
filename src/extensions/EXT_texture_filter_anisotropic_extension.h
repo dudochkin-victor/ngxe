@@ -13,6 +13,5 @@
 #define EXT_TEXTURE_FILTER_ANISOTROPIC_H
 
 bool SetUpEXT_texture_filter_anisotropic();
-extern bool EXT_texture_filter_anisotropic_supported;
 
 #endif	//EXT_TEXTURE_FILTER_ANISOTROPIC_H

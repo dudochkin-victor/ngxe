@@ -13,8 +13,5 @@
 #define EXT_TEXTURE3D_EXTENSION_H
 
 bool SetUpEXT_texture3D();
-extern bool EXT_texture3D_supported;
-
-extern PFNGLTEXIMAGE3DEXTPROC						glTexImage3DEXT;
 
 #endif	//EXT_TEXTURE3D_EXTENSION_H

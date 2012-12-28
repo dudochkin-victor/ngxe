@@ -13,6 +13,5 @@
 #define SGIX_SHADOW_EXTENSION_H
 
 bool SetUpSGIX_shadow();
-extern bool SGIX_shadow_supported;
 
 #endif	//SGIX_SHADOW_EXTENSION_H

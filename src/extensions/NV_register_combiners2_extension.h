@@ -13,9 +13,5 @@
 #define NV_REGISTER_COMBINERS2_EXTENSION_H
 
 bool SetUpNV_register_combiners2();
-extern bool NV_register_combiners2_supported;
-
-extern PFNGLCOMBINERSTAGEPARAMETERFVNVPROC			glCombinerStageParameterfvNV;
-extern PFNGLGETCOMBINERSTAGEPARAMETERFVNVPROC		glGetCombinerStageParameterfvNV;
 
 #endif	//NV_REGISTER_COMBINERS2_EXTENSION_H

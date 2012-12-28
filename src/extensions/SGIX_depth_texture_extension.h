@@ -13,6 +13,5 @@
 #define SGIX_DEPTH_TEXTURE_EXTENSION_H
 
 bool SetUpSGIX_depth_texture();
-extern bool SGIX_depth_texture_supported;
 
 #endif	//SGIX_DEPTH_TEXTURE_EXTENSION_H

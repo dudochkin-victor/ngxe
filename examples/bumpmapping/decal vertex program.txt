@@ -1,0 +1,22 @@
+!!VP1.0
+# Vertex Program for bump mapping - apply decal texture
+# c[0]-c[3] modelviewProjection matrix
+# c[4]		light direction (object space)
+# c[5]		view direction
+# v[TEX0]	Normal map coordinates
+# v[TEX1]	S Tangent
+# v[TEX2]	T Tangent
+
+# Compute position
+DP4 o[HPOS].x, c[0], v[OPOS];
+DP4 o[HPOS].y, c[1], v[OPOS];
+DP4 o[HPOS].z, c[2], v[OPOS];
+DP4 o[HPOS].w, c[3], v[OPOS];
+
+#output color
+MOV o[COL0], v[COL0];
+
+#Output decal texture coordinates to texture unit 0
+MOV o[TEX0], v[TEX0];
+
+END

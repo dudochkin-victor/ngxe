@@ -8,39 +8,20 @@
 //	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
-#include <windows.h>
-#include <GL\gl.h>
-#include <GL\glext.h>
-#include <GL\wglext.h>
-#include "../LOG.h"
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include "Util.h"
 #include "WGL_ARB_extensions_string_extension.h"
-
-extern LOG errorLog;
-
-bool WGL_ARB_extensions_string_supported=false;
 
 bool SetUpWGL_ARB_extensions_string()
 {
-	//get function pointer
-	wglGetExtensionsStringARB			=	(PFNWGLGETEXTENSIONSSTRINGARBPROC)
-											wglGetProcAddress("wglGetExtensionsStringARB");
 	
-	if(wglGetExtensionsStringARB==NULL)
-		WGL_ARB_extensions_string_supported=false;
-	else
-		WGL_ARB_extensions_string_supported=true;
-	
-	
-	if(!WGL_ARB_extensions_string_supported)
-	{
-		errorLog.OutputError("WGL_ARB_extensions_string unsupported!");
+//	if (!wglGetExtensionsStringARB) {
+		Util::log("wglGetExtensionsStringARB unsupported!");
 		return false;
-	}
+//	}
 
-	errorLog.OutputSuccess("WGL_ARB_extensions_string supported!");
-
-	return true;
+//	Util::log("wglGetExtensionsStringARB supported!");
+//	return true;
 }
-
-//function pointers
-PFNWGLGETEXTENSIONSSTRINGARBPROC			wglGetExtensionsStringARB		=NULL;

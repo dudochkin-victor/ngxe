@@ -13,6 +13,5 @@
 #define EXT_TEXTURE_EDGE_CLAMP_EXTENSION_H
 
 bool SetUpEXT_texture_edge_clamp();
-extern bool EXT_texture_edge_clamp_supported;
 
 #endif	//EXT_TEXTURE_EDGE_CLAMP_EXTENSION_H

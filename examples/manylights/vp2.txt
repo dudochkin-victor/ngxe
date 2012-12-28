@@ -1,0 +1,80 @@
+!!VP2.0
+#Vertex Program for point lights, using vp2. Handles 60 point lights via a loop
+# c[0]-c[3] modelviewProjection matrix
+# c[4] ambient brightness
+# c[5] light 0 position
+# c[6] light 0 color
+# c[7,8] similar for light 1
+# ...
+# c[123, 124] similar for light 59
+# c[125] - {60.0, - Number of lights
+#			 5.0, - Base for light data
+#			-1.0, - loop counter
+#			 2.0} - stride for light data
+
+
+# compute position
+DP4 o[HPOS].x, c[0], v[OPOS];
+DP4 o[HPOS].y, c[1], v[OPOS];
+DP4 o[HPOS].z, c[2], v[OPOS];
+DP4 o[HPOS].w, c[3], v[OPOS];
+
+
+#Output decal texture coords
+MOV o[TEX0].xy, v[TEX0];
+
+
+#Begin color with ambient contribution
+MOV R0, c[4];
+
+
+#Load address register with c[125], updating the condition register
+ARLC A1, c[125];
+
+
+#Loop through lights and calculate their contribution
+startloop:	#start loop
+
+CAL lightCalculation (GT.x);	#Call "lightCalculation" if condition register.x>0.0
+
+ARAC A1.xy, A1;					#A1.x=A1.x-1, A1.y+=2. Condition register=A1
+
+BRA startloop (GT.x);			#Return to startloop if condition register.x>0.0
+
+endloop:
+
+#Output Color
+MOV o[COL0], R0;
+
+
+
+
+
+#Subroutine "lightCalculation"
+#Compute the contribution from 1 light
+#A1.y points to the start of the data for the light (eg 5 for light0)
+
+lightCalculation:
+
+#Calculate point to light vector
+ADD R1, c[A1.y], -v[OPOS];
+
+#R2 = Normalize R1
+DP3 R2.w, R1, R1;
+RSQ R2.w, R2.w;
+MUL R2.xyz, R1, R2.w;
+
+#Dot this with the normal
+DP3 R1, R2, v[NRML];
+
+#Modulate by color and add to R0
+MAD R0, R1, c[A1.y+1], R0;
+
+#return
+RET;
+
+
+
+END
+
+

@@ -13,6 +13,5 @@
 #define EXT_TEXTURE_ENV_COMBINE_EXTENSION_H
 
 bool SetUpEXT_texture_env_combine();
-extern bool EXT_texture_env_combine_supported;
 
 #endif	//EXT_TEXTURE_ENV_COMBINE_EXTENSION_H

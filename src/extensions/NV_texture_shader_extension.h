@@ -13,6 +13,5 @@
 #define NV_TEXTURE_SHADER_EXTENSION_H
 
 bool SetUpNV_texture_shader();
-extern bool NV_texture_shader_supported;
 
 #endif	//NV_TEXTURE_SHADER_EXTENSION_H

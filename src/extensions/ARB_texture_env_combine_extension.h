@@ -13,6 +13,5 @@
 #define ARB_TEXTURE_ENV_COMBINE_EXTENSION_H
 
 bool SetUpARB_texture_env_combine();
-extern bool ARB_texture_env_combine_supported;
 
 #endif	//ARB_TEXTURE_ENV_COMBINE_EXTENSION_H

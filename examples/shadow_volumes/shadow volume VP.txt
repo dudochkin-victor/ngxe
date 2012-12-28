@@ -1,0 +1,64 @@
+!!ARBvp1.0
+# Vertex Program for shadow volume extrusion
+
+# Parameters
+PARAM mvp[4]		= { state.matrix.mvp };		#modelview projection matrix
+PARAM lightPosition = program.env[0];			#object space light position
+
+PARAM zero			= {0.0, 0.0, 0.0, 0.0};
+PARAM one			= {1.0, 1.0, 1.0, 1.0};		#useful constants
+
+
+# Per vertex inputs
+ATTRIB iPos			= vertex.position;			#position
+ATTRIB iNorm		= vertex.normal;			#normal
+
+# Temporaries
+TEMP lightVector;		#light vector
+TEMP lightDotNorm;		#light vector dot normal
+TEMP toSubtract;		#What to subtract from the vertex position
+TEMP position;			#Computed position (object space)
+TEMP toMult;			#What to multiply position by to set w=0
+
+# Outputs
+OUTPUT oPos			= result.position;			#position
+
+
+
+
+# Calculate light vector
+SUB lightVector, lightPosition, iPos;
+
+# lightDotNorm = light vector dot normal(object space)
+DP3 lightDotNorm, lightVector, iNorm;
+
+# toSubtract= (1, 1, 1, 0) if l.n<0
+#			= (0, 0, 0, 0) if l.n>0
+MOV toSubtract, zero;
+SLT toSubtract.xyz, lightDotNorm, zero;
+
+# toSubtract= (Lx, Ly, Lz, 0)	if l.n<0 (light position)
+#			= (0, 0, 0, 0)		if l.n>0
+MUL toSubtract, toSubtract, lightPosition;
+
+# position  = (Vx-Lx, Vy-Ly, Vz-Lz, Vw) if l.n<0
+#			= (Vx, Vy, Vz, Vw)			if l.n>0
+MOV position, iPos;
+SUB position, position, toSubtract;
+
+# toMult= (1, 1, 1, 0) if l.n<0
+#		= (1, 1, 1, 1) if l.n>0
+MOV toMult, one;
+SGE toMult.w, lightDotNorm, zero;
+
+# position  = (Vx-Lx, Vy-Ly, Vz-Lz, 0) if l.n<0
+#			= (Vx, Vy, Vz, Vw)			if l.n>0
+MUL position, position, toMult;
+
+# project to clip coords
+DP4 oPos.x, mvp[0], position;
+DP4 oPos.y, mvp[1], position;
+DP4 oPos.z, mvp[2], position;
+DP4 oPos.w, mvp[3], position;
+
+END

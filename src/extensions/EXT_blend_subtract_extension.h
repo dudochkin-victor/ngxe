@@ -13,6 +13,5 @@
 #define EXT_BLEND_SUBTRACT_EXTENSION_H
 
 bool SetUpEXT_blend_subtract();
-extern bool EXT_blend_subtract_supported;
 
 #endif	//EXT_BLEND_SUBTRACT_EXTENSION_H

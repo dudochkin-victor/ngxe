@@ -1,0 +1,52 @@
+!!VP1.0
+#Vertex Program for sot product reflect
+# c[0]-c[3] modelviewProjection matrix
+# c[4]-c[7] modelview matrix
+# c[8]-c[11] inverse transpose modelview matrix
+# v[TEX0] texture coordinates
+# v[TEX1] S Tangent
+# v[TEX2] T Tangent
+
+
+# compute position
+DP4 o[HPOS].x, c[0], v[OPOS];
+DP4 o[HPOS].y, c[1], v[OPOS];
+DP4 o[HPOS].z, c[2], v[OPOS];
+DP4 o[HPOS].w, c[3], v[OPOS];
+
+
+#o[TEX0]=normal map tex coords
+MOV o[TEX0].xy, v[TEX0];
+
+
+#Calculate the eye vector and store in R1
+#eye vector is simply the negative of the eye space vertex position
+DP4 R1.x, c[4], v[OPOS];
+DP4 R1.y, c[5], v[OPOS];
+DP4 R1.z, c[6], v[OPOS];
+DP4 R1.w, c[7], v[OPOS];
+
+MOV R1, -R1;
+
+
+#Calculate the 3x3 texel matrix and put rows into TEX1,2,3 (as x,y and z)
+#texel matrix=inverse transpose modelview * surface local matrix(witn tangents as columns)
+DP3 o[TEX1].x, c[8], v[TEX1];
+DP3 o[TEX1].y, c[8], v[TEX2];
+DP3 o[TEX1].z, c[8], v[NRML];
+
+DP3 o[TEX2].x, c[9], v[TEX1];
+DP3 o[TEX2].y, c[9], v[TEX2];
+DP3 o[TEX2].z, c[9], v[NRML];
+
+DP3 o[TEX3].x, c[10], v[TEX1];
+DP3 o[TEX3].y, c[10], v[TEX2];
+DP3 o[TEX3].z, c[10], v[NRML];
+
+
+#output eye vector into w coords of tex1,2,3
+MOV o[TEX1].w, R1.x;
+MOV o[TEX2].w, R1.y;
+MOV o[TEX3].w, R1.z;
+
+END

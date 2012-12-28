@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!--
+==============================================================================
+AUTHOR:		JeGX - jegx@ozone3d.net
+DATE:		27.03.2006
+PURPOSE:	GLSL Texturing.
+TUTORIAL:	http://www.ozone3d.net/tutorials/glsl_texturing.php
+
+====================================
+ \==:: http://www.oZone3D.Net ::==/
+  ================================
+==============================================================================
+-->
+
+
+<hyperion version_major="1" version_minor="3">
+
+
+<scene name="GLSL_Texturing_Demo"  display_fps="TRUE" vsync="TRUE" show_ref_grid="TRUE" display_hyperion_logo="FALSE" >
+	<window_size width="1024" height="768" />
+	<global_ambient_light r="0.1" g="0.1" b="0.1" a="1.0" />
+	<background_color r="0.2" g="0.3" b="0.3" />
+	<check_hardware_caps glsl="TRUE" nvidia="TRUE" />
+</scene>
+
+
+
+
+<camera name="Main_Camera" navigation_mode="FLY" display_position="FALSE" display_view_direction="FALSE" >
+	<position x="0.0" y="200.0" z="700.0" />
+	<lookat x="0.0" y="50.0" z="0.0" w="1.0" />
+</camera>
+
+
+
+
+<!--
+http://www.delilah.tk/
+-->
+<texture name="night_tex" filename="data/m_f_t_by_Delilah_sig.png" filtering_mode="LINEAR" type="TEXTURE_RECTANGLE_2D"  />
+
+
+<material name="plane_mat" shader_program_name="TextureRectangleShader" />
+
+
+<mesh name="mesh_plane" shape_type="PLANE" lighting="FALSE" texturing="TRUE" polygon_mode="SOLID" use_vbo="TRUE" >
+	<plane x_size="600.0" z_size="800.0" num_segs_x="10" num_segs_z="10" />
+	<attach_material name="plane_mat" />
+	
+	<texture material_name="plane_mat" texture_name="night_tex" texture_unit="0" />
+	
+	<position x="0.0" y="0.0" z="0.0" />
+	<orientation pitch="90.0" />
+</mesh>
+
+
+<shader_program name="TextureRectangleShader" hardware_target="NVIDIA" >
+	<constant_2f name="tex_dims" x="480" y="640" />
+	<constant_1i name="colorMap" value="0" />
+	
+	<raw_data><![CDATA[	 
+		[Vertex_Shader]
+		
+		uniform vec2 tex_dims;
+
+		void main()
+		{	
+			gl_TexCoord[0] = gl_MultiTexCoord0 * vec4(tex_dims, 1.0, 1.0);
+			gl_Position = ftransform();		
+		}
+		[Pixel_Shader]
+		
+		//uniform sampler2DRect colorMap;
+		uniform samplerRect colorMap;
+		
+		void main (void)
+		{
+			gl_FragColor = textureRect( colorMap, gl_TexCoord[0].st);
+		}
+	   	]]></raw_data>
+
+</shader_program>
+
+
+
+</hyperion>

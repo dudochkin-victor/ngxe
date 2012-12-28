@@ -15,11 +15,11 @@
 //	all the Windowing system initialization.
 //
 //////////////////////////////////////////////////////////////
+#include "View.h"
 #include "StdAfx.h"
 #include "FractalMtn.h"
 #include "RotationalObj.h"
 #include "Ocean.h"
-#include "View.h"
 
 // Forward declaration of functions
 void Initialize();

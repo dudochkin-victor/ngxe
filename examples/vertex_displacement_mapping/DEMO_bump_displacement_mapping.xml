@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="Windows-1252" standalone="yes"?>
+<!--
+==============================================================================
+AUTHOR:		JeGX - jegx@ozone3d.net
+DATE:		10.03.2006
+PURPOSE:	Vertex Displacement Mapping Demo.
+TUTORIAL:	http://www.ozone3d.net/tutorials/vertex_displacement_mapping.php
+
+====================================
+ \==:: http://www.oZone3D.Net ::==/
+  ===============================
+==============================================================================
+-->
+
+<hyperion version_major="1" version_minor="2" >
+
+<!--
+The Scene!
+-->
+<scene name="displacement_mapping_demo" 
+       display_fps="TRUE" 
+       show_ref_grid="TRUE" 
+       vsync="TRUE" >
+	
+	<infos_color r="1.0" g="1.0" b="1.0" />
+	<window_size width="1024" height="768" />
+	<background_color r="0.3" g="0.0" b="0.0" />
+	
+	<!--
+	Check the GLSL support and the number of vertex shader texture units we need in this demo.
+	-->
+	<check_hardware_caps glsl="TRUE" vs_tex_samplers="1"
+	                     error_message="Sorry, this demo requires a Shader Model 3.0 (for vertex texture fetching) complient graphics controller. Demo startup failed. Bye..." />
+	
+</scene>
+
+
+
+<!--
+Setup an EXAMINE camera.
+-->
+<camera name="myCamera" fov="60.0" navigation_mode="EXAMINE"  >
+	<position x="-143.41" y="218.55" z="241.49" />
+	<orientation pitch="30.0" yaw="120.0" />
+</camera>
+
+
+
+<light name="myLight" render="TRUE" type="OMNI" >
+	<position x="10.0" y="100.0" z="45.0" />
+	<ambient r="0.4" g="0.4" b="0.4" />
+	<diffuse r="0.9" g="0.9" b="0.9" />
+	<specular r="0.9" g="0.9" b="0.9" />
+</light>
+
+
+
+<!--
+The base map (or color map)
+-->
+<texture name="colorMap" filename="data/wall002_512x512.jpg" />
+
+
+<!--
+The displacement map.
+Note the RGBA_32F pixel format and the filtering mode (NONE==nearest). 
+This is mandatory for vertex texture fetching on today's hardware.
+-->
+<texture name="displacementMap" 
+		 filename="data/wall002_hmap2_512x512.jpg" 
+		 pixel_format="RGBA_32F" filtering_mode="NONE" 
+		 num_mipmaps="0" />
+		 
+<!--
+The normal map (or bump map)
+-->
+<texture name="normalMap" 
+		 filename="data/wall002_nmap2_512x512.jpg"  />
+		 
+		 
+		 
+<!--
+The mesh plane's material. We have to create it in order to attach the displacement shader.
+-->		 
+<material name="plane_mat" shader_program_name="displaceBumpMappingShader" >
+	<ambient r="0.6" g="0.6" b="0.6" />
+	<diffuse r="0.9" g="0.9" b="0.9" />
+	<specular r="0.6" g="0.6" b="0.6" />
+</material>
+
+<!--
+The mesh plane: 200*200*2 = 80000 polys.
+In order to get decent frame rate, do not forget to set the VBO state...
+-->
+<mesh render="TRUE" name="mesh_plane" shape_type="PLANE" texturing="TRUE" lighting="FALSE" 
+      polygon_mode="SOLID" use_vbo="TRUE" back_face_culling="TRUE" >
+
+	<plane	x_size="400.0" z_size="400.0" num_segs_x="200" num_segs_z="200" />
+	
+	<position x="0.0" y="10.0" z="0.0" />
+	<orientation pitch="0.0"  />
+	<attach_material name="plane_mat" /> 
+	
+			 
+	<!--
+	The displacement map on texture unit 0.
+	-->
+	<texture texture_name="displacementMap" 
+	         material_name="plane_mat" 
+	         texture_unit="0" 
+	         u_tile="1.0" v_tile="1.0" />
+			 
+	<!--
+	The normal map on texture unit 1.
+	-->
+	<texture texture_name="normalMap" 
+	         material_name="plane_mat" 
+	         texture_unit="1" 
+	         u_tile="1.0" v_tile="1.0" />
+	
+	<!--
+	The color map on texture unit 2.
+	-->
+	<texture texture_name="colorMap" 
+	         material_name="plane_mat" 
+	         texture_unit="2" 
+	         u_tile="1.0" v_tile="1.0" />
+</mesh>
+
+
+
+<!--
+The displacement shader.
+-->
+<shader_program name="displaceBumpMappingShader"  >
+	<constant_1i name="displacementMap" value="0" />
+	<constant_1i name="normalMap" value="1" />
+	<constant_1i name="colorMap" value="2" />
+	<vertex_attrib name="tangent" value="1" />
+	<constant_1f name="invRadius" value="0.001" />
+	
+	<raw_data><![CDATA[	 
+	[Vertex_Shader]
+	
+	varying vec3 lightVec; 
+	varying vec3 eyeVec;
+	varying vec2 texCoord;
+	attribute vec3 tangent; 
+  	
+	uniform sampler2D displacementMap;
+	
+	
+	#define textureSize 1024.0
+	#define texelSize 1.0 / 1024.0
+	
+	vec4 tex2D_bilinear( uniform sampler2D tex, vec2 t )
+	{
+		vec2 f = fract( t.xy * textureSize );
+		vec4 t00 = texture2D( tex, t );
+		vec4 t10 = texture2D( tex, t + vec2( texelSize, 0.0 ));
+		vec4 tA = mix( t00, t10, f.x );
+		vec4 t01 = texture2D( tex, t + vec2( 0.0, texelSize ) );
+		vec4 t11 = texture2D( tex, t + vec2( texelSize, texelSize ) );
+		vec4 tB = mix( t01, t11, f.x );
+		return mix( tA, tB, f.y );
+	}	
+	
+
+	void main(void)
+	{
+		vec4 displacedVertexPos;
+		vec4 displacementVec;
+		float f;
+		
+		texCoord = gl_MultiTexCoord0.xy;
+		
+		displacementVec = tex2D_bilinear(displacementMap, gl_MultiTexCoord0.xy );
+		//f = (0.30*displacementVec.x + 0.59*displacementVec.y + 0.11*displacementVec.z);
+		f = displacementVec.x;
+		
+		displacedVertexPos = vec4(gl_Normal * f * 10.0, 0.0) + gl_Vertex;
+		
+		gl_Position = gl_ModelViewProjectionMatrix * displacedVertexPos;
+		
+		vec3 n = normalize(gl_NormalMatrix * gl_Normal);
+		vec3 t = normalize(gl_NormalMatrix * tangent);
+		vec3 b = cross(n, t);
+		
+	   	vec3 vVertex = vec3(gl_ModelViewMatrix * displacedVertexPos);
+		vec3 tmpVec = gl_LightSource[0].position.xyz - vVertex;
+	
+		lightVec.x = dot(tmpVec, t);
+		lightVec.y = dot(tmpVec, b);
+		lightVec.z = dot(tmpVec, n);
+	
+		tmpVec = -vVertex;
+		eyeVec.x = dot(tmpVec, t);
+		eyeVec.y = dot(tmpVec, b);
+		eyeVec.z = dot(tmpVec, n);
+	}
+	
+	[Pixel_Shader]
+	
+	varying vec3 lightVec;
+	varying vec3 eyeVec;
+	varying vec2 texCoord;
+	uniform sampler2D colorMap;
+	uniform sampler2D normalMap;
+	uniform float invRadius;
+	
+	void main (void)
+	{
+		float distSqr = dot(lightVec, lightVec);
+		float att = clamp(1.0 - invRadius * sqrt(distSqr), 0.0, 1.0);
+		vec3 lVec = lightVec * inversesqrt(distSqr);
+
+		vec3 vVec = normalize(eyeVec);
+		
+		vec4 base = texture2D(colorMap, texCoord);
+		vec3 bump = normalize(texture2D(normalMap, texCoord).xyz * 2.0 - 1.0);
+	
+		vec4 vAmbient = gl_LightSource[0].ambient * gl_FrontMaterial.ambient;
+		
+		vec4 final_color = vAmbient*base;
+
+		float diffuse = dot(lVec, bump);
+		if(diffuse>0.0)
+		{
+			vec4 vDiffuse = gl_LightSource[0].diffuse * gl_FrontMaterial.diffuse * diffuse;	
+
+			float specular = pow(clamp(dot(reflect(-lVec, bump), vVec), 0.0, 1.0), gl_FrontMaterial.shininess );
+			//float specular = 0.0;
+			vec4 vSpecular = gl_LightSource[0].specular * gl_FrontMaterial.specular *specular;	
+			
+			final_color += (vDiffuse*base + vSpecular) * att;
+		}
+		
+		gl_FragColor = final_color;	
+	}
+   	]]></raw_data>
+	
+</shader_program> 
+
+
+
+
+
+<!--
+A little bit of interactivity: swap the mesh plane polygon rendering mode.
+-->
+<script name="switch_polygon_mode" run_mode="ASYNCHRONOUS" >
+	<raw_data><![CDATA[	 
+	
+	if( g_mode==NIL ) then
+		g_mode=0;
+	end
+	
+	WIREFRAME = 1;
+	SOLID = 2;
+	
+	if( g_mode==1 ) then
+		HYP_Object.SetPolygonMode( "mesh_plane", SOLID );
+		g_mode=0;
+	else
+		HYP_Object.SetPolygonMode( "mesh_plane", WIREFRAME );
+		g_mode=1;
+	end
+	
+   	]]></raw_data>
+</script> 
+
+<hotkey	name="space_key" script="switch_polygon_mode" key="KEY_SPACE" />
+
+
+
+
+<!--
+Display some information / commands
+-->
+<font name="myFontArial12" render="TRUE" ttf_name="Arial" size="14" >
+	<text_2d>
+		<color r="1.0" g="1.0" b="0.0" />
+		<position x="10" y="30" />
+		<text text="Vertex Displacement Mapping Demo" />
+	</text_2d>
+
+	<text_2d>
+		<color r="1.0" g="1.0" b="0.0" />
+		<position x="10" y="50" />
+		<text text="Controls:" />
+	</text_2d>
+
+	<text_2d>
+		<color r="1.0" g="1.0" b="0.0" />
+		<position x="20" y="70" />
+		<text text="> SPACE: switch polygon mode (WIREFRAME/SOLID)" />
+	</text_2d>
+</font>
+
+
+
+</hyperion>

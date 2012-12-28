@@ -1,0 +1,30 @@
+!!FP1.0
+
+#Fragment program for deferred shading - geometry pass
+#
+#Per fragment inputs:
+#	f[TEX0] - world space position
+#	f[TEX1] - world space normal
+#
+#Outputs:
+#	o[COLR] - packed buffer data
+
+
+#Convert position x and y to half-float format and pack into output red component
+PK2H	o[COLR].x, f[TEX0].xyxy;
+
+
+#Convert position z and w to half-float format and pack into output green component
+PK2H	o[COLR].y, f[TEX0].zwzw;
+
+
+#Normalise the normal
+DP3		R0.w, f[TEX1], f[TEX1];
+RSQ		R0.w, R0.w;
+MUL		R0.xyz, R0.w, f[TEX1];
+
+
+#Pack the normal into the output blue component
+PK4B	o[COLR].z, R0;
+
+END

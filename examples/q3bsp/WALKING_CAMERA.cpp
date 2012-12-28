@@ -13,9 +13,6 @@
 #include <GL/glut.h>
 #include "Maths/Maths.h"
 #include "WALKING_CAMERA.h"
-#include "TIMER.h"
-
-extern TIMER timer;
 
 void WALKING_CAMERA::Init(float newSpeed, VECTOR3D newPosition, float newAngleYaw, float newAnglePitch)
 {
@@ -35,7 +32,7 @@ extern unsigned int timeGetTime();
 
 void WALKING_CAMERA::Update(int key)
 {
-	double time = /*timer.GetTime()*/ (double)timeGetTime();
+	double time = (double)timeGetTime();
 	//calculate the distance to move, based on time passed
 	static double lastTime=time;
 	double timePassed=time-lastTime;

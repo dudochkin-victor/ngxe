@@ -4,8 +4,7 @@
 // Date:   2003-01-27
 
 //#include "Interface.h"
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include "View.h"
 #include "TextureManager.h"
 #include "vect.h"
 #include <math.h>
@@ -13,7 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-#include "View.h"
 
 using namespace std;
 

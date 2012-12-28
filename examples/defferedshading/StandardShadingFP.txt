@@ -1,0 +1,51 @@
+!!ARBfp1.0
+
+#Fragment program for standard shading
+
+#Parameters
+PARAM	lightColor	= program.local[0];		#Light color
+PARAM	inverseSquareLightRadius= program.local[1];		#1/(Light radius)^2
+
+#Per fragment inputs
+ATTRIB	iTex0		= fragment.texcoord[0];	#Texture coordinate set 0 - interpolated light vector
+ATTRIB	iTex1		= fragment.texcoord[1];	#Texture coordinate set 1 - interpolated normal
+
+#Temporaries
+TEMP	normalisedLightVector;
+TEMP	normalisedNormal;
+TEMP	diffuseDotProduct;
+TEMP	attenFactor;
+
+#Outputs
+OUTPUT	oCol		= result.color;			#Fragment color output
+
+
+
+#Normalise the light vector
+DP3		normalisedLightVector.w, iTex0, iTex0;
+RSQ		normalisedLightVector.w, normalisedLightVector.w;
+MUL		normalisedLightVector.xyz, normalisedLightVector.w, iTex0;
+
+
+#Normalise the normal
+DP3		normalisedNormal.w, iTex1, iTex1;
+RSQ		normalisedNormal.w, normalisedNormal.w;
+MUL		normalisedNormal.xyz, normalisedNormal.w, iTex1;
+
+
+#Calculate L dot N
+DP3		diffuseDotProduct, normalisedLightVector, normalisedNormal;
+
+
+#Calculate 1-(d^2/r^2) attenuation factor
+DP3		attenFactor, iTex0, iTex0;
+MUL		attenFactor, attenFactor, inverseSquareLightRadius;
+SUB_SAT	attenFactor, 1.0, attenFactor;
+
+
+#Modulate L dot N by the attenuation factor, then by the light's color
+MUL		diffuseDotProduct, diffuseDotProduct, attenFactor;
+MUL		oCol, diffuseDotProduct, lightColor;
+
+
+END
