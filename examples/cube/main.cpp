@@ -17,9 +17,14 @@
 #include <time.h>    // For our FPS stats.
 #include "View.h"
 #include "Util.h"
+#include <math.h>
 #include "FontManager.h"
 // Some global variables.
 
+GLfloat	cnt1;
+GLfloat	cnt2;
+
+FontManager *f = NULL;
 // Window and texture IDs, window width and height.
 int Texture_ID;
 int Window_ID;
@@ -123,6 +128,7 @@ void cbRenderScene(void) {
 				GL_NEAREST_MIPMAP_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	}
+
 
 	// Need to manipulate the ModelView matrix to move our model around.
 	glMatrixMode(GL_MODELVIEW);
@@ -247,6 +253,7 @@ void cbRenderScene(void) {
 
 	// Now we set up a new projection for the text.
 	glLoadIdentity();
+
 	glOrtho(0, Window_Width, 0, Window_Height, -1.0, 1.0);
 
 	// Lit or textured text looks awful.
@@ -309,6 +316,29 @@ void cbRenderScene(void) {
 
 	// Done with this special projection matrix.  Throw it away.
 	glPopMatrix();
+
+
+	glMatrixMode(GL_MODELVIEW);
+	// Red text
+	glColor3ub(0xff,0,0);
+
+	glPushMatrix();
+	glLoadIdentity();
+	glRotatef(cnt1,0,0,1);
+	glScalef(1,.8+.3*cos(cnt1/5),1);
+	glTranslatef(-180,0,0);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	f->print("test-16", 320, 240, "Active FreeType Text - %7.2f", cnt1);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, TexModes[Curr_TexMode]);
+	glPopMatrix();
+
+	//Uncomment this to test out print's ability to handle newlines.
+	//freetype::print(our_font, 320, 200, "Here\nthere\nbe\n\nnewlines\n.", cnt1);
+
+	cnt1+=0.051f;	// Increase The First Counter
+	cnt2+=0.005f;	// Increase The First Counter
+
 
 	// All done drawing.  Let's show it.
 	glutSwapBuffers();
@@ -515,14 +545,22 @@ void ourInit(int Width, int Height) {
 	ourBuildTextures();
 
 	// Color to clear color buffer to.
-	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+	glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
 
 	// Depth to clear depth buffer to; type of test.
-	glClearDepth(1.0);
-	glDepthFunc(GL_LESS);
+	glClearDepth( 1.0f );
+
+	/* Enables Depth Testing */
+	glEnable( GL_DEPTH_TEST );
+
+	/* The Type Of Depth Test To Do */
+	glDepthFunc( GL_LEQUAL );
 
 	// Enables Smooth Color Shading; try GL_FLAT for (lack of) fun.
 	glShadeModel(GL_SMOOTH);
+
+	/* Really Nice Perspective Calculations */
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
 	// Load up the correct perspective matrix; using a callback directly.
 	cbResizeScene(Width, Height);
@@ -536,6 +574,7 @@ void ourInit(int Width, int Height) {
 	// A handy trick -- have surface material mirror the color.
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
+	f->addFont("../data/fonts/Test.ttf", 16);
 }
 
 // Inits OpenGL.  Calls our own init function,
@@ -544,8 +583,7 @@ void ourInit(int Width, int Height) {
 int main(int argc, char **argv) {
 	Util::log("%s" , "TEST");
 	View * v = new View(&argc, argv);
-	FontManager *f= new FontManager();
-	f->addFont("../data/fonts/Test.ttf", 16);
+	f= new FontManager();
 	// Open a window
 	v->createWindow(PROGRAM_TITLE, 640, 480);
 

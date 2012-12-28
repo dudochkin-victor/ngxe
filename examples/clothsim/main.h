@@ -1,0 +1,33 @@
+//////////////////////////////////////////////////////////////////////////////////////////
+//	Main.h
+//	Cloth Simulation
+//	Downloaded from: www.paulsprojects.net
+//	Created:	12th January 2003
+//
+//	Copyright (c) 2006, Paul Baker
+//	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
+//	http://www.paulsprojects.net/NewBSDLicense.txt)
+//////////////////////////////////////////////////////////////////////////////////////////	
+
+#ifndef MAIN_H
+#define MAIN_H
+
+//Set up GL
+bool GLInit();
+
+//Set up variables
+bool DemoInit();
+
+//Reset the cloth
+void ResetCloth();
+
+//Perform per-frame updates
+void UpdateFrame();
+
+//Render a frame
+void RenderFrame(double currentTime, double timePassed);
+
+//Shut down demo
+void DemoShutdown();
+
+#endif	//MAIN_H

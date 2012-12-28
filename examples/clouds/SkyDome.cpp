@@ -90,7 +90,7 @@ int CSkyDome::Initialize(float Radius, int Slices, int Sides, bool exponential)
 	ilGenImages(1, &ImgID);
 	ilBindImage(ImgID);
 	
-	if (ilLoadImage("../textures/flare0.bmp") == false)
+	if (ilLoadImage("../data/texture/flare0.bmp") == false)
 	{
 		cout << "Cannot load flare0.bmp" << endl;
 		return 1;

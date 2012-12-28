@@ -21,7 +21,6 @@
 //catch any exceptions that we throw.
 #include <stdexcept>
 
-
 ///Wrap everything in a namespace, that we can use common
 ///function names like "print" without worrying about
 ///overlapping with anyone else's code.
@@ -48,11 +47,6 @@ struct font_data {
 	//Free all the resources assosiated with the font.
 	void clean();
 };
-
-//The flagship function of the library - this thing will print
-//out text at window coordinates x,y, using the font ft_font.
-//The current modelview matrix will also be applied to the text. 
-void print(const font_data &ft_font, float x, float y, const char *fmt, ...) ;
 
 }
 

@@ -47,7 +47,7 @@ double sysGetTime()
 
 int init_game()
 {
-	if (Text.LoadFont((char*)"../textures/font.tga", ScreenWidth, ScreenHeight)) return 1;
+	if (Text.LoadFont((char*)"../data/texture/font.tga", ScreenWidth, ScreenHeight)) return 1;
 
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
