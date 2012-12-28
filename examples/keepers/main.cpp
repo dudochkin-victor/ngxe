@@ -18,7 +18,8 @@ int main() {
 #include <string.h>
 #include <math.h>
 
-#include "SDL.h"
+#include "GL/gl.h"
+#include "GL/glut.h"
 
 #define FRAME_TICKS	(1000/30)		/* 30 frames/second */
 

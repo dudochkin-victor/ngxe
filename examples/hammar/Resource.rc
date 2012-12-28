@@ -1,0 +1,141 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Norwegian (Bokmal) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NOR)
+#ifdef _WIN32
+LANGUAGE LANG_NORWEGIAN, SUBLANG_NORWEGIAN_BOKMAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// XM
+//
+
+IDR_MUSIC               XM      DISCARDABLE     "xerxes_ambience.xm"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOG DISCARDABLE  0, 0, 186, 143
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Settings"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,75,122,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,122,50,14
+    GROUPBOX        "Display settings",IDC_STATIC,7,7,172,55
+    CONTROL         "Fullscreen",IDC_FULLSCREEN,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,111,47,60,11
+    CONTROL         "16 bit",IDC_HICOLOR,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,111,19,34,10
+    CONTROL         "32 bit",IDC_TRUECOLOR,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,111,30,33,10
+    CONTROL         "800 x 600",IDC_MEDRES,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,16,32,47,10
+    CONTROL         "640 x 480",IDC_LORES,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,16,19,47,10
+    CONTROL         "1024 x 768",IDC_HIRES,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,16,44,51,10
+    GROUPBOX        "Performance settings",IDC_STATIC,7,63,172,54
+    LTEXT           "Texture quality",IDC_STATIC,16,77,47,8
+    LTEXT           "Polygon count",IDC_STATIC,16,97,46,8
+    CONTROL         "",IDC_TEX1,"Button",BS_AUTORADIOBUTTON | WS_GROUP,111,
+                    77,9,8
+    CONTROL         "",IDC_TEX2,"Button",BS_AUTORADIOBUTTON | WS_GROUP,127,
+                    77,9,8
+    CONTROL         "",IDC_TEX3,"Button",BS_AUTORADIOBUTTON | WS_GROUP,144,
+                    77,9,8
+    CONTROL         "",IDC_POLY1,"Button",BS_AUTORADIOBUTTON | WS_GROUP,111,
+                    97,9,8
+    CONTROL         "",IDC_POLY2,"Button",BS_AUTORADIOBUTTON | WS_GROUP,122,
+                    97,9,8
+    CONTROL         "",IDC_POLY3,"Button",BS_AUTORADIOBUTTON | WS_GROUP,133,
+                    97,9,8
+    CONTROL         "",IDC_POLY4,"Button",BS_AUTORADIOBUTTON | WS_GROUP,144,
+                    97,9,8
+    LTEXT           "Max",IDC_STATIC,157,77,14,8
+    LTEXT           "Max",IDC_STATIC,157,97,14,8
+    LTEXT           "Min",IDC_STATIC,91,97,12,8
+    LTEXT           "Min",IDC_STATIC,91,77,12,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        VERTGUIDE, 111
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 136
+        HORZGUIDE, 85
+        HORZGUIDE, 105
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Norwegian (Bokmal) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

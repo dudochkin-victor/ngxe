@@ -24,6 +24,11 @@ Sound::Sound(int* pargc, char** argv) :
 
 Sound::~Sound() {
 	// TODO Auto-generated destructor stub
+	if (!alutExit()) {
+		ALenum error = alutGetError();
+		fprintf(stderr, "%s\n", alutGetErrorString(error));
+		exit(EXIT_FAILURE);
+	}
 }
 
 void Sound::init() {
@@ -36,4 +41,42 @@ void Sound::init() {
 	} else {
 		// Not initialized
 	}
+}
+
+void Sound::play(std::string fname) {
+	ALenum error;
+	SoundSource * sound = sources[fname];
+	if ( sound == NULL) {
+		sound = (SoundSource*)malloc(sizeof(SoundSource));
+		/* Create an AL buffer from the given sound file. */
+		sound->buffer = alutCreateBufferFromFile(fname.c_str());
+		if (sound->buffer == AL_NONE) {
+			error = alutGetError();
+			fprintf(stderr, "Error loading file: '%s'\n",
+					alutGetErrorString(error));
+			alutExit();
+			exit(EXIT_FAILURE);
+		}
+
+		/* Generate a single source, attach the buffer to it and start playing. */
+		alGenSources(1, &sound->source);
+		alSourcei(sound->source, AL_BUFFER, sound->buffer);
+//		sources.insert(fname, sound);
+	} else
+		sound = sources[fname];
+
+	alSourcePlay(sound->source);
+	/* Normally nothing should go wrong above, but one never knows... */
+	error = alGetError();
+	if (error != ALUT_ERROR_NO_ERROR) {
+		fprintf(stderr, "%s\n", alGetString(error));
+		alutExit();
+		exit(EXIT_FAILURE);
+	}
+
+	/* Check every 0.1 seconds if the sound is still playing. */
+	do {
+		alutSleep(0.1f);
+		alGetSourcei(sound->source, AL_SOURCE_STATE, &sound->status);
+	} while (sound->status == AL_PLAYING);
 }
