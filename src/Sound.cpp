@@ -61,7 +61,7 @@ void Sound::play(std::string fname) {
 		/* Generate a single source, attach the buffer to it and start playing. */
 		alGenSources(1, &sound->source);
 		alSourcei(sound->source, AL_BUFFER, sound->buffer);
-//		sources.insert(fname, sound);
+		sources.insert( std::pair<std::string, SoundSource*>(fname, sound));
 	} else
 		sound = sources[fname];
 

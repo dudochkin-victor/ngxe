@@ -18,9 +18,7 @@ SET (PROGRAMS cellshading)
 SET (CMAKE_BUILD_TYPE Debug)
 SET(PROGRAM_SRCS
     ARB_program.cpp
-    FPS_COUNTER.cpp
     main.cpp
-    TIMER.cpp
     TORUS.cpp
     )
 

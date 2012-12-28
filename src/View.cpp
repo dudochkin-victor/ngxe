@@ -39,16 +39,17 @@ void View::createWindow(const char * title, int width, int height) {
 	this->width = width;
 	this->height = height;
 
-	if (glewInit() != GLEW_OK) {
-		printf("Error in glewInit\n");
-		exit(0);
-	}
 	// To see OpenGL drawing, take out the GLUT_DOUBLE request.
 	glutInitDisplayMode(this->options);
 	glutInitWindowSize(this->width, this->height);
 
 	// Open a window
 	this->id = glutCreateWindow(title);
+
+	if (glewInit() != GLEW_OK) {
+		printf("Error in glewInit\n");
+		exit(0);
+	}
 }
 
 /**

@@ -17,6 +17,7 @@
 #include <time.h>    // For our FPS stats.
 #include "View.h"
 #include "Util.h"
+#include "FontManager.h"
 // Some global variables.
 
 // Window and texture IDs, window width and height.
@@ -543,6 +544,8 @@ void ourInit(int Width, int Height) {
 int main(int argc, char **argv) {
 	Util::log("%s" , "TEST");
 	View * v = new View(&argc, argv);
+	FontManager *f= new FontManager();
+	f->addFont("../data/fonts/Test.ttf", 16);
 	// Open a window
 	v->createWindow(PROGRAM_TITLE, 640, 480);
 

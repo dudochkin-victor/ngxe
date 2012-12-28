@@ -17,11 +17,9 @@ INCLUDE_DIRECTORIES(
 SET (PROGRAMS bumpmapping)
 
 SET(PROGRAM_SRCS
-    FPS_COUNTER.cpp
     main.cpp
     Normalisation_CubeMap.cpp
     NV_vertex_program.cpp
-    TIMER.cpp
     TORUS.cpp
     )
 
