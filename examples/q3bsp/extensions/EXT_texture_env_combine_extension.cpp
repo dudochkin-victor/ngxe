@@ -18,10 +18,8 @@
 #include <GL/glext.h>
 
 //#include <GL\wglext.h>
-#include "../LOG.h"
+#include "Util.h"
 #include "EXT_texture_env_combine_extension.h"
-
-extern LOG errorLog;
 
 bool EXT_texture_env_combine_supported=false;
 
@@ -30,11 +28,11 @@ bool SetUpEXT_texture_env_combine()
 	//Check for support
 	if(!GL_EXT_texture_env_combine)
 	{
-		errorLog.OutputError("EXT_texture_env_combine unsupported!");
+		Util::log("EXT_texture_env_combine unsupported!");
 		return false;
 	}
 
-	errorLog.OutputSuccess("EXT_texture_env_combine supported!");
+	Util::log("EXT_texture_env_combine supported!");
 
 	//get function pointers
 	//none specified

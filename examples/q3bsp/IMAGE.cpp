@@ -11,10 +11,8 @@
 
 #include <string.h>
 #include <GL/gl.h>
-#include "LOG.h"
 #include "IMAGE.h"
-
-extern LOG errorLog;
+#include "Util.h"
 
 struct BitMap {
 	short Type;
@@ -76,7 +74,7 @@ bool IMAGE::Load(char * filename) {
 			|| strncmp((filename + filenameLength - 3), "tga", 3) == 0)
 		return LoadTGA(filename);
 
-	errorLog.OutputError("%s does not end in \".tga\", \".bmp\" or \"pcx\"",
+	Util::log("%s does not end in \".tga\", \".bmp\" or \"pcx\"",
 			filename);
 	return false;
 }
@@ -89,7 +87,7 @@ bool IMAGE::LoadBMP(char * filename) {
 	//open file for reading
 	file = fopen(filename, "rb");
 	if (file == NULL) {
-		errorLog.OutputError("Unable to open %s", filename);
+		Util::log("Unable to open %s", filename);
 		return false;
 	}
 
@@ -99,7 +97,7 @@ bool IMAGE::LoadBMP(char * filename) {
 	//check it's a bitmap
 	if (fileHeader.bfType != BITMAP_ID) {
 		fclose(file);
-		errorLog.OutputError("%s is not a legal .BMP", filename);
+		Util::log("%s is not a legal .BMP", filename);
 		return false;
 	}
 
@@ -115,13 +113,13 @@ bool IMAGE::LoadBMP(char * filename) {
 	if (infoHeader.biBitCount == 8)
 		return Load8BitBMP(filename);
 
-	errorLog.OutputError("%s has an unknown bpp", filename);
+	Util::log("%s has an unknown bpp", filename);
 	return false;
 }
 
 //Load24BitBMP - load a 24 bit bitmap file
 bool IMAGE::Load24BitBMP(char * filename) {
-	errorLog.OutputSuccess("Loading %s in Load24bitBMP()", filename);
+	Util::log("Loading %s in Load24bitBMP()", filename);
 
 	//set bpp and format
 	bpp = 24;
@@ -134,7 +132,7 @@ bool IMAGE::Load24BitBMP(char * filename) {
 	//open file for reading
 	file = fopen(filename, "rb");
 	if (file == NULL) {
-		errorLog.OutputError("Unable to open %s", filename);
+		Util::log("Unable to open %s", filename);
 		return false;
 	}
 
@@ -144,7 +142,7 @@ bool IMAGE::Load24BitBMP(char * filename) {
 	//check it's a bitmap
 	if (fileHeader.bfType != BITMAP_ID) {
 		fclose(file);
-		errorLog.OutputError("%s is not a legal .BMP", filename);
+		Util::log("%s is not a legal .BMP", filename);
 		return false;
 	}
 
@@ -171,7 +169,7 @@ bool IMAGE::Load24BitBMP(char * filename) {
 	data = new unsigned char[stride * height];
 	if (!data) {
 		fclose(file);
-		errorLog.OutputError("Unable to allocate memory for %s", filename);
+		Util::log("Unable to allocate memory for %s", filename);
 		return false;
 	}
 
@@ -191,13 +189,13 @@ bool IMAGE::Load24BitBMP(char * filename) {
 		}
 	}
 
-	errorLog.OutputSuccess("Loaded %s correctly.", filename);
+	Util::log("Loaded %s correctly.", filename);
 	return true;
 }
 
 //Load8BitBMP - load an 8 bit paletted bitmap file
 bool IMAGE::Load8BitBMP(char * filename) {
-	errorLog.OutputSuccess("Loading %s in Load8bitBMP()", filename);
+	Util::log("Loading %s in Load8bitBMP()", filename);
 
 	//set bpp and format
 	bpp = 24; //after conversion
@@ -210,7 +208,7 @@ bool IMAGE::Load8BitBMP(char * filename) {
 	//open file for reading
 	file = fopen(filename, "rb");
 	if (file == NULL) {
-		errorLog.OutputError("Unable to open %s", filename);
+		Util::log("Unable to open %s", filename);
 		return false;
 	}
 
@@ -220,7 +218,7 @@ bool IMAGE::Load8BitBMP(char * filename) {
 	//check it's a bitmap
 	if (fileHeader.bfType != BITMAP_ID) {
 		fclose(file);
-		errorLog.OutputError("%s is not a legal .BMP", filename);
+		Util::log("%s is not a legal .BMP", filename);
 		return false;
 	}
 
@@ -234,7 +232,7 @@ bool IMAGE::Load8BitBMP(char * filename) {
 	//make space for palette
 	unsigned char * palette = new unsigned char[256 * 4];
 	if (!palette) {
-		errorLog.OutputError("Unable to alllocate memory for palette");
+		Util::log("Unable to alllocate memory for palette");
 		return false;
 	}
 
@@ -252,7 +250,7 @@ bool IMAGE::Load8BitBMP(char * filename) {
 	//allocate space for color indices
 	unsigned char * indices = new unsigned char[stride * height];
 	if (!indices) {
-		errorLog.OutputError("Unable to allocate memory for indices");
+		Util::log("Unable to allocate memory for indices");
 		return false;
 	}
 
@@ -266,7 +264,7 @@ bool IMAGE::Load8BitBMP(char * filename) {
 	data = new unsigned char[stride * height * bpp / 8];
 	if (!data) {
 		fclose(file);
-		errorLog.OutputError("Unable to allocate memory for %s", filename);
+		Util::log("Unable to allocate memory for %s", filename);
 		return false;
 	}
 
@@ -282,13 +280,13 @@ bool IMAGE::Load8BitBMP(char * filename) {
 		}
 	}
 
-	errorLog.OutputSuccess("Loaded %s correctly.", filename);
+	Util::log("Loaded %s correctly.", filename);
 	return true;
 }
 
 //LoadPCX - load a .pcx texture - 256 color, paletted
 bool IMAGE::LoadPCX(char * filename) {
-	errorLog.OutputSuccess("Loading %s in LoadPCX()", filename);
+	Util::log("Loading %s in LoadPCX()", filename);
 
 	//set bpp and format
 	bpp = 24;
@@ -298,7 +296,7 @@ bool IMAGE::LoadPCX(char * filename) {
 
 	file = fopen(filename, "rb");
 	if (!file) {
-		errorLog.OutputError("Unable to open %s", filename);
+		Util::log("Unable to open %s", filename);
 		return false;
 	}
 
@@ -307,7 +305,7 @@ bool IMAGE::LoadPCX(char * filename) {
 	fread(header, 4, 1, file);
 
 	if (header[0] != 0x050A) {
-		errorLog.OutputError("%s is not a legal .PCX file", filename);
+		Util::log("%s is not a legal .PCX file", filename);
 		fclose(file);
 		return false;
 	}
@@ -335,7 +333,7 @@ bool IMAGE::LoadPCX(char * filename) {
 	//allocate memory for pixel data (paletted)
 	unsigned char * pixelData = new unsigned char[width * height];
 	if (!pixelData) {
-		errorLog.OutputError(
+		Util::log(
 				"Unable to allocate %d bytes for the image data of %s",
 				width * height, filename);
 		fclose(file);
@@ -372,7 +370,7 @@ bool IMAGE::LoadPCX(char * filename) {
 	//retrieve first character, should be equal to 12
 	int c = getc(file);
 	if (c != 12) {
-		errorLog.OutputError(
+		Util::log(
 				"%s is not a legal .PCX file - the palette data has an illegal header, %d",
 				filename, c);
 		fclose(file);
@@ -388,7 +386,7 @@ bool IMAGE::LoadPCX(char * filename) {
 	//allocate memory for the "unpaletted" data
 	data = new unsigned char[width * height * 3];
 	if (!data) {
-		errorLog.OutputError(
+		Util::log(
 				"Unable to allocate memory for the expanded data of %s",
 				filename);
 		return false;
@@ -406,7 +404,7 @@ bool IMAGE::LoadPCX(char * filename) {
 		}
 	}
 
-	errorLog.OutputSuccess("Loaded %s correctly.", filename);
+	Util::log("Loaded %s correctly.", filename);
 	return true;
 }
 
@@ -426,7 +424,7 @@ bool IMAGE::LoadTGA(char * filename) {
 	if (file == NULL)							//Does the file exist?
 	{
 		if (filename)
-			errorLog.OutputSuccess("%s does not exist", filename);
+			Util::log("%s does not exist", filename);
 		return false;
 	}
 
@@ -444,7 +442,7 @@ bool IMAGE::LoadTGA(char * filename) {
 			sizeof(Uncompressed8BitTGAHeader)) == 0) {
 		return LoadUncompressed8BitTGA(filename);
 	} else {
-		errorLog.OutputError("%s is not a recognised type of TGA", filename);
+		Util::log("%s is not a recognised type of TGA", filename);
 		return false;
 	}
 
@@ -457,13 +455,13 @@ bool IMAGE::LoadUncompressed8BitTGA(char * filename) {
 	unsigned char TGAcompare[12];					//Used to compare TGA header
 	unsigned char header[6];				//First 6 useful bytes of the header
 
-	errorLog.OutputSuccess("Loading %s in LoadUncompressed8BitTGA()", filename);
+	Util::log("Loading %s in LoadUncompressed8BitTGA()", filename);
 
 	FILE * file = fopen(filename, "rb");				//Open the TGA file
 
 	if (file == NULL)								//Does the file exist?
 	{
-		errorLog.OutputError("%s does not exist.", filename);
+		Util::log("%s does not exist.", filename);
 		return false;
 	}
 
@@ -472,7 +470,7 @@ bool IMAGE::LoadUncompressed8BitTGA(char * filename) {
 			fread(header, 1, sizeof(header), file) != sizeof(header))//Read next 6 bytes
 					{
 		fclose(file);				//If anything else failed, close the file
-		errorLog.OutputError("Could not load %s correctly, general failure.",
+		Util::log("Could not load %s correctly, general failure.",
 				filename);
 		return false;
 	}
@@ -487,7 +485,7 @@ bool IMAGE::LoadUncompressed8BitTGA(char * filename) {
 			bpp != 8)												//bpp not 8
 					{
 		fclose(file);											//close the file
-		errorLog.OutputError(
+		Util::log(
 				"%s's height or width is less than zero, or the TGA is not 8 bpp.",
 				filename);
 		return false;
@@ -499,7 +497,7 @@ bool IMAGE::LoadUncompressed8BitTGA(char * filename) {
 	//make space for palette
 	unsigned char * palette = new unsigned char[256 * 3];
 	if (!palette) {
-		errorLog.OutputError("Unable to allocate memory for palette");
+		Util::log("Unable to allocate memory for palette");
 		return false;
 	}
 
@@ -509,7 +507,7 @@ bool IMAGE::LoadUncompressed8BitTGA(char * filename) {
 	//allocate space for color indices
 	unsigned char * indices = new unsigned char[width * height];
 	if (!indices) {
-		errorLog.OutputError("Unable to allocate memory for indices");
+		Util::log("Unable to allocate memory for indices");
 		return false;
 	}
 
@@ -523,7 +521,7 @@ bool IMAGE::LoadUncompressed8BitTGA(char * filename) {
 	data = new unsigned char[width * height * 3];
 	if (!data) {
 		fclose(file);
-		errorLog.OutputError("Unable to allocate memory for %s", filename);
+		Util::log("Unable to allocate memory for %s", filename);
 		return false;
 	}
 
@@ -539,7 +537,7 @@ bool IMAGE::LoadUncompressed8BitTGA(char * filename) {
 		}
 	}
 
-	errorLog.OutputSuccess("Loaded %s correctly.", filename);
+	Util::log("Loaded %s correctly.", filename);
 	return true;
 }
 
@@ -551,13 +549,13 @@ bool IMAGE::LoadUncompressedTrueColorTGA(char * filename) {
 	unsigned int bytesPerPixel;						//bytes per pixel
 	unsigned int imageSize;						//Stores Image size when in RAM
 
-	errorLog.OutputSuccess("Loading %s in LoadUncompressedTGA()", filename);
+	Util::log("Loading %s in LoadUncompressedTGA()", filename);
 
 	FILE * file = fopen(filename, "rb");				//Open the TGA file
 
 	if (file == NULL)								//Does the file exist?
 	{
-		errorLog.OutputError("%s does not exist.", filename);
+		Util::log("%s does not exist.", filename);
 		return false;
 	}
 
@@ -566,7 +564,7 @@ bool IMAGE::LoadUncompressedTrueColorTGA(char * filename) {
 			fread(header, 1, sizeof(header), file) != sizeof(header))//Read next 6 bytes
 					{
 		fclose(file);				//If anything else failed, close the file
-		errorLog.OutputError("Could not load %s correctly, general failure.",
+		Util::log("Could not load %s correctly, general failure.",
 				filename);
 		return false;
 	}
@@ -581,7 +579,7 @@ bool IMAGE::LoadUncompressedTrueColorTGA(char * filename) {
 			bpp != 24 && bpp != 32)							//bpp not 24 or 32
 					{
 		fclose(file);											//close the file
-		errorLog.OutputError(
+		Util::log(
 				"%s's height or width is less than zero, or the TGA is not 24 or 32 bpp.",
 				filename);
 		return false;
@@ -600,7 +598,7 @@ bool IMAGE::LoadUncompressedTrueColorTGA(char * filename) {
 
 	if (data == NULL)							//Does the storage memory exist?
 	{
-		errorLog.OutputError("Unable to allocate memory for %s image",
+		Util::log("Unable to allocate memory for %s image",
 				filename);
 		fclose(file);
 		return false;
@@ -611,7 +609,7 @@ bool IMAGE::LoadUncompressedTrueColorTGA(char * filename) {
 			{															//If not
 		if (data)												//If data loaded
 			delete[] data;										//free memory
-		errorLog.OutputError("Could not read %s image data", filename);
+		Util::log("Could not read %s image data", filename);
 		fclose(file);											//close file
 		return false;
 	}
@@ -625,7 +623,7 @@ bool IMAGE::LoadUncompressedTrueColorTGA(char * filename) {
 		data[i] ^= data[i + 2] ^= data[i] ^= data[i + 2];
 	}
 
-	errorLog.OutputSuccess("Loaded %s correctly.", filename);
+	Util::log("Loaded %s correctly.", filename);
 	return true;
 }
 
@@ -637,13 +635,13 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 	unsigned int bytesPerPixel;						//bytes per pixel
 	unsigned int imageSize;						//Stores Image size when in RAM
 
-	errorLog.OutputSuccess("Loading %s in LoadCompressedTGA()", filename);
+	Util::log("Loading %s in LoadCompressedTGA()", filename);
 
 	FILE * file = fopen(filename, "rb");				//Open the TGA file
 
 	if (file == NULL)								//Does the file exist?
 	{
-		errorLog.OutputError("%s does not exist.", filename);
+		Util::log("%s does not exist.", filename);
 		return false;
 	}
 
@@ -652,7 +650,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 			fread(header, 1, sizeof(header), file) != sizeof(header))//Read next 6 bytes
 					{
 		fclose(file);				//If anything else failed, close the file
-		errorLog.OutputError("Could not load %s correctly, general failure.",
+		Util::log("Could not load %s correctly, general failure.",
 				filename);
 		return false;
 	}
@@ -667,7 +665,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 			bpp != 24 && bpp != 32)							//bpp not 24 or 32
 					{
 		fclose(file);											//close the file
-		errorLog.OutputError(
+		Util::log(
 				"%s's height or width is less than zero, or the TGA is not 24 or 32 bpp.",
 				filename);
 		return false;
@@ -685,7 +683,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 	data = new unsigned char[imageSize];	//reserve the memory for the data
 	if (!data)									//Does the storage memory exist?
 	{
-		errorLog.OutputError("Unable to allocate memory for %s image",
+		Util::log("Unable to allocate memory for %s image",
 				filename);
 		fclose(file);
 		return false;
@@ -701,7 +699,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 		unsigned char chunkHeader = 0;
 
 		if (fread(&chunkHeader, sizeof(unsigned char), 1, file) == 0) {
-			errorLog.OutputError("Could not read RLE chunk header");
+			Util::log("Could not read RLE chunk header");
 			if (file)
 				fclose(file);
 			if (data)
@@ -716,7 +714,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 			for (short counter = 0; counter < chunkHeader; counter++) {
 				if (fread(colorBuffer, 1, bytesPerPixel, file)
 						!= bytesPerPixel) {
-					errorLog.OutputError("Unable to read %s image data",
+					Util::log("Unable to read %s image data",
 							filename);
 
 					if (file)
@@ -743,7 +741,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 				currentPixel++;
 
 				if (currentPixel > pixelCount) {
-					errorLog.OutputError("Too many pixels read");
+					Util::log("Too many pixels read");
 					if (file)
 						fclose(file);
 					if (colorBuffer)
@@ -758,7 +756,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 			chunkHeader -= 127;
 
 			if (fread(colorBuffer, 1, bytesPerPixel, file) != bytesPerPixel) {
-				errorLog.OutputError("Unable to read %s image data", filename);
+				Util::log("Unable to read %s image data", filename);
 
 				if (file)
 					fclose(file);
@@ -782,7 +780,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 				currentPixel++;
 
 				if (currentPixel > pixelCount) {
-					errorLog.OutputError("Too many pixels read");
+					Util::log("Too many pixels read");
 					if (file)
 						fclose(file);
 					if (colorBuffer)
@@ -797,7 +795,7 @@ bool IMAGE::LoadCompressedTrueColorTGA(char * filename) {
 
 	fclose(file);
 
-	errorLog.OutputSuccess("Loaded %s correctly.", filename);
+	Util::log("Loaded %s correctly.", filename);
 	return true;
 }
 
@@ -807,10 +805,10 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 	unsigned char TGAcompare[12];					//Used to compare TGA header
 	unsigned char header[6];				//First 6 useful bytes of the header
 
-	errorLog.OutputSuccess("Loading %s in LoadAlphaTGA()", filename);
+	Util::log("Loading %s in LoadAlphaTGA()", filename);
 
 	if (!(format == GL_RGB || format == GL_RGBA)) {
-		errorLog.OutputError(
+		Util::log(
 				"Can only load an alpha channel to RGB / RGBA format images. %s caused error",
 				filename);
 		return false;
@@ -820,7 +818,7 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 
 	if (file == NULL)								//Does the file exist?
 	{
-		errorLog.OutputError("%s does not exist.", filename);
+		Util::log("%s does not exist.", filename);
 		return false;
 	}
 
@@ -829,7 +827,7 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 			fread(header, 1, sizeof(header), file) != sizeof(header))//Read next 6 bytes
 					{
 		fclose(file);				//If anything else failed, close the file
-		errorLog.OutputError("Could not load %s correctly, general failure.",
+		Util::log("Could not load %s correctly, general failure.",
 				filename);
 		return false;
 	}
@@ -844,7 +842,7 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 			alphaBpp != 8)											//bpp not 8
 					{
 		fclose(file);											//close the file
-		errorLog.OutputError(
+		Util::log(
 				"%s's height or width is less than zero, or the TGA is not 8 bpp.",
 				filename);
 		return false;
@@ -852,7 +850,7 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 
 	//check it is the same size as the image
 	if (alphaWidth != width || alphaHeight != height) {
-		errorLog.OutputError("%s is not the same size as the color texture",
+		Util::log("%s is not the same size as the color texture",
 				filename);
 		return false;
 	}
@@ -860,7 +858,7 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 	//make space for palette
 	unsigned char * palette = new unsigned char[256 * 3];
 	if (!palette) {
-		errorLog.OutputError("Unable to allocate memory for palette");
+		Util::log("Unable to allocate memory for palette");
 		return false;
 	}
 
@@ -874,7 +872,7 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 	//allocate space for alpha values
 	unsigned char * values = new unsigned char[width * height];
 	if (!values) {
-		errorLog.OutputError("Unable to allocate memory for alpha values");
+		Util::log("Unable to allocate memory for alpha values");
 		return false;
 	}
 
@@ -892,7 +890,7 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 	} else if (format == GL_RGB) {
 		unsigned char * tempData = new unsigned char[width * height * 4];
 		if (!tempData) {
-			errorLog.OutputError(
+			Util::log(
 					"Unable to allocate memory for Temporary Data");
 			return false;
 		}
@@ -913,7 +911,7 @@ bool IMAGE::LoadAlphaTGA(char * filename) {
 		data = tempData;
 	}
 
-	errorLog.OutputSuccess("Loaded %s correctly.", filename);
+	Util::log("Loaded %s correctly.", filename);
 	return true;
 }
 
@@ -932,7 +930,7 @@ void IMAGE::FlipVertically() {
 	//create space for a temporary row
 	GLubyte * tempRow = new GLubyte[width * bpp / 8];
 	if (!tempRow) {
-		errorLog.OutputError(
+		Util::log(
 				"Unable to flip image, unable to create space for temporary row");
 		return;
 	}

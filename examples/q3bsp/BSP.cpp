@@ -15,7 +15,6 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "LOG.h"
 #include "extensions/ARB_multitexture_extension.h"
 #include "extensions/EXT_draw_range_elements_extension.h"
 #include "extensions/EXT_multi_draw_arrays_extension.h"
@@ -23,8 +22,7 @@
 #include "jpeg.h"
 #include "Maths/Maths.h"
 #include "BSP.h"
-
-extern LOG errorLog;
+#include "Util.h"
 
 
 ////////////////////BSP::Load///////////////
@@ -36,7 +34,7 @@ bool BSP::Load(char * filename, int curveTesselation)
 	file=fopen(filename, "rb");
 	if(!file)
 	{
-		errorLog.OutputError("Unable to open %s", filename);
+		Util::log("Unable to open %s", filename);
 		return false;
 	}
 
@@ -48,7 +46,7 @@ bool BSP::Load(char * filename, int curveTesselation)
 		header.string[2]!='S' || header.string[3]!='P' ||
 		header.version  !=0x2E )
 	{
-		errorLog.OutputError("%s is not a version 0x2E .bsp map file", filename);
+		Util::log("%s is not a version 0x2E .bsp map file", filename);
 		return false;
 	}
 
@@ -66,7 +64,7 @@ bool BSP::Load(char * filename, int curveTesselation)
 	meshIndices=new int[numMeshIndices];
 	if(!meshIndices)
 	{
-		errorLog.OutputError("Unable to allocate memory for %d mesh indices", numMeshIndices);
+		Util::log("Unable to allocate memory for %d mesh indices", numMeshIndices);
 		return false;
 	}
 
@@ -100,7 +98,7 @@ bool BSP::Load(char * filename, int curveTesselation)
 	entityString=new char[header.directoryEntries[bspEntities].length];
 	if(!entityString)
 	{
-		errorLog.OutputError(	"Unable to allocate memory for %d length entity string",
+		Util::log(	"Unable to allocate memory for %d length entity string",
 								header.directoryEntries[bspEntities].length);
 		return false;
 	}
@@ -110,12 +108,12 @@ bool BSP::Load(char * filename, int curveTesselation)
 	fread(entityString, 1, header.directoryEntries[bspEntities].length, file);
 
 	//Output the entity string
-	//errorLog.OutputSuccess("Entity String: %s", entityString);
+	//Util::log("Entity String: %s", entityString);
 
 
 	fclose(file);
 
-	errorLog.OutputSuccess("%s Loaded successfully", filename);
+	Util::log("%s Loaded successfully", filename);
 
 	return true;
 }
@@ -133,7 +131,7 @@ bool BSP::LoadVertices(FILE * file)
 	BSP_LOAD_VERTEX * loadVertices=new BSP_LOAD_VERTEX[numVertices];
 	if(!loadVertices)
 	{
-		errorLog.OutputError("Unable to allocate memory for %d BSP_LOAD_VERTEXes", numVertices);
+		Util::log("Unable to allocate memory for %d BSP_LOAD_VERTEXes", numVertices);
 		return false;
 	}
 
@@ -147,7 +145,7 @@ bool BSP::LoadVertices(FILE * file)
 	vertices=new BSP_VERTEX[numVertices];
 	if(!vertices)
 	{
-		errorLog.OutputError("Unable to allocate memory for vertices");
+		Util::log("Unable to allocate memory for vertices");
 		return false;
 	}
 
@@ -188,7 +186,7 @@ bool BSP::LoadFaces(FILE * file, int curveTesselation)
 	BSP_LOAD_FACE * loadFaces=new BSP_LOAD_FACE[numTotalFaces];
 	if(!loadFaces)
 	{
-		errorLog.OutputError("Unable to allocate memory for %d BSP_LOAD_FACEs", numTotalFaces);
+		Util::log("Unable to allocate memory for %d BSP_LOAD_FACEs", numTotalFaces);
 		return false;
 	}
 
@@ -203,7 +201,7 @@ bool BSP::LoadFaces(FILE * file, int curveTesselation)
 	faceDirectory=new BSP_FACE_DIRECTORY_ENTRY[numTotalFaces];
 	if(!faceDirectory)
 	{
-		errorLog.OutputError(	"Unable to allocate space for face directory with %d entries",
+		Util::log(	"Unable to allocate space for face directory with %d entries",
 								numTotalFaces);
 		return false;
 	}
@@ -232,7 +230,7 @@ bool BSP::LoadFaces(FILE * file, int curveTesselation)
 	polygonFaces=new BSP_POLYGON_FACE[numPolygonFaces];
 	if(!polygonFaces)
 	{
-		errorLog.OutputError("Unable To Allocate memory for BSP_POLYGON_FACEs");
+		Util::log("Unable To Allocate memory for BSP_POLYGON_FACEs");
 		return false;
 	}
 
@@ -261,7 +259,7 @@ bool BSP::LoadFaces(FILE * file, int curveTesselation)
 	meshFaces=new BSP_MESH_FACE[numMeshFaces];
 	if(!meshFaces)
 	{
-		errorLog.OutputError("Unable To Allocate memory for BSP_MESH_FACEs");
+		Util::log("Unable To Allocate memory for BSP_MESH_FACEs");
 		return false;
 	}
 
@@ -293,7 +291,7 @@ bool BSP::LoadFaces(FILE * file, int curveTesselation)
 	patches=new BSP_PATCH[numPatches];
 	if(!patches)
 	{
-		errorLog.OutputError("Unable To Allocate memory for BSP_PATCHes");
+		Util::log("Unable To Allocate memory for BSP_PATCHes");
 		return false;
 	}
 
@@ -322,7 +320,7 @@ bool BSP::LoadFaces(FILE * file, int curveTesselation)
 													[patches[currentPatch].numQuadraticPatches];
 		if(!patches[currentPatch].quadraticPatches)
 		{
-			errorLog.OutputError(	"Unable to allocate memory for %d quadratic patches", 
+			Util::log(	"Unable to allocate memory for %d quadratic patches",
 									patches[currentPatch].numQuadraticPatches);
 			return false;
 		}
@@ -370,7 +368,7 @@ bool BSP::LoadTextures(FILE * file)
 	BSP_LOAD_TEXTURE * loadTextures=new BSP_LOAD_TEXTURE[numTextures];
 	if(!loadTextures)
 	{
-		errorLog.OutputError("Unable to allocate space for %d BSP_LOAD_TEXTUREs", numTextures);
+		Util::log("Unable to allocate space for %d BSP_LOAD_TEXTUREs", numTextures);
 		return false;
 	}
 
@@ -382,7 +380,7 @@ bool BSP::LoadTextures(FILE * file)
 	decalTextures=new GLuint[numTextures];
 	if(!decalTextures)
 	{
-		errorLog.OutputError("Unable to create storage space for %d texture IDs", numTextures);
+		Util::log("Unable to create storage space for %d texture IDs", numTextures);
 		return false;
 	}
 	
@@ -390,7 +388,7 @@ bool BSP::LoadTextures(FILE * file)
 	isTextureLoaded=new bool[numTextures];
 	if(!isTextureLoaded)
 	{
-		errorLog.OutputError("Unable to create storage space for %d booleans", numTextures);
+		Util::log("Unable to create storage space for %d booleans", numTextures);
 		return false;
 	}
 	
@@ -464,7 +462,7 @@ bool BSP::LoadLightmaps(FILE * file)
 	BSP_LOAD_LIGHTMAP * loadLightmaps=new BSP_LOAD_LIGHTMAP[numLightmaps];
 	if(!loadLightmaps)
 	{
-		errorLog.OutputError("Unable to allocate space for %d BSP_LOAD_LIGHTMAPs", numLightmaps);
+		Util::log("Unable to allocate space for %d BSP_LOAD_LIGHTMAPs", numLightmaps);
 		return false;
 	}
 
@@ -476,7 +474,7 @@ bool BSP::LoadLightmaps(FILE * file)
 	lightmapTextures=new GLuint[numLightmaps];
 	if(!lightmapTextures)
 	{
-		errorLog.OutputError("Unable to create storage space for %d texture IDs", numLightmaps);
+		Util::log("Unable to create storage space for %d texture IDs", numLightmaps);
 		return false;
 	}
 	
@@ -564,7 +562,7 @@ bool BSP::LoadBSPData(FILE * file)
 	BSP_LOAD_LEAF * loadLeaves=new BSP_LOAD_LEAF[numLeaves];
 	if(!loadLeaves)
 	{
-		errorLog.OutputError("Unable to allocate space for %d BSP_LOAD_LEAFs", numLeaves);
+		Util::log("Unable to allocate space for %d BSP_LOAD_LEAFs", numLeaves);
 		return false;
 	}
 
@@ -572,7 +570,7 @@ bool BSP::LoadBSPData(FILE * file)
 	leaves=new BSP_LEAF[numLeaves];
 	if(!leaves)
 	{
-		errorLog.OutputError("Unable to allocate space for %d BSP_LEAFs", numLeaves);
+		Util::log("Unable to allocate space for %d BSP_LEAFs", numLeaves);
 		return false;
 	}
 
@@ -610,7 +608,7 @@ bool BSP::LoadBSPData(FILE * file)
 	leafFaces=new int[numLeafFaces];
 	if(!leafFaces)
 	{
-		errorLog.OutputError("Unable to allocate space for %d leaf faces", numLeafFaces);
+		Util::log("Unable to allocate space for %d leaf faces", numLeafFaces);
 		return false;
 	}
 
@@ -627,7 +625,7 @@ bool BSP::LoadBSPData(FILE * file)
 	planes=new PLANE[numPlanes];
 	if(!planes)
 	{
-		errorLog.OutputError("Unable to allocate space for %d planes", numPlanes);
+		Util::log("Unable to allocate space for %d planes", numPlanes);
 		return false;
 	}
 
@@ -656,7 +654,7 @@ bool BSP::LoadBSPData(FILE * file)
 	nodes=new BSP_NODE[numNodes];
 	if(!nodes)
 	{
-		errorLog.OutputError("Unable to allocate space for %d nodes", numNodes);
+		Util::log("Unable to allocate space for %d nodes", numNodes);
 		return false;
 	}
 
@@ -679,7 +677,7 @@ bool BSP::LoadBSPData(FILE * file)
 	visibilityData.bitset=new GLubyte[bitsetSize];
 	if(!visibilityData.bitset)
 	{
-		errorLog.OutputError(	"Unable to allocate memory for visibility bitset of size %d bytes",
+		Util::log(	"Unable to allocate memory for visibility bitset of size %d bytes",
 								bitsetSize);
 		return false;
 	}
@@ -977,7 +975,7 @@ bool BSP_BIQUADRATIC_PATCH::Tesselate(int newTesselation)
 	indices=new GLuint[tesselation*(tesselation+1)*2];
 	if(!indices)
 	{
-		errorLog.OutputError("Unable to allocate memory for surface indices");
+		Util::log("Unable to allocate memory for surface indices");
 		return false;
 	}
 
@@ -998,7 +996,7 @@ bool BSP_BIQUADRATIC_PATCH::Tesselate(int newTesselation)
 	rowIndexPointers=new unsigned int *[tesselation];
 	if(!trianglesPerRow || !rowIndexPointers)
 	{
-		errorLog.OutputError("Unable to allocate memory for indices for multi_draw_arrays");
+		Util::log("Unable to allocate memory for indices for multi_draw_arrays");
 		return false;
 	}
 

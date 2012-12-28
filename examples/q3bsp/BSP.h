@@ -14,6 +14,7 @@
 
 #include "BITSET.h"
 #include "FRUSTUM.h"
+#include <stdio.h>
 
 //Directory entry in header
 class BSP_DIRECTORY_ENTRY

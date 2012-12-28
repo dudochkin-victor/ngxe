@@ -1,0 +1,22 @@
+This is a set of OpenGL demos written by Nate Robins <nate@pobox.com>
+that were packaged up to be more Linux-friendly. Windows-only files have
+been removed, makefiles have been added, and Windows returns in the
+source files have been replaced with Unix returns.('\r\n' -> '\n')
+
+The original programs can be found on the web accompanied by full 
+descriptions at http://www.xmission.com/~nate/sgi.html
+
+To compile, type 'make' or 'make all'
+To bring the package back to its initial form, type 'make clean'
+
+A series of executables will be created, that you can simply run. They
+are independand from each other. (Note: Executables for the "maiden" 
+and "smooth" demos will be created in their respective directories)
+
+I've compiled them on Redhat Linux 6.2 and Progeny Debian (Newton) with 
+Mesa development packages, but should probably compile on any Linux/Unix
+with a GL/Mesa installation.
+
+Mesa Homepage: http://sourceforge.net/projects/mesa3d
+
+- Marius Nita (marius@pdx.edu)

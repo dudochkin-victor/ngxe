@@ -13,8 +13,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glext.h>
-//#include <GL/wglext.h>
-#include "LOG.h"
 #include "extensions/ARB_multitexture_extension.h"
 #include "extensions/EXT_draw_range_elements_extension.h"
 #include "extensions/EXT_multi_draw_arrays_extension.h"
@@ -27,14 +25,9 @@
 #include "WALKING_CAMERA.h"
 #include "FRUSTUM.h"
 #include "View.h"
-
-//link to libraries
-#pragma comment(lib, "opengl32.lib")
-#pragma comment(lib, "glu32.lib")
-#pragma comment(lib, "winmm.lib")
+#include "Util.h"
 
 //errorLog MUST be kept - it is used by other files
-LOG errorLog;
 FPS_COUNTER fpsCounter;
 TIMER timer;
 
@@ -125,36 +118,36 @@ void CheckGLError(void)
 	error=glGetError();
 	if(!(error==GL_NO_ERROR))
 	{
-		errorLog.OutputError("OpenGL Error:");
+		Util::log("OpenGL Error:");
 		if(error==GL_INVALID_ENUM)
 		{
-			errorLog.OutputError("	GL_INVALID_ENUM");
-			errorLog.OutputError("	GLenum Argument out of range.");
+			Util::log("	GL_INVALID_ENUM");
+			Util::log("	GLenum Argument out of range.");
 		}
 		if(error==GL_INVALID_VALUE)
 		{
-			errorLog.OutputError("	GL_INVALID_VALUE");
-			errorLog.OutputError("	Numeric Argument out of range.");
+			Util::log("	GL_INVALID_VALUE");
+			Util::log("	Numeric Argument out of range.");
 		}
 		if(error==GL_INVALID_OPERATION)
 		{
-			errorLog.OutputError("	GL_INVALID_OPERATION");
-			errorLog.OutputError("	Invalid Operation in current state.");
+			Util::log("	GL_INVALID_OPERATION");
+			Util::log("	Invalid Operation in current state.");
 		}
 		if(error==GL_STACK_UNDERFLOW)
 		{
-			errorLog.OutputError("	GL_STACK_UNDERFLOW");
-			errorLog.OutputError("	Stack Underflow.");
+			Util::log("	GL_STACK_UNDERFLOW");
+			Util::log("	Stack Underflow.");
 		}
 		if(error==GL_STACK_OVERFLOW)
 		{
-			errorLog.OutputError("	GL_STACK_OVERFLOW");
-			errorLog.OutputError("	Stack Overflow.");
+			Util::log("	GL_STACK_OVERFLOW");
+			Util::log("	Stack Overflow.");
 		}
 		if(error==GL_OUT_OF_MEMORY)
 		{
-			errorLog.OutputError("	GL_OUT_OF_MEMORY");
-			errorLog.OutputError("	Out of memory.");
+			Util::log("	GL_OUT_OF_MEMORY");
+			Util::log("	Out of memory.");
 		}
 	}
 }
@@ -182,12 +175,12 @@ void SaveScreenshot(void)
 
 		if(i==999)
 		{
-			errorLog.OutputError("No space to save screenshot - 0-999 exist");
+			Util::log("No space to save screenshot - 0-999 exist");
 			return;
 		}
 	}
 
-	errorLog.OutputSuccess("Saving %s", filename);
+	Util::log("Saving %s", filename);
 
 	GLubyte		TGAheader[12]={0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0};	//Uncompressed TGA header
 	GLubyte		infoHeader[6];
@@ -197,7 +190,7 @@ void SaveScreenshot(void)
 	unsigned char * data=new unsigned char[4*width*height];
 	if(!data)
 	{
-		errorLog.OutputError("Unable to allocate memory for screen data");
+		Util::log("Unable to allocate memory for screen data");
 		return;
 	}
 
@@ -234,7 +227,7 @@ void SaveScreenshot(void)
 
 	fclose(file);
 
-	errorLog.OutputSuccess("Saved Screenshot: %s", filename);
+	Util::log("Saved Screenshot: %s", filename);
 	return;
 }
 
@@ -254,7 +247,7 @@ bool DemoInit() {
 	//read in the map name etc from config.txt
 	FILE * configFile = fopen("config.txt", "rt");
 	if (!configFile) {
-		errorLog.OutputError("Cannot open \"config.txt\"");
+		Util::log("Cannot open \"config.txt\"");
 		return false;
 	}
 
@@ -504,8 +497,6 @@ void DemoShutdown() {
 int main(int argc, char **argv) {
 	View * v = new View(&argc, argv);
 	v->createWindow("q3bsp", 640, 480);
-	//Initiation
-	errorLog.Init("Error Log.txt");
 
 	if (glewInit() != GLEW_OK) {
 		printf("Error in glewInit\n");
@@ -515,16 +506,16 @@ int main(int argc, char **argv) {
 
 	//init variables etc, then GL
 	if (!DemoInit()) {
-		errorLog.OutputError("Demo Initiation failed");
+		Util::log("Demo Initiation failed");
 		return 0;
 	} else
-		errorLog.OutputSuccess("Demo Initiation Successful");
+		Util::log("Demo Initiation Successful");
 
 	if (!GLInit()) {
-		errorLog.OutputError("OpenGL Initiation failed");
+		Util::log("OpenGL Initiation failed");
 		return 0;
 	} else
-		errorLog.OutputSuccess("OpenGL Initiation Successful");
+		Util::log("OpenGL Initiation Successful");
 
 	// Register the callback function to do the drawing.
 	v->onDraw(&RenderFrame);
@@ -539,6 +530,6 @@ int main(int argc, char **argv) {
 
 	DemoShutdown();
 
-	errorLog.OutputSuccess("Exiting...");
+	Util::log("Exiting...");
 	return 0;								//Exit The Program
 }

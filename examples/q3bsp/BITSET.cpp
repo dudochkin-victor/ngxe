@@ -9,10 +9,8 @@
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
 #include "memory.h"
-#include "LOG.h"
 #include "BITSET.h"
-
-extern LOG errorLog;
+#include "Util.h"
 
 bool BITSET::Init(int numberOfBits)
 {
@@ -28,7 +26,7 @@ bool BITSET::Init(int numberOfBits)
 	bits=new unsigned char[numBytes];
 	if(!bits)
 	{
-		errorLog.OutputError("Unable to allocate space for a bitset of %d bits", numberOfBits);
+		Util::log("Unable to allocate space for a bitset of %d bits", numberOfBits);
 		return false;
 	}
 

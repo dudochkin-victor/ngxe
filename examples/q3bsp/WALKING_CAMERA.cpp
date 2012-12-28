@@ -11,13 +11,11 @@
 
 #include <GL/gl.h>
 #include <GL/glut.h>
-#include "LOG.h"
 #include "Maths/Maths.h"
 #include "WALKING_CAMERA.h"
 #include "TIMER.h"
 
 extern TIMER timer;
-extern LOG errorLog;
 
 void WALKING_CAMERA::Init(float newSpeed, VECTOR3D newPosition, float newAngleYaw, float newAnglePitch)
 {

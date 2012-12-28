@@ -13,10 +13,8 @@
 #include <GL/gl.h>
 #include <GL/glext.h>
 //#include <GL\wglext.h>
-#include "../LOG.h"
+#include "Util.h"
 #include "EXT_multi_draw_arrays_extension.h"
-
-extern LOG errorLog;
 
 bool EXT_multi_draw_arrays_supported=false;
 
@@ -24,10 +22,10 @@ bool SetUpEXT_multi_draw_arrays()
 {
 	if(!GL_EXT_multi_draw_arrays)
 	{
-		errorLog.OutputError("EXT_multi_draw_arrays unsupported!");
+		Util::log("EXT_multi_draw_arrays unsupported!");
 		return false;
 	}
 
-	errorLog.OutputSuccess("EXT_multi_draw_arrays supported!");
+	Util::log("EXT_multi_draw_arrays supported!");
 	return true;
 }

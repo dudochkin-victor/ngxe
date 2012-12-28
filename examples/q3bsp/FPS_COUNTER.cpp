@@ -9,11 +9,9 @@
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
 
-#include "LOG.h"
 #include "FPS_COUNTER.h"
 #include <sys/time.h>
-
-extern LOG errorLog;
+#include <stdlib.h>
 
 double timeGetTime() {
 	struct timeval now;

@@ -34,7 +34,6 @@ public:
 	bool Load8BitBMP(char * filename);
 
 	bool LoadPCX(char * filename);				//Load PCX
-
 	bool LoadTGA(char * filename);				//Load TGA
 	bool LoadUncompressed8BitTGA(char * filename);
 	bool LoadUncompressedTrueColorTGA(char * filename);

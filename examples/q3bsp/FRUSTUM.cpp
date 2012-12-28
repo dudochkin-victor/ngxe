@@ -10,11 +10,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////	
 
 #include <GL/gl.h>
-#include "LOG.h"
 #include "Maths/Maths.h"
 #include "FRUSTUM.h"
-
-extern LOG errorLog;
 
 void FRUSTUM::Update()
 {

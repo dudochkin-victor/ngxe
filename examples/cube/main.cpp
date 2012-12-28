@@ -19,6 +19,7 @@
 #include <GL/glu.h>  // GLU support library.
 #include <GL/glut.h> // GLUT support library.
 #include "View.h"
+#include "Util.h"
 // Some global variables.
 
 // Window and texture IDs, window width and height.
@@ -543,6 +544,7 @@ void ourInit(int Width, int Height) {
 // then passes control onto OpenGL.
 
 int main(int argc, char **argv) {
+	Util::log("%s" , "TEST");
 	View * v = new View(&argc, argv);
 	// Open a window
 	v->createWindow(PROGRAM_TITLE, 640, 480);

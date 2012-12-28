@@ -13,21 +13,19 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>
+#include <Util.h>
 
-#include "../LOG.h"
 #include "EXT_draw_range_elements_extension.h"
-
-extern LOG errorLog;
 
 bool EXT_draw_range_elements_supported = false;
 
 bool SetUpEXT_draw_range_elements() {
 	//Check for support
 	if (!GL_EXT_draw_range_elements) {
-		errorLog.OutputError("EXT_draw_range_elements unsupported!");
+		Util::log("EXT_draw_range_elements unsupported!");
 		return false;
 	}
-	errorLog.OutputSuccess("EXT_draw_range_elements supported!");
+	Util::log("EXT_draw_range_elements supported!");
 
 	return true;
 }

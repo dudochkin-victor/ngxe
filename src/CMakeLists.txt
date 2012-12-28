@@ -27,6 +27,13 @@ SET(LIBRARY_SRCS
     Video.cpp
     Sound.cpp
     Input.cpp
+    Util.cpp
+    Maths/COLOR.cpp
+    Maths/PLANE.cpp
+    Maths/MATRIX4X4.cpp
+    Maths/VECTOR2D.cpp
+    Maths/VECTOR3D.cpp
+    Maths/VECTOR4D.cpp
     )
 
 #set (INTERNAL_LIBRARIES ${INTERNAL_LIBRARIES}

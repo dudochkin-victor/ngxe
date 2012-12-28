@@ -11,19 +11,14 @@
 //////////////////////////////////////////////////////////////////////////////////////////	
 
 #include <GL/gl.h>
-#include "LOG.h"
 #include "IMAGE.h"
 #include "jpeg.h"
-
-//link with jpeg.lib
-#pragma comment(lib, "libjpeg.lib")
-
-extern LOG errorLog;
+#include "Util.h"
 
 //Load a jpg texture into image
 bool LoadJPG(IMAGE * image, char * filename)
 {
-	errorLog.OutputSuccess("Loading %s in LoadJPG()", filename);
+	Util::log("Loading %s in LoadJPG()", filename);
 
 	//Clear the data in image
 	if(image->data)
@@ -41,7 +36,7 @@ bool LoadJPG(IMAGE * image, char * filename)
 	
 	if(file == NULL)								//Does the file exist?
 	{
-		errorLog.OutputSuccess("%s does not exist.", filename);
+		Util::log("%s does not exist.", filename);
 		return false;
 	}
 
@@ -83,7 +78,7 @@ bool LoadJPG(IMAGE * image, char * filename)
 	image->data=new GLubyte[image->width*image->height*channels];
 	if(!image->data)
 	{
-		errorLog.OutputSuccess("Unable to allocate memory for temporary texture data");
+		Util::log("Unable to allocate memory for temporary texture data");
 		return false;
 	}
 	
@@ -91,7 +86,7 @@ bool LoadJPG(IMAGE * image, char * filename)
 	unsigned char ** rowPtr = new unsigned char * [image->height];
 	if(!rowPtr)
 	{
-		errorLog.OutputSuccess("Unable to allocate memory for row pointers");
+		Util::log("Unable to allocate memory for row pointers");
 		return false;
 	}
 
@@ -119,6 +114,6 @@ bool LoadJPG(IMAGE * image, char * filename)
 	//Flip the texture vertically
 	image->FlipVertically();
 
-	errorLog.OutputSuccess("%s loaded successfully", filename);
+	Util::log("%s loaded successfully", filename);
 	return true;
 }

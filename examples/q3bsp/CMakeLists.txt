@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}/engine/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/include
     ${CMAKE_SOURCE_DIR}/src/include
+    ${CMAKE_SOURCE_DIR}/src
     ${JPEG_INCLUDE_DIR}
     )
 
@@ -24,16 +25,12 @@ SET(PROGRAM_SRCS
     FRUSTUM.cpp
     IMAGE.cpp
     jpeg.cpp
-    LOG.cpp
     main.cpp
     TIMER.cpp
     WALKING_CAMERA.cpp
     extensions/EXT_draw_range_elements_extension.cpp
     extensions/EXT_multi_draw_arrays_extension.cpp
     extensions/EXT_texture_env_combine_extension.cpp
-    Maths/PLANE.cpp
-    Maths/MATRIX4X4.cpp
-    Maths/VECTOR3D.cpp
     )
 
 ADD_EXECUTABLE(${PROGRAMS} ${PROGRAM_SRCS})
