@@ -8,12 +8,11 @@
 //	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
-//#include <windows.h>
+
 #include <string.h>
 #include <string>
 #include <algorithm>
 #include <vector>
-#define GL_GLEXT_PROTOTYPES
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glext.h>

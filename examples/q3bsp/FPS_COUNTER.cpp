@@ -8,17 +8,17 @@
 //	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
-//#include <windows.h>
+
 #include "LOG.h"
 #include "FPS_COUNTER.h"
 #include <sys/time.h>
 
 extern LOG errorLog;
 
-unsigned int timeGetTime() {
+double timeGetTime() {
 	struct timeval now;
 	gettimeofday(&now, NULL);
-	return now.tv_usec / 1000;
+	return now.tv_sec*1000 + now.tv_usec / 1000;
 }
 
 void FPS_COUNTER::Update(void) {

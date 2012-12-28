@@ -32,5 +32,3 @@
 <-> test1.bsp Loaded successfully
 <-> Demo Initiation Successful
 <-> OpenGL Initiation Successful
-
-<-> Exiting...

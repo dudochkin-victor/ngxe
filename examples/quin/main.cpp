@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include "View.h"
 
 using namespace std;
 
@@ -1366,6 +1367,8 @@ void Shutdown() {
 
 //DoFrame() - renders a frame, based on the current position through the demo
 void DoFrame() {
+	fprintf(stderr, "HERE");
+	g_status.pos = 1;
 	float timediff = g_status.songtime;
 	//update the current music position
 //	BASS_Update();
@@ -1876,6 +1879,8 @@ void DoFrame() {
 	RenderStatusText();
 	//flip
 //	iface->Flip();
+	// All done drawing.  Let's show it.
+	glutSwapBuffers();
 }
 
 //----------------------------------------------------------------------------//
@@ -1921,18 +1926,20 @@ void HandleEvent(int event, int param1, int param2, int param3) {
 //main() - entry point
 int main(int argc, char **argv) {
 	//initialize our interface
+	View * v = new View(&argc, argv);
+	// Open a window
+	v->createWindow("Superstars", WIDTH, HEIGHT);
 //	iface = CreateInterface(WIDTH, HEIGHT, BPP, true, false);
 
-//#ifndef WINDOWED
-//	iface->SetFullscreen(true);
-//#endif
-//
-//	iface->SetTitle("Superstars");
 //	iface->SetCallback(EVENT_ALL, HandleEvent);
 //
 //	iface->Activate();
 //
-//	delete iface;
+	Initialize();
+	v->onDraw(DoFrame);
+	v->start();
+	Shutdown();
+	delete v;
 
 	return 0;
 }

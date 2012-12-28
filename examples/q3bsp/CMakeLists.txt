@@ -28,7 +28,6 @@ SET(PROGRAM_SRCS
     main.cpp
     TIMER.cpp
     WALKING_CAMERA.cpp
-    WINDOW.cpp
     extensions/EXT_draw_range_elements_extension.cpp
     extensions/EXT_multi_draw_arrays_extension.cpp
     extensions/EXT_texture_env_combine_extension.cpp

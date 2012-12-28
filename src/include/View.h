@@ -24,6 +24,7 @@ public:
 	virtual void onResize(void (* callback) (int, int));
 	virtual void onKeyboard(void (* callback) (unsigned char, int, int));
 	virtual void onMouse(void (* callback)( int, int, int, int ));
+	virtual void onMouseMove(void (* callback)( int, int ));
 	virtual void setSpecialHandler(void (* callback) (int, int, int));
 	virtual void start();
 	int getWindowId();

@@ -8,10 +8,9 @@
 //	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
-#include <windows.h>
-#include <GL\gl.h>
-#include <GL\glext.h>
-#include <GL\wglext.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/wglext.h>
 #include "../LOG.h"
 #include "ARB_multitexture_extension.h"
 

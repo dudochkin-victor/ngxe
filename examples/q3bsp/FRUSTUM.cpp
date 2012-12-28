@@ -8,7 +8,7 @@
 //	Distributed under the New BSD Licence. (See accompanying file License.txt or copy at
 //	http://www.paulsprojects.net/NewBSDLicense.txt)
 //////////////////////////////////////////////////////////////////////////////////////////	
-//#include <windows.h>
+
 #include <GL/gl.h>
 #include "LOG.h"
 #include "Maths/Maths.h"

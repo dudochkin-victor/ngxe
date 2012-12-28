@@ -12,9 +12,6 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-//#include <windows.h>
-//#include <mmsystem.h>
-
 class TIMER
 {
 public:

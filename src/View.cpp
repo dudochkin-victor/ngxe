@@ -81,8 +81,18 @@ void View::onKeyboard(void (*callback)(unsigned char, int, int)) {
  * set mouse input handler
  */
 void View::onMouse(void (* callback)( int, int, int, int )) {
-	// And let's get some keyboard input.
+	// And let's get some mouse input.
 	glutMouseFunc(callback);
+}
+
+
+/**
+ * set mouse input handler
+ */
+void View::onMouseMove(void (* callback)( int, int )) {
+	// And let's get some mouse input.
+	glutMotionFunc(callback);
+	glutPassiveMotionFunc(callback);
 }
 
 /**
