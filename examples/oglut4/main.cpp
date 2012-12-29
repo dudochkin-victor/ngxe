@@ -42,7 +42,7 @@ static GLfloat angle=0.0f,s=0.0f,c=0.0f;
 static bool pause=false;
 
 static GLuint texture_list[6];
-static char *texture_file[6]={
+static const char *texture_file[6]={
   "../textures/batgirl.raw",
   "../textures/batlogo.raw",
   "../textures/batman.raw",
@@ -53,7 +53,7 @@ static char *texture_file[6]={
 
 static char title[44+13+1]="OpenGL GLUT Tutorial 04 - 2D Texture-Mapping";
 
-void load(char *filename) {
+void load(const char *filename) {
   FILE *handle;
 
   if (!(handle=fopen(filename,"rb"))) {

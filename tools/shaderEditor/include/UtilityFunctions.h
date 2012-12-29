@@ -48,7 +48,7 @@
 
 #define PrintOpenGLError() printOglError(__FILE__, __LINE__)
 
-int printOglError(char *file, int line);
+int printOglError(const char *file, int line);
 
 void IncorrectFormat(wxString str, wxWindow& errorWindow);
 

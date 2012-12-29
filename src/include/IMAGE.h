@@ -13,6 +13,7 @@
 #define IMAGE_H
 
 #include <stdio.h>
+#include <GL/gl.h>
 
 class IMAGE
 {
@@ -52,8 +53,5 @@ public:
 
 	GLuint	 format;				//Data format, eg GL_RGBA
 };
-
-//Universal bitmap identifier
-const short BITMAP_ID=0x4D42;
 
 #endif	//TEXTURE_IMAGE_H

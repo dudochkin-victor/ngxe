@@ -576,7 +576,7 @@ static float shadeQuadInit[] =
 0.0, 1.0, 1.0, 150.0, 100.0};
 
 void
-setfont(char* name, int size)
+setfont(const char* name, int size)
 {
     font_style = GLUT_BITMAP_HELVETICA_10;
     if (strcmp(name, "helvetica") == 0) {

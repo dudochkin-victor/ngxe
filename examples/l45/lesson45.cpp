@@ -107,7 +107,7 @@ int		g_dwLastFPS = 0;									// Last FPS Check Time
 
 // TUTORIAL
 // Based Off Of Code Supplied At OpenGL.org
-bool IsExtensionSupported( char* szTargetExtension )
+bool IsExtensionSupported(const char* szTargetExtension )
 {
 	const unsigned char *pszExtensions = NULL;
 	const unsigned char *pszStart;

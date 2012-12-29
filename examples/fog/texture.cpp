@@ -21,8 +21,8 @@ typedef struct _cell {
     float min, max;
     float value;
     float step;
-    char* info;
-    char* format;
+    const char* info;
+    const char* format;
 } cell;
 
 
@@ -160,15 +160,15 @@ int twidth, theight;
 int stipple;
 
 
-#if defined(GL_VERSION_1_1)
-#define GL_REPLACE_EXT GL_REPLACE
-#endif
+//#if defined(GL_VERSION_1_1)
+//#define GL_REPLACE_EXT GL_REPLACE
+//#endif
 
 
 GLvoid *font_style = GLUT_BITMAP_TIMES_ROMAN_10;
 
 void
-setfont(char* name, int size)
+setfont(const char* name, int size)
 {
     font_style = GLUT_BITMAP_HELVETICA_10;
     if (strcmp(name, "helvetica") == 0) {
@@ -188,7 +188,7 @@ setfont(char* name, int size)
 }
 
 void 
-drawstr(GLuint x, GLuint y, char* format, ...)
+drawstr(GLuint x, GLuint y, const char* format, ...)
 {
     va_list args;
     char buffer[255], *s;
@@ -479,19 +479,19 @@ world_menu(int value)
     
     switch (value) {
     case 'f':
-        name = "../data/fishermen.ppm";
+        name = (char*)"../data/fishermen.ppm";
         break;
     case 'o':
-        name = "../data/opengl.ppm";
+        name = (char*)"../data/opengl.ppm";
         break;
     case 'c':
-        name = "../data/checker.ppm";
+        name = (char*)"../data/checker.ppm";
         break;
     case 'm':
-        name = "../data/marble.ppm";
+        name = (char*)"../data/marble.ppm";
         break;
     case 't':
-        name = "../data/train.ppm";
+        name = (char*)"../data/train.ppm";
         break;
     }
     
@@ -499,7 +499,7 @@ world_menu(int value)
         free(image);
         image = glmReadPPM(name, &iwidth, &iheight);
         if (!image)
-            image = glmReadPPM("../textures/fishermen.ppm", &iwidth, &iheight);
+            image = glmReadPPM((char*)"../textures/fishermen.ppm", &iwidth, &iheight);
     }
     
     glutSetWindow(screen);
@@ -1141,7 +1141,7 @@ command_menu(int value)
 int
 main(int argc, char** argv)
 {
-    image = glmReadPPM("../textures/fishermen.ppm", &iwidth, &iheight);
+    image = glmReadPPM((char*)"../textures/fishermen.ppm", &iwidth, &iheight);
     if (!image)
         exit(0);
     

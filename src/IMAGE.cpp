@@ -11,8 +11,11 @@
 
 #include <string.h>
 #include <GL/gl.h>
-#include "IMAGE.h"
+//#include "IMAGE.h"
 #include "Util.h"
+
+//Universal bitmap identifier
+const short BITMAP_ID=0x4D42;
 
 struct BitMap {
 	short Type;
@@ -31,7 +34,7 @@ struct BitMap {
 	long biYPelsPerMeter;
 	long biClrUsed;
 	long biClrImportant;
-} Header;
+};
 
 /*typedef*/ struct BITMAPFILEHEADER {
 	short bfType;

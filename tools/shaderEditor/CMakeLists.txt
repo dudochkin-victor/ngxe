@@ -41,29 +41,29 @@ SET(SHED_SRCS
     )
 
 SET(SHED_HEADERS
-	AboutDialog.h
-	App.h
-	Compulsory.h
-	globals.h
-	IdentityTable.h
-	SGCanvas.h
-	SGCanvasMouseHandler.h
-	SGCanvasWrapper.h
-	SGFixedGLState.h
-	SGFrame.h
-	SGModels.h
-	SGOglFogNBPage.h
-	SGOglLightNBPage.h
-	SGOglMaterialNBPage.h
-	SGOglNotebook.h
-	SGOglTextureCoordNBPage.h
-	SGOglTextureEnvNBPage.h
-	SGShaderGenerator.h
-	SGShaderTextWindow.h
-	SGSurfaces.h
-	SGTextures.h
-	UtilityFunctions.h
-	Vector.h
+	include/AboutDialog.h
+	include/App.h
+	include/Compulsory.h
+	include/globals.h
+	include/IdentityTable.h
+	include/SGCanvas.h
+	include/SGCanvasMouseHandler.h
+	include/SGCanvasWrapper.h
+	include/SGFixedGLState.h
+	include/SGFrame.h
+	include/SGModels.h
+	include/SGOglFogNBPage.h
+	include/SGOglLightNBPage.h
+	include/SGOglMaterialNBPage.h
+	include/SGOglNotebook.h
+	include/SGOglTextureCoordNBPage.h
+	include/SGOglTextureEnvNBPage.h
+	include/SGShaderGenerator.h
+	include/SGShaderTextWindow.h
+	include/SGSurfaces.h
+	include/SGTextures.h
+	include/UtilityFunctions.h
+	include/Vector.h
     )
 ADD_EXECUTABLE(shaderEditor ${SHED_SRCS} ${SHED_HEADERS})
 

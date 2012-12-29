@@ -21,8 +21,8 @@ typedef struct _cell {
     float min, max;
     float value;
     float step;
-    char* info;
-    char* format;
+    const char* info;
+    const char* format;
 } cell;
 
 
@@ -72,7 +72,7 @@ GLuint sub_width = 256, sub_height = 256;
 GLvoid *font_style = GLUT_BITMAP_TIMES_ROMAN_10;
 
 void
-setfont(char* name, int size)
+setfont(const char* name, int size)
 {
     font_style = GLUT_BITMAP_HELVETICA_10;
     if (strcmp(name, "helvetica") == 0) {
@@ -92,7 +92,7 @@ setfont(char* name, int size)
 }
 
 void 
-drawstr(GLuint x, GLuint y, char* format, ...)
+drawstr(GLuint x, GLuint y, const char* format, ...)
 {
     va_list args;
     char buffer[255], *s;
@@ -154,7 +154,7 @@ void
 drawmodel(void)
 {
     if (!pmodel) {
-        pmodel = glmReadOBJ("../data/soccerball.obj");
+        pmodel = glmReadOBJ((char*)"../data/soccerball.obj");
         if (!pmodel) exit(0);
         glmUnitize(pmodel);
         glmFacetNormals(pmodel);
@@ -545,25 +545,25 @@ screen_menu(int value)
     
     switch (value) {
     case 'a':
-        name = "../data/al.obj";
+        name = (char*)"../data/al.obj";
         break;
     case 's':
-        name = "../data/soccerball.obj";
+        name = (char*)"../data/soccerball.obj";
         break;
     case 'd':
-        name = "../data/dolphins.obj";
+        name = (char*)"../data/dolphins.obj";
         break;
     case 'f':
-        name = "../data/flowers.obj";
+        name = (char*)"../data/flowers.obj";
         break;
     case 'j':
-        name = "../data/f-16.obj";
+        name = (char*)"../data/f-16.obj";
         break;
     case 'p':
-        name = "../data/porsche.obj";
+        name = (char*)"../data/porsche.obj";
         break;
     case 'r':
-        name = "../data/rose+vase.obj";
+        name = (char*)"../data/rose+vase.obj";
         break;
     }
     

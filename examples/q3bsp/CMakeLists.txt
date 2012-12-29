@@ -23,7 +23,6 @@ SET(PROGRAM_SRCS
     BSP.cpp
     FPS_COUNTER.cpp
     FRUSTUM.cpp
-    jpeg.cpp
     main.cpp
     WALKING_CAMERA.cpp
     extensions/EXT_draw_range_elements_extension.cpp

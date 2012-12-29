@@ -11,6 +11,17 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <IMAGE.h>
+
+struct ngxTexture {
+	GLint id;					//GL texture id
+	GLuint format;				//Data format, eg GL_RGBA
+	GLuint type;				//Data format, eg GL_RGBA
+	unsigned int bpp;			//Image color depth in bits per pixel
+	unsigned int width;			//Image width
+	unsigned int height;		//Image height
+	unsigned char * data;		//Image data
+};
 
 class Util {
 	static Util *_self;
@@ -53,6 +64,8 @@ public:
 //		Util::Instance()->_log(text, arg_list);
 		return;
 	}
+	static bool LoadTexture(const char *name, ngxTexture &tex);
+	static bool SaveTexture(const char *name, ngxTexture &tex);
 };
 
 #endif /* UTIL_H_ */

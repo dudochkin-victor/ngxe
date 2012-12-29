@@ -18,8 +18,6 @@
 #include "extensions/ARB_multitexture_extension.h"
 #include "extensions/EXT_draw_range_elements_extension.h"
 #include "extensions/EXT_multi_draw_arrays_extension.h"
-#include "IMAGE.h"
-#include "jpeg.h"
 #include "Maths/Maths.h"
 #include "BSP.h"
 #include "Util.h"
@@ -397,7 +395,8 @@ bool BSP::LoadTextures(FILE * file)
 	glGenTextures(numTextures, decalTextures);
 
 	//Loop through and create textures
-	IMAGE textureImage;				//Image used to load textures
+	ngxTexture textureImage;				//Image used to load textures
+	memset(&textureImage, 0, sizeof(ngxTexture));
 
 	for(int i=0; i<numTextures; ++i)
 	{
@@ -413,10 +412,9 @@ bool BSP::LoadTextures(FILE * file)
 		
 		//Load texture image
 		bool isJpgTexture=false;				//have we loaded a jpg?
-		if(!textureImage.Load(tgaExtendedName))	//try to load .tga, if not
+		if(!Util::LoadTexture((const char*)tgaExtendedName, textureImage))	//try to load .tga, if not
 		{
-			fprintf(stderr, "TRY TO LOAD JPG\n");
-			if(LoadJPG(&textureImage, jpgExtendedName))	//try to load jpg
+			if(Util::LoadTexture((const char*)jpgExtendedName, textureImage))	//try to load jpg
 			{
 				isJpgTexture=true;
 				isTextureLoaded[i]=true;
