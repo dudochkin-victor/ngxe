@@ -578,7 +578,7 @@ int main(int argc, char **argv)
         
     done = False;
     /* default to fullscreen */
-    GLWin.fs = True;
+    GLWin.fs = false;
     if (!createGLWindow("NeHe's Texture Mapping Tutorial", 640, 480, 24,
         GLWin.fs))
     {

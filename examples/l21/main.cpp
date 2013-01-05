@@ -790,7 +790,7 @@ int main(int argc, char **argv)
     unsigned int start;
     done = False;
     /* default to fullscreen */
-    GLWin.fs = False;
+    GLWin.fs = false;
     createGLWindow(title, 640, 480, 24, GLWin.fs);
     initKeys();
     resetObjects();

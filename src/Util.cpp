@@ -1110,7 +1110,7 @@ int check_if_png(const char *file_name, FILE **fp)
  */
 int load_png(const char *file_name, ngxTexture &tex)
 {
-	png_structp png_ptr;
+    png_structp png_ptr;
     png_infop info_ptr, end_info;
     unsigned int sig_read = PNG_BYTES_TO_CHECK;
     int bit_depth, color_type, interlace_type;

@@ -538,7 +538,7 @@ int main(int argc, char **argv)
     light = False;
     blend = False;
     /* default to fullscreen */
-    GLWin.fs = True;
+    GLWin.fs = false;
     if (!createGLWindow((char*)"NeHe's Blending Tutorial",
         640, 480, 24, GLWin.fs))
     {

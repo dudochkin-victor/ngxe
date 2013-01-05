@@ -513,7 +513,7 @@ int main(int argc, char **argv)
     filter = 0;     /* initialize filter to no filter */
     light = False;
     /* default to fullscreen */
-    GLWin.fs = True;
+    GLWin.fs = false;
     if (!createGLWindow((char*)"NeHe's  Textures, Lighting & Keyboard Tutorial",
         640, 480, 24, GLWin.fs))
     {

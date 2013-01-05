@@ -311,7 +311,7 @@ int main(int argc, char **argv)
     
     done = False;
     /* default to fullscreen */
-    GLWin.fs = True;
+    GLWin.fs = false;
     createGLWindow((char*)"NeHe's Solid Objects Tutorial", 640, 480, 24, GLWin.fs);
 
     /* wait for events*/ 
